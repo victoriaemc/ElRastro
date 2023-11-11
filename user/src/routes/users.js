@@ -64,6 +64,36 @@ router.get("/add", (req, res) =>{
     res.render("add_users", {title: "Add Users"});
 });
 
+/**
+ * @swagger
+ * /add:
+ *  post:
+ *    summary: Add user
+ *    description: Add a new user
+ *    tags: [User]
+ *    requestBody:
+ *          required: true
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  name:
+ *                    type: string
+ *                    description: The user's name.
+ *                    example: Leanne Graham
+ *                  username:
+ *                    type: string
+ *                    description: The user's username.
+ *                    example: lgraham
+ *                  password:
+ *                    type: string
+ *                    description: The user's password.
+ *                    example: badpassword123
+ *    responses:
+ *      201:
+ *          description: Created
+ */
 router.post('/add', bodyParser.json(), (req, res) =>{
     const user = new User({
         name: req.body.name,
@@ -83,6 +113,31 @@ router.post('/add', bodyParser.json(), (req, res) =>{
         }
     });
 });
+
+// Borrar un usuario
+/**
+ * @swagger
+ * /delete:
+ *  post:
+ *    summary: Delete user
+ *    description: Delete a user
+ *    tags: [User]
+ *    requestBody:
+ *          required: true
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  id:
+ *                    type: string
+ *                    description: The user's id.
+ *                    example: 654c0bde1ff961575885e54d
+ *    responses:
+ *      200:
+ *          description: Success
+ *
+ */
 router.post("/delete",bodyParser.json(), (req, res)=>{
     console.log(req.body.Index);
     User.findByIdAndDelete(req.body.Index).then(function(){
@@ -121,6 +176,18 @@ router.get("/bidders/:id", (req, res) => {
             }
         });
 });
+// Devuelve los usuarios que han pujado alguna vez
+/**
+ * @swagger
+ * /users/bidders:
+ *  get:
+ *    summary: Bidder users
+ *    description: Get all users who have bid on at least one product
+ *    tags: [User]
+ *    responses:
+ *      200:
+ *          description: Success
+ */
 
 router.get("/users/bidders", (req, res) => {
     Bid.find()
@@ -135,6 +202,9 @@ router.get("/users/bidders", (req, res) => {
         });
 });
 
+
+
+// Users who have ever sold a product
 /**
  * @swagger
  * /users/sellers:
@@ -146,8 +216,6 @@ router.get("/users/bidders", (req, res) => {
  *      200:
  *          description: Success
  */
-
-// Users who have ever sold a product
 router.get("/users/sellers", (req, res) => {
     Product.find()
         .populate('user') // Populate para obtener los datos de usuario de cada producto
