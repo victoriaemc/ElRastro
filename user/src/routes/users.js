@@ -49,14 +49,10 @@ var bodyParser = require('body-parser');
  *      200:
  *          description: Success
  */
-router.get("/users", (req, res) => {
-    User.find().exec((err, users) => {
-        if (err) {
-            res.json({ message: err.message });
-        } else {
-            res.json(users);
-        }
-    })
+router.get("/", (req, res) => {
+    User.find()
+        .then(users => res.json(users))
+        .catch(err => res.json({message: err.message}));
 });
 
 /* Add users */
@@ -66,7 +62,7 @@ router.get("/add", (req, res) =>{
 
 /**
  * @swagger
- * /add:
+ * /users/add:
  *  post:
  *    summary: Add user
  *    description: Add a new user
@@ -94,30 +90,33 @@ router.get("/add", (req, res) =>{
  *      201:
  *          description: Created
  */
-router.post('/add', bodyParser.json(), (req, res) =>{
-    const user = new User({
-        name: req.body.name,
-        username: req.body.username,
-        password: req.body.password
-    });
-    console.log(req.body.username + " Este es el body "+ req.body.name);
-    user.save((err)=> {
-        if(err){
-            res.json({message: err.message, type: 'danger'});
-        }else {
-            req.session.message = {
-                type: 'success',
-                message: 'User added successfully!'
-            };
-            res.redirect('/users');
-        }
-    });
+router.post('/add', bodyParser.json(), async (req, res) => {
+    try {
+        const user = new User({
+            name: req.body.name,
+            username: req.body.username,
+            password: req.body.password
+        });
+
+        console.log(req.body.username + " Este es el body " + req.body.name);
+
+        await user.save();
+        req.session.message = {
+            type: 'success',
+            message: 'User added successfully!'
+        };
+        res.redirect('/users');
+    } catch (err) {
+        res.json({ message: err.message, type: 'danger' });
+    }
 });
+
+
 
 // Borrar un usuario
 /**
  * @swagger
- * /delete:
+ * /users/delete:
  *  post:
  *    summary: Delete user
  *    description: Delete a user
@@ -189,18 +188,18 @@ router.get("/bidders/:id", (req, res) => {
  *          description: Success
  */
 
-router.get("/users/bidders", (req, res) => {
-    Bid.find()
-        .populate('user') // Populate para obtener los datos de usuario de cada puja
-        .exec((err, bids) => {
-            if (err) {
-                res.json({ message: err.message });
-            } else {
-                const usersWhoBidded = bids.map(bid => bid.user);
-                res.json(usersWhoBidded.filter((user, index, array) => !array.slice(0, index).includes(user)));
-            }
+router.get("/bidders", (req, res) => {
+    Bid.distinct('user')
+        .populate('user', 'username email') // Populate para obtener los datos específicos de usuario de cada puja (puedes ajustar los campos)
+        .exec()
+        .then(users => {
+            res.json(users);
+        })
+        .catch(err => {
+            res.status(500).json({ message: err.message });
         });
 });
+
 
 
 

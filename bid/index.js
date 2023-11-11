@@ -3,6 +3,9 @@ const mongoose = require('mongoose');
 const app = express();
 app.use(express.json());
 
+const bidRoutes = require('./src/routes/bids')
+app.use('/', bidRoutes);
+
 app.use('/', (req, res, next) => {
     return res.status(200).json({"msg": "Bid service is running"})
 })

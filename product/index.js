@@ -2,6 +2,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const app = express();
 app.use(express.json());
+const productRoutes = require('./src/routes/users')
+app.use('/', productRoutes);
 
 app.use('/', (req, res, next) => {
     return res.status(200).json({"msg": "Product service is running"})

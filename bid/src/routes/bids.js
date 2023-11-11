@@ -46,15 +46,12 @@ const Bid = require('../models/Bid');
  *      200:
  *          description: Success
  */
-router.get("/bids", (req, res) => {
-    Bid.find().exec((err, bids) => {
-        if (err) {
-            res.json({ message: err.message });
-        } else {
-            res.json(bids);
-        }
-    })
+router.get("/", (req, res) => {
+    Bid.find()
+        .then(bids => res.json(bids))
+        .catch(err => res.json({ message: err.message }));
 });
+
 
 // Devuelve las pujas realizadas en las últimas :hours horas
 /**
@@ -81,18 +78,14 @@ router.get("/bids", (req, res) => {
  *                          $ref: '#/components/schemas/Bid'
  *
  */
-router.get("/bids/before/:hours", (req, res) => {
+router.get("/before/:hours", (req, res) => {
     const hours = parseFloat(req.params.hours);
     // Obtener la fecha actual menos n horas
     const currentDateMinusNHours = new Date();
     currentDateMinusNHours.setMilliseconds(currentDateMinusNHours.getMilliseconds() - hours * 3600 * 1000);
-    Bid.find({ date: { $gte: currentDateMinusNHours, $lte: new Date() } }).exec((err, bids) => {
-        if (err) {
-            res.json({ message: err.message });
-        } else {
-            res.json(bids);
-        }
-    });
+    Bid.find({ date: { $gte: currentDateMinusNHours, $lte: new Date() } })
+        .then(bids => res.json(bids))
+        .catch(err => res.json({ message: err.message }));
 });
 
 module.exports = router;

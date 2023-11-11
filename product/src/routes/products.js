@@ -159,7 +159,7 @@ router.get("/myProducts/:id", (req, res) => {
  */
 // Devuelve las subastas finalizadas o no
 
-router.get("/products/finished/:finished", (req, res) =>{
+router.get("/finished/:finished", (req, res) =>{
     Product.find({finished : req.params.finished}).exec((err, products) =>{
         if(err) {
             res.json({message: err.message});
@@ -170,7 +170,7 @@ router.get("/products/finished/:finished", (req, res) =>{
 });
 
 // Devuelve los productos cuya ultima puja sea mayor a una cantidad
-router.get("/products/greaterThan/:amount", (req, res) =>{
+router.get("/greaterThan/:amount", (req, res) =>{
     Product.find({lastBid : { $gt : req.params.amount}}).exec((err, products) =>{
         if(err) {
             res.json({message: err.message});
@@ -181,7 +181,7 @@ router.get("/products/greaterThan/:amount", (req, res) =>{
 });
 
 // Devuelve los productos cuya ultima puja sea inferior a una cantidad
-router.get("/products/lowerThan/:amount", (req, res) =>{
+router.get("/lowerThan/:amount", (req, res) =>{
     Product.find({lastBid : { $lt : req.params.amount}}).exec((err, products) =>{
         if(err) {
             res.json({message: err.message});
@@ -192,7 +192,7 @@ router.get("/products/lowerThan/:amount", (req, res) =>{
 });
 
 // Devuelve los productos publicados en las últimas :hours horas
-router.get("/products/before/:hours", (req, res) => {
+router.get("/before/:hours", (req, res) => {
     const hours = parseFloat(req.params.hours);
     // Obtener la fecha actual menos n horas
     const currentDateMinusNHours = new Date();
@@ -260,7 +260,7 @@ router.get("/products/before/:hours", (req, res) => {
  *                 finished: false
  */
 
-router.put("/products/add", function (req, res) {
+router.put("/add", function (req, res) {
     const product = new Product({
         name: req.body.name,
         description: req.body.description,

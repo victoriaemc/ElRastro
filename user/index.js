@@ -3,6 +3,9 @@ const mongoose = require('mongoose');
 const app = express();
 app.use(express.json());
 
+const userRoutes = require('./src/routes/users')
+app.use('/', userRoutes);
+
 app.use('/', (req, res, next) => {
     return res.status(200).json({"msg": "User service is running"})
 })
