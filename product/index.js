@@ -2,7 +2,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const app = express();
 app.use(express.json());
-const productRoutes = require('./src/routes/products')
+
+const productRoutes = require('./src/routes/products');
 app.use('/', productRoutes);
 
 app.use('/', (req, res, next) => {

@@ -74,7 +74,7 @@ const User = require("../models/User");
 /* GET products listing. */
 /**
  * @swagger
- * /products:
+ * /:
  *  get:
  *    summary: Get all products
  *    description: Get all products
@@ -89,15 +89,15 @@ const User = require("../models/User");
  *                      items:
  *                          $ref: '#/components/schemas/Product'
  */
-router.get("/", (req, res) =>{
-    Product.find().exec((err, products) =>{
-    if(err) {
-        res.json({message: err.message});
-    } else {
+router.get("/", async (req, res) => {
+    try {
+        const products = await Product.find().exec();
         res.json(products);
+    } catch (err) {
+        res.json({ message: err.message });
     }
-    })
 });
+
 
 // Devuelve los productos a la venta de un usuario
 /**
@@ -123,20 +123,19 @@ router.get("/", (req, res) =>{
  *                      items:
  *                          $ref: '#/components/schemas/Product'
  */
-router.get("/myProducts/:id", (req, res) => {
-    let id = req.params.id;
-    Product.find({ user: id }, (err, products) => {
-        if (err) {
-            res.json({ message: err.message });
-        } else {
-            res.json(products);
-        }
-    });
+router.get("/myProducts/:id", async (req, res) => {
+    try {
+        let id = req.params.id;
+        const products = await Product.find({ user: id }).exec();
+        res.json(products);
+    } catch (err) {
+        res.json({ message: err.message });
+    }
 });
 
 /**
  * @swagger
- * /products/finished/{finished}:
+ * /finished/{finished}:
  *  get:
  *    summary: Products sold by user
  *    description: Get products depending on whether their sale is finished or not.
@@ -159,58 +158,131 @@ router.get("/myProducts/:id", (req, res) => {
  */
 // Devuelve las subastas finalizadas o no
 
-router.get("/finished/:finished", (req, res) =>{
-    Product.find({finished : req.params.finished}).exec((err, products) =>{
-        if(err) {
-            res.json({message: err.message});
-        } else {
-            res.json(products);
-        }
-    })
-});
-
-// Devuelve los productos cuya ultima puja sea mayor a una cantidad
-router.get("/greaterThan/:amount", (req, res) =>{
-    Product.find({lastBid : { $gt : req.params.amount}}).exec((err, products) =>{
-        if(err) {
-            res.json({message: err.message});
-        } else {
-            res.json(products);
-        }
-    })
-});
-
-// Devuelve los productos cuya ultima puja sea inferior a una cantidad
-router.get("/lowerThan/:amount", (req, res) =>{
-    Product.find({lastBid : { $lt : req.params.amount}}).exec((err, products) =>{
-        if(err) {
-            res.json({message: err.message});
-        } else {
-            res.json(products);
-        }
-    })
-});
-
-// Devuelve los productos publicados en las últimas :hours horas
-router.get("/before/:hours", (req, res) => {
-    const hours = parseFloat(req.params.hours);
-    // Obtener la fecha actual menos n horas
-    const currentDateMinusNHours = new Date();
-    currentDateMinusNHours.setMilliseconds(currentDateMinusNHours.getMilliseconds() - hours * 3600 * 1000);
-    // Consulta para encontrar productos publicados antes de la fecha actual menos n horas
-    Product.find({ publicationDate: { $gte: currentDateMinusNHours, $lte: new Date() } }).exec((err, products) => {
-        if (err) {
-            res.json({ message: err.message });
-        } else {
-            res.json(products);
-        }
-    });
+router.get("/finished/:finished", async (req, res) => {
+    try {
+        const finishedValue = req.params.finished;
+        const products = await Product.find({ finished: finishedValue }).exec();
+        res.json(products);
+    } catch (err) {
+        res.json({ message: err.message });
+    }
 });
 
 /**
  * @swagger
- * /products/add:
- *   put:
+ * /greaterThan/{amount}:
+ *  get:
+ *    summary: Products sold by user
+ *    description: Get products depending on whether their sale is finished or not.
+ *    tags: [Product]
+ *    parameters:
+ *      - in: path
+ *        name: amount
+ *        schema:
+ *          type: number
+ *        required: true
+ *    responses:
+ *      200:
+ *          description: Success
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: array
+ *                      items:
+ *                          $ref: '#/components/schemas/Product'
+ */
+
+// Devuelve los productos cuya ultima puja sea mayor a una cantidad
+router.get("/greaterThan/:amount", async (req, res) => {
+    try {
+        const amountValue = req.params.amount;
+        const products = await Product.find({ lastBid: { $gt: amountValue } }).exec();
+        res.json(products);
+    } catch (err) {
+        res.json({ message: err.message });
+    }
+});
+
+/**
+ * @swagger
+ * /lowerThan/{amount}:
+ *  get:
+ *    summary: Products sold by user
+ *    description: Get products depending on whether their sale is finished or not.
+ *    tags: [Product]
+ *    parameters:
+ *      - in: path
+ *        name: amount
+ *        schema:
+ *          type: number
+ *        required: true
+ *    responses:
+ *      200:
+ *          description: Success
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: array
+ *                      items:
+ *                          $ref: '#/components/schemas/Product'
+ */
+
+// Devuelve los productos cuya ultima puja sea inferior a una cantidad
+router.get("/lowerThan/:amount", async (req, res) => {
+    try {
+        const amountValue = req.params.amount;
+        const products = await Product.find({ lastBid: { $lt: amountValue } }).exec();
+        res.json(products);
+    } catch (err) {
+        res.json({ message: err.message });
+    }
+});
+
+/**
+ * @swagger
+ * /before/{hours}:
+ *  get:
+ *    summary: Products sold by user
+ *    description: Get products depending on whether their sale is finished or not.
+ *    tags: [Product]
+ *    parameters:
+ *      - in: path
+ *        name: hours
+ *        schema:
+ *          type: number
+ *        required: true
+ *    responses:
+ *      200:
+ *          description: Success
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: array
+ *                      items:
+ *                          $ref: '#/components/schemas/Product'
+ */
+
+// Devuelve los productos publicados en las últimas :hours horas
+router.get("/before/:hours", async (req, res) => {
+    try {
+        const hours = parseFloat(req.params.hours);
+        const currentDateMinusNHours = new Date();
+        currentDateMinusNHours.setMilliseconds(currentDateMinusNHours.getMilliseconds() - hours * 3600 * 1000);
+
+        const products = await Product.find({
+            publicationDate: { $gte: currentDateMinusNHours, $lte: new Date() }
+        }).exec();
+
+        res.json(products);
+    } catch (err) {
+        res.json({ message: err.message });
+    }
+});
+
+/**
+ * @swagger
+ * /add:
+ *    post:
  *     summary: Añade un nuevo producto
  *     description: Añade un nuevo producto a la base de datos.
  *     tags: [Product]
@@ -260,27 +332,155 @@ router.get("/before/:hours", (req, res) => {
  *                 finished: false
  */
 
-router.put("/add", function (req, res) {
-    const product = new Product({
-        name: req.body.name,
-        description: req.body.description,
-        user: req.body.user,
-        startingPrice: req.body.startingPrice,
-        lastBid: req.body.lastBid,
-        latitude: req.body.latitude,
-        longitude: req.body.longitude,
-        publicationDate: req.body.publicationDate,
-        endingDate: req.body.endingDate,
-        finished: req.body.finished
-    });
+router.post("/add", async (req, res) => {
+    try {
+        const product = new Product({
+            name: req.body.name,
+            description: req.body.description,
+            user: req.body.user,
+            startingPrice: req.body.startingPrice,
+            lastBid: req.body.lastBid,
+            latitude: req.body.latitude,
+            longitude: req.body.longitude,
+            publicationDate: req.body.publicationDate,
+            endingDate: req.body.endingDate,
+            finished: req.body.finished
+        });
 
-    product.save((err) => {
-        if (err) {
+        await product.save();
+        res.json(product);
+    } catch (err) {
+        res.json({ message: err.message, type: 'danger' });
+    }
+});
+
+/**
+ * @swagger
+ * /delete/{productId}:
+ *  delete:
+ *    summary: Delete product
+ *    description: Delete a prodcut given an ID
+ *    tags: [Product]
+ *    parameters:
+ *      - in: path
+ *        name: productId
+ *        schema:
+ *          type: string
+ *        required: true
+ *    responses:
+ *      200:
+ *          description: Success
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: array
+ *                      items:
+ *                          $ref: '#/components/schemas/Product'
+ */
+
+router.delete("/delete/:productId", (req, res) => {
+    const productId = req.params.productId;
+
+    Product.findByIdAndDelete(productId)
+        .then(product => {
+            if (product) {
+                res.json({ message: 'Product deleted successfully!' });
+            } else {
+                res.json({ message: 'Product not found', type: 'danger' });
+            }
+        })
+        .catch(err => {
             res.json({ message: err.message, type: 'danger' });
-        } else {
+        });
+});
+
+/**
+ * @swagger
+ * /update/{productId}:
+ *   put:
+ *     summary: Actualiza un producto existente
+ *     description: Actualiza un producto existente en la base de datos.
+ *     tags: [Product]
+ *     parameters:
+ *       - in: path
+ *         name: productId
+ *         required: true
+ *         description: ID del producto a actualizar
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               description:
+ *                 type: string
+ *               user:
+ *                 type: string
+ *               startingPrice:
+ *                 type: number
+ *               lastBid:
+ *                 type: number
+ *               latitude:
+ *                 type: number
+ *               longitude:
+ *                 type: number
+ *               publicationDate:
+ *                 type: string
+ *                 format: date-time
+ *               endingDate:
+ *                 type: string
+ *                 format: date-time
+ *               finished:
+ *                 type: boolean
+ *     responses:
+ *       200:
+ *         description: Producto actualizado con éxito
+ *         content:
+ *           application/json:
+ *             example:
+ *               name: iPhone 12 Pro
+ *               description: Smartphone avanzado
+ *               user: 5f9d7b7b9c9a7b1b1c9a7b1b
+ *               startingPrice: 600
+ *               lastBid: 600
+ *               latitude: 40.4167
+ *               longitude: 3.70325
+ *               publicationDate: 2020-10-31T12:00:00.000Z
+ *               endingDate: 2020-12-15T12:00:00.000Z
+ *               finished: true
+ */
+
+router.put("/update/:productId", async (req, res) => {
+    try {
+        const productId = req.params.productId;
+
+        const updatedProduct = {
+            name: req.body.name,
+            description: req.body.description,
+            user: req.body.user,
+            startingPrice: req.body.startingPrice,
+            lastBid: req.body.lastBid,
+            latitude: req.body.latitude,
+            longitude: req.body.longitude,
+            publicationDate: req.body.publicationDate,
+            endingDate: req.body.endingDate,
+            finished: req.body.finished
+        };
+
+        const product = await Product.findByIdAndUpdate(productId, updatedProduct, { new: true });
+
+        if (product) {
             res.json(product);
+        } else {
+            res.json({ message: 'Product not found', type: 'danger' });
         }
-    });
+    } catch (err) {
+        res.json({ message: err.message, type: 'danger' });
+    }
 });
 
 module.exports = router;
