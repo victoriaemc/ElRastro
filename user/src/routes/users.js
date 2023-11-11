@@ -238,19 +238,17 @@ router.delete("/:id",bodyParser.json(), (req, res)=>{
  *      200:
  *          description: Success
  */
-router.get("/bidders/:id", (req, res) => {
-    let productId = req.params.id;
-    Bid.find({ product: productId })
-        .populate('user') // Populate para obtener los datos de usuario de cada puja
-        .exec((err, bids) => {
-            if (err) {
-                res.json({ message: err.message });
-            } else {
-                const usersWhoBidded = bids.map(bid => bid.user);
-                res.json(usersWhoBidded);
-            }
-        });
+router.get("/bidders/:id", async (req, res) => {
+    try {
+        let productId = req.params.id;
+        const bids = await Bid.find({ product: productId }).populate('user').exec();
+        const usersWhoBidded = bids.map(bid => bid.user);
+        res.json(usersWhoBidded);
+    } catch (err) {
+        res.json({ message: err.message });
+    }
 });
+
 // Devuelve los usuarios que han pujado alguna vez
 /**
  * @swagger
