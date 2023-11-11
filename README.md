@@ -7,6 +7,9 @@
 * Jaime Luis Mesa Viquez
 
 ## Uso 
-Para ejecutar la aplicacion se debe ejecutar el comando `npm start` **en cada una de las carpetas del proyecto** (gateway, user, product, bid). 
+Para ejecutar la aplicacion se debe ejecutar el comando `npm start` **en la carpeta gateway**. 
 
 Para acceder a la aplicación entrar en `localhost:8000` en el navegador.
+
+## OpenAPI
+Para acceder a la documentación de la API entrar en `localhost:8000/api-docs` en el navegador.

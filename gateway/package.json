@@ -4,12 +4,17 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js"
+    "bid": "cd ../bid && nodemon index.js",
+    "product": "cd ../product && nodemon index.js",
+    "user": "cd ../user && nodemon index.js",
+    "gateway": "cd ../gateway && nodemon index.js",
+    "start": "concurrently \"npm run bid\" \"npm run product\" \"npm run user\" \"npm run gateway\""
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "concurrently": "^8.2.2",
     "cors": "^2.8.5",
     "express": "^4.18.2",
     "express-http-proxy": "^2.0.0",
