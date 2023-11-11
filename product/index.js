@@ -8,5 +8,5 @@ app.use('/', (req, res, next) => {
 })
 
 app.listen(8002, () => {
-    console.log("Product running on port 8002");
+    console.log("Product running on port 8002")
 });
