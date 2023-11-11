@@ -5,6 +5,7 @@ const Bid = require('../models/Bid');
 //const Product = require('../models/Product');
 //var bodyParser = require('body-parser');
 
+
 /**
  * @swagger
  * components:
@@ -39,7 +40,7 @@ const Bid = require('../models/Bid');
  * /bids:
  *  get:
  *    summary: Get all bids
- *    description: Get all bids
+ *    description: Get all bids in database
  *    tags: [Bid]
  *    responses:
  *      200:
@@ -50,14 +51,36 @@ router.get("/bids", (req, res) => {
         if (err) {
             res.json({ message: err.message });
         } else {
-            res.json(
-                bids
-            );
+            res.json(bids);
         }
     })
 });
 
 // Devuelve las pujas realizadas en las últimas :hours horas
+/**
+ * @swagger
+ * /bids/before/{hours}:
+ *  get:
+ *      summary: Get bids newer than n hours
+ *      description: Get bids that were placed in the last n hours
+ *      tags: [Bid]
+ *      parameters:
+ *      - in: path
+ *        name: hours
+ *        schema:
+ *          type: number
+ *        required: true
+ *      responses:
+ *          200:
+ *              description: Success
+ *              content:
+ *              application/json:
+ *                  schema:
+ *                      type: array
+ *                      items:
+ *                          $ref: '#/components/schemas/Bid'
+ *
+ */
 router.get("/bids/before/:hours", (req, res) => {
     const hours = parseFloat(req.params.hours);
     // Obtener la fecha actual menos n horas
