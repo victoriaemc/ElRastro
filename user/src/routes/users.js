@@ -55,6 +55,47 @@ router.get("/", (req, res) => {
         .catch(err => res.json({message: err.message}));
 });
 
+
+// Get an user by id
+/**
+ * @swagger
+ * /users/{id}:
+ *  get:
+ *      summary: Get user by id
+ *      description: Get user that matches the id
+ *      tags: [User]
+ *      parameters:
+ *      - in: path
+ *        name: id
+ *        schema:
+ *          type: string
+ *        required: true
+ *      responses:
+ *          200:
+ *              description: Success
+ *              content:
+ *              application/json:
+ *                  schema:
+ *                      $ref: '#/components/schemas/User'
+ *
+ */
+router.get("/:id", (req, res) => {
+    let id = req.params.id;
+    User.findById(id)
+        .then(bid => {
+            if (bid) {
+                res.json(bid);
+            } else {
+                res.status(404).json({ message: "User not found" });
+            }
+        })
+        .catch(err => {
+            res.status(500).json({ message: err.message });
+        });
+});
+
+
+
 /* Add users */
 router.get("/add", (req, res) =>{
     res.render("add_users", {title: "Add Users"});
@@ -87,7 +128,7 @@ router.get("/add", (req, res) =>{
  *                    description: The user's password.
  *                    example: badpassword123
  *    responses:
- *      201:
+ *      200:
  *          description: Created
  */
 router.post('/add', bodyParser.json(), async (req, res) => {
@@ -101,67 +142,102 @@ router.post('/add', bodyParser.json(), async (req, res) => {
         console.log(req.body.username + " Este es el body " + req.body.name);
 
         await user.save();
-        req.session.message = {
-            type: 'success',
-            message: 'User added successfully!'
-        };
         res.redirect('/users');
     } catch (err) {
         res.json({ message: err.message, type: 'danger' });
     }
 });
 
+// Editar un usuario
+/**
+ * @swagger
+ * /users/{id}:
+ *  put:
+ *      summary: Update user
+ *      description: Update an user
+ *      tags: [User]
+ *      parameters:
+ *      - in: path
+ *        name: id
+ *        schema:
+ *          type: string
+ *        required: true
+ *      requestBody:
+ *          required: true
+ *          content:
+ *            application/json:
+ *              schema:
+ *                  $ref: '#/components/schemas/User'
+ *      responses:
+ *          200:
+ *              description: Success
+ *
+ */
+router.put("/:id", async(req, res) => {
+    try {
+        const id = req.params.id;
+        const update = req.body; // Assuming the request body contains the updated user data
+
+        // `new: true` option returns the modified document rather than the original
+        const updatedUser = await User.findOneAndUpdate({ _id: id }, update, { new: true });
+
+        if (updatedUser) {
+            res.json(updatedUser);
+        } else {
+            res.status(404).json({ message: "User not found" });
+        }
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
 
 
 // Borrar un usuario
 /**
  * @swagger
- * /users/delete:
- *  post:
+ * /users/{id}:
+ *  delete:
  *    summary: Delete user
  *    description: Delete a user
  *    tags: [User]
- *    requestBody:
- *          required: true
- *          content:
- *            application/json:
- *              schema:
- *                type: object
- *                properties:
- *                  id:
- *                    type: string
- *                    description: The user's id.
- *                    example: 654c0bde1ff961575885e54d
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        schema:
+ *          type: string
+ *        required: true
  *    responses:
- *      200:
+ *      302:
  *          description: Success
  *
  */
-router.post("/delete",bodyParser.json(), (req, res)=>{
-    console.log(req.body.Index);
-    User.findByIdAndDelete(req.body.Index).then(function(){
-        console.log("Data deleted"); // Success
-    }).catch(function(error){
-        console.log(error); // Failure
+router.delete("/:id",bodyParser.json(), (req, res)=>{
+    let id = req.params.id;
+    User.findByIdAndDelete(id)
+        .then(() => res.json({ message: "User deleted" }))
+        .catch(err => res.json({ message: err.message }));
     });
 
-    res.redirect("/users");
-    });
 
-// Users who bid at least on one product
+// Devuelve los usuarios que han pujado en un producto
+// TODO: Completar cuando se arreglen las rotues de products
 /**
  * @swagger
- * /users/bidders:
+ * /users/bidders/{id}:
  *  get:
- *    summary: Bidder users
- *    description: Get all users who have bid at least on one product
+ *    summary: Bidders for a product
+ *    description: Get all users who have bid on a product, given the product's id
  *    tags: [User]
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        schema:
+ *          type: string
+ *        required: true
  *    responses:
  *      200:
  *          description: Success
  */
-
-// Devuelve los usuarios que han pujado en una subasta
 router.get("/bidders/:id", (req, res) => {
     let productId = req.params.id;
     Bid.find({ product: productId })
@@ -188,19 +264,25 @@ router.get("/bidders/:id", (req, res) => {
  *          description: Success
  */
 
-router.get("/bidders", (req, res) => {
-    Bid.distinct('user')
-        .populate('user', 'username email') // Populate para obtener los datos específicos de usuario de cada puja (puedes ajustar los campos)
-        .exec()
-        .then(users => {
-            res.json(users);
-        })
-        .catch(err => {
-            res.status(500).json({ message: err.message });
-        });
+router.get("/bidders", async (req, res) => {
+    try {
+        const users = await Bid.aggregate([
+            { $group: { _id: "$user" } }
+        ]);
+        console.log(users)
+        if (users.length > 0) {
+            const userIds = users.map(user => mongoose.Types.ObjectId(user._id));
+
+            const usersDetails = await User.find({ _id: { $in: userIds } });
+
+            res.json(usersDetails);
+        } else {
+            res.status(404).json({ message: "No users found who have placed bids" });
+        }
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
 });
-
-
 
 
 // Users who have ever sold a product
@@ -216,15 +298,14 @@ router.get("/bidders", (req, res) => {
  *          description: Success
  */
 router.get("/users/sellers", (req, res) => {
-    Product.find()
-        .populate('user') // Populate para obtener los datos de usuario de cada producto
-        .exec((err, products) => {
-            if (err) {
-                res.json({ message: err.message });
-            } else {
-                const usersWhoSold = products.map(product => product.user);
-                res.json(usersWhoSold.filter((user, index, array) => !array.slice(0, index).includes(user)));
-            }
+    Product.distinct('user')
+        .populate('user', 'username email') // Populate para obtener los datos de usuario de cada producto
+        .exec()
+        .then(users => {
+            res.json(users);
+        })
+        .catch(err => {
+            res.status(500).json({ message: err.message });
         });
-});
+})
 module.exports = router;
