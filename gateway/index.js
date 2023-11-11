@@ -7,7 +7,7 @@ const mongoose = require('mongoose');
 
 const app = express();
 
-/*const options = {
+const options = {
     definition: {
         openapi: "3.0.0",
         info: {
@@ -21,11 +21,11 @@ const app = express();
             },
         ],
     },
-    apis : ["../bid/src/models/!*js", "../bid/src/routes/!*.js"],
+    apis : ["../bid/src/models/*.js", "../bid/src/routes/*.js", "../product/src/models/*.js", "../product/src/routes/*.js", "../user/src/models/*.js", "../user/src/routes/*.js"],
 };
 
 const specs = swaggerjsdoc(options);
-app.use('/api-docs', swaggerui.serve, swaggerui.setup(specs));*/
+app.use('/api-docs', swaggerui.serve, swaggerui.setup(specs));
 
 mongoose.connect("mongodb+srv://xmariafdz:d6sNRoSlX55dLrCQ@ingweb.zuuicah.mongodb.net/elrastro", {useNewUrlParser: true});
 const db = mongoose.connection;
@@ -35,10 +35,12 @@ db.once("open", () => console.log("Conected to the database!"));
 app.use(cors());
 app.use(express.json());
 
-
-app.use('/bids', proxy('http://localhost:8001'))
-app.use('/users', proxy('http://localhost:8003'))
-app.use('/', proxy('http://localhost:8002')) // Product service
+const bidRouter = require('../bid/src/routes/bids');
+const productRouter = require('../product/src/routes/products');
+const userRouter = require('../user/src/routes/users');
+app.use('/bids', proxy('http://localhost:8001'), bidRouter)
+app.use('/users', proxy('http://localhost:8003'), userRouter)
+app.use('/', proxy('http://localhost:8002'), productRouter) // Product service
 
 app.listen(8000, () => {
     console.log("Gateway listening to port 8000")

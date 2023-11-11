@@ -89,7 +89,7 @@ const User = require("../models/User");
  *                      items:
  *                          $ref: '#/components/schemas/Product'
  */
-router.get("/products", (req, res) =>{
+router.get("/", (req, res) =>{
     Product.find().exec((err, products) =>{
     if(err) {
         res.json({message: err.message});
