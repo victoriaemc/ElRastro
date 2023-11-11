@@ -137,7 +137,7 @@ router.get("/myProducts/:id", async (req, res) => {
  * @swagger
  * /finished/{finished}:
  *  get:
- *    summary: Products sold by user
+ *    summary: Finished/unfinished auctions
  *    description: Get products depending on whether their sale is finished or not.
  *    tags: [Product]
  *    parameters:
@@ -172,8 +172,8 @@ router.get("/finished/:finished", async (req, res) => {
  * @swagger
  * /greaterThan/{amount}:
  *  get:
- *    summary: Products sold by user
- *    description: Get products depending on whether their sale is finished or not.
+ *    summary: Filter by last bid
+ *    description: Get products whose last bid is greater than a given amount.
  *    tags: [Product]
  *    parameters:
  *      - in: path
@@ -207,8 +207,8 @@ router.get("/greaterThan/:amount", async (req, res) => {
  * @swagger
  * /lowerThan/{amount}:
  *  get:
- *    summary: Products sold by user
- *    description: Get products depending on whether their sale is finished or not.
+ *    summary: Filter by last bid
+ *    description: Get products whose last bid is lower than a given amount.
  *    tags: [Product]
  *    parameters:
  *      - in: path
@@ -242,8 +242,8 @@ router.get("/lowerThan/:amount", async (req, res) => {
  * @swagger
  * /before/{hours}:
  *  get:
- *    summary: Products sold by user
- *    description: Get products depending on whether their sale is finished or not.
+ *    summary: Recently posted products
+ *    description: Get products that have been posted in the last :hours hours.
  *    tags: [Product]
  *    parameters:
  *      - in: path
@@ -283,8 +283,8 @@ router.get("/before/:hours", async (req, res) => {
  * @swagger
  * /add:
  *    post:
- *     summary: Añade un nuevo producto
- *     description: Añade un nuevo producto a la base de datos.
+ *     summary: Add product
+ *     description: Add a new product to the database.
  *     tags: [Product]
  *     requestBody:
  *       content:
@@ -398,8 +398,8 @@ router.delete("/delete/:productId", (req, res) => {
  * @swagger
  * /update/{productId}:
  *   put:
- *     summary: Actualiza un producto existente
- *     description: Actualiza un producto existente en la base de datos.
+ *     summary: Update product
+ *     description: Change the values of a product given an ID
  *     tags: [Product]
  *     parameters:
  *       - in: path
