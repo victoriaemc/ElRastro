@@ -269,6 +269,46 @@ router.get("/user/:id", (req, res) => {
     });
 });
 
+// Devuelve las pujas realizadas en un producto
+/**
+ * @swagger
+ * /bids/product/{id}:
+ *  get:
+ *      summary: Get bids by product
+ *      description: Get bids that were placed in a product
+ *      tags: [Bid]
+ *      parameters:
+ *      - in: path
+ *        name: id
+ *        schema:
+ *          type: string
+ *        required: true
+ *      responses:
+ *          200:
+ *              description: Success
+ *              content:
+ *              application/json:
+ *                  schema:
+ *                      type: array
+ *                      items:
+ *                          $ref: '#/components/schemas/Bid'
+ *
+ */
+router.get("/product/:id", (req, res) => {
+    let id = req.params.id;
+    Bid.find({ product: id })
+        .then(bids => {
+            if (bids.length > 0) {
+                res.json(bids);
+            } else {
+                res.status(404).json({ message: "No bids found for this product" });
+            }
+        })
+        .catch(err => {
+            res.status(500).json({ message: err.message });
+        });
+});
+
 
 
 module.exports = router;
