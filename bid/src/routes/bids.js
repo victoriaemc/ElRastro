@@ -344,4 +344,75 @@ router.get("/greaterThan/:amount", (req, res) => {
         });
 });
 
+// Get a bid and output the amount bid in another currency (using external API)
+async function convertCurrency(baseAmount, currencyCode) {
+    const response = await fetch(`https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/eur/${currencyCode}.json`);
+
+    if (response.ok) {
+        const data = await response.json();
+
+        // Verifica si la propiedad currencyCode existe en la respuesta
+        if (data.hasOwnProperty(currencyCode)) {
+            const rate = data[currencyCode];
+            return rate * baseAmount;
+        } else {
+            console.log('Currency code not found');
+            return null; // Devuelve null si no se encuentra el código de moneda
+        }
+    } else {
+        throw new Error('Failed to fetch currency data');
+    }
+}
+
+/**
+ * @swagger
+ * /bids/currency/{id}/{currency}:
+ *  get:
+ *      summary: Get bid info in another currency
+ *      description: Get the amount bidded in another currency, given the product ID and the currency code.
+ *      tags: [Bid]
+ *      parameters:
+ *      - in: path
+ *        name: id
+ *        schema:
+ *          type: string
+ *        required: true
+ *      - in: path
+ *        name: currency
+ *        schema:
+ *          type: string
+ *        required: true
+ *      responses:
+ *          200:
+ *              description: Success
+ *              content:
+ *              application/json:
+ *                  schema:
+ *                      $ref: '#/components/schemas/Bid'
+ *
+ */
+router.get("/currency/:id/:currency", async (req, res) => {
+    try {
+        const id = req.params.id;
+        const currency = req.params.currency;
+        const bid = await Bid.findById(id).exec();
+
+        if (bid) {
+            const amount = bid.price;
+
+            const amountInCurrency = await convertCurrency(amount, currency);
+
+            res.json({
+                user: bid.user,
+                product: bid.product,
+                price: amountInCurrency
+            });
+        } else {
+            res.json({ message: 'Bid not found', type: 'danger' });
+        }
+    } catch (err) {
+        res.json({ message: err.message, type: 'danger' });
+    }
+});
+
 module.exports = router;
