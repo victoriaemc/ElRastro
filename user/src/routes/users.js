@@ -365,3 +365,42 @@ router.get("/name/:name", (req, res) => {
         });
 })
 module.exports = router;
+
+// GET users by email
+/**
+ * @swagger
+ * /users/email/{email}:
+ *  get:
+ *    summary: Users by email
+ *    description: Get all users whos names match with the email/chain given
+ *    tags: [User]
+ *    parameters:
+ *      - in: path
+ *        name: email
+ *        schema:
+ *          type: string
+ *        required: true
+ *    responses:
+ *      200:
+ *          description: Success
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: array
+ *                      items:
+ *                          $ref: '#/components/schemas/User'
+ */
+
+
+router.get("/email/:email", (req, res) => {
+    console.log(req.params.email);
+    User.find({email: {$regex: new RegExp(req.params.email, 'i')}})
+        .then(users => {
+            res.json(users);
+        })
+        .catch(err => {
+            res.status(500).json({ message: err.message });
+        });
+});
+
+module.exports = router;
