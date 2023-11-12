@@ -309,6 +309,40 @@ router.get("/product/:id", (req, res) => {
         });
 });
 
-
+// Bids greater than specified amount
+/**
+ * @swagger
+ * /bids/greaterThan/{amount}:
+ *  get:
+ *      summary: Get bids greater than specified amount
+ *      description: Get bids wich amount is greater than the reference value
+ *      tags: [Bid]
+ *      parameters:
+ *      - in: path
+ *        name: amount
+ *        schema:
+ *          type: number
+ *        required: true
+ *      responses:
+ *          200:
+ *              description: Success
+ *              content:
+ *              application/json:
+ *                  schema:
+ *                      type: array
+ *                      items:
+ *                          $ref: '#/components/schemas/Bid'
+ *
+ */
+router.get("/greaterThan/:amount", (req, res) => {
+    const amount = parseInt(req.params.amount,10);
+    Bid.find({price : { $gt: amount}})
+        .then(bids => {
+            res.json(bids);
+        })
+        .catch(err => {
+            res.status(500).json({message: err.message});
+        });
+});
 
 module.exports = router;
