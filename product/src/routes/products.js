@@ -89,7 +89,7 @@ const User = require("../models/User");
  *                      items:
  *                          $ref: '#/components/schemas/Product'
  */
-router.get("/products", async (req, res) => {
+router.get("/", async (req, res) => {
     try {
         const products = await Product.find().exec();
         res.json(products);
@@ -98,6 +98,40 @@ router.get("/products", async (req, res) => {
     }
 });
 
+// Find Auction By ID
+/**
+ * @swagger
+ * /products/{id}:
+ *  get:
+ *    summary: Find Auction by ID
+ *    description: Get the auction corresponding to an ID
+ *    tags: [Product]
+ *    parameters:
+ *      - in: path
+ *        name: id
+ *        schema:
+ *          type: string
+ *        required: true
+ *    responses:
+ *      200:
+ *          description: Success
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      $ref: '#/components/schemas/Product'
+ */
+router.get("/:id", (req, res) => {
+    Product.findById(req.params.id)
+           .then(product => {
+                if(product){
+                    res.json(product);
+                }else{
+                    res.status(404).json({message: "User not found"});
+                }
+           }).catch(err => {
+                res.status(500).json({ message: err.message });
+           });
+});
 
 // Devuelve los productos a la venta de un usuario
 /**
