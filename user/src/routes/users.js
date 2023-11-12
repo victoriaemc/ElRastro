@@ -208,12 +208,20 @@ router.post('/add', bodyParser.json(), async (req, res) => {
  *              description: Success
  *
  */
-router.put("/:id", async(req, res) => {
+router.put("/:id", bodyParser.json(), async (req, res) => {
     try {
         const id = req.params.id;
         const update = req.body; // Assuming the request body contains the updated user data
 
-        // `new: true` option returns the modified document rather than the original
+        if (update.email) {
+            const isValidEmail = await checkEmail(update.email);
+
+            if (!isValidEmail) {
+                return res.status(400).json({ message: "Invalid email format", type: "danger" });
+            }
+        }
+
+        // If the email is valid or not present in the update, proceed with user update
         const updatedUser = await User.findOneAndUpdate({ _id: id }, update, { new: true });
 
         if (updatedUser) {
@@ -225,6 +233,7 @@ router.put("/:id", async(req, res) => {
         res.status(500).json({ message: err.message });
     }
 });
+
 
 
 // Borrar un usuario
