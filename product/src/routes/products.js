@@ -517,4 +517,80 @@ router.put("/update/:productId", async (req, res) => {
     }
 });
 
+// Get a product and output its starting bid and latest bid in another currency (using external api)
+
+async function convertCurrency(baseAmount, currencyCode) {
+    const response = await fetch(`https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/eur/${currencyCode}.json`);
+
+    if (response.ok) {
+        const data = await response.json();
+
+        // Verifica si la propiedad currencyCode existe en la respuesta
+        if (data.hasOwnProperty(currencyCode)) {
+            const rate = data[currencyCode];
+            return rate * baseAmount;
+        } else {
+            console.log('Currency code not found');
+            return null; // Devuelve null si no se encuentra el código de moneda
+        }
+    } else {
+        throw new Error('Failed to fetch currency data');
+    }
+}
+
+/**
+ * @swagger
+ * /products/currency/{id}/{currency}:
+ *  get:
+ *      summary: Get product info in another currency
+ *      description: Get base price and last bid of a product in another currency, given the product ID and the currency code.
+ *      tags: [Product]
+ *      parameters:
+ *      - in: path
+ *        name: id
+ *        schema:
+ *          type: string
+ *        required: true
+ *      - in: path
+ *        name: currency
+ *        schema:
+ *          type: string
+ *        required: true
+ *      responses:
+ *          200:
+ *              description: Success
+ *              content:
+ *              application/json:
+ *                  schema:
+ *                      $ref: '#/components/schemas/Product'
+ *
+ */
+router.get("/currency/:id/:currency", async (req, res) => {
+    try {
+        const id = req.params.id;
+        const currency = req.params.currency;
+        const product = await Product.findById(id).exec();
+
+        if (product) {
+            const startingPrice = product.startingPrice;
+            const lastBid = product.lastBid;
+
+            const startingPriceInCurrency = await convertCurrency(startingPrice, currency);
+            const lastBidInCurrency = await convertCurrency(lastBid, currency);
+
+            res.json({
+                name: product.name,
+                description: product.description,
+                user: product.user,
+                startingPrice: startingPriceInCurrency,
+                lastBid: lastBidInCurrency
+            });
+        } else {
+            res.json({ message: 'Product not found', type: 'danger' });
+        }
+    } catch (err) {
+        res.json({ message: err.message, type: 'danger' });
+    }
+});
+
 module.exports = router;
