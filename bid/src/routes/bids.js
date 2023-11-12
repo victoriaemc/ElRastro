@@ -258,15 +258,14 @@ router.get("/before/:hours", (req, res) => {
  *
  */
 
-router.get("/user/:id", (req, res) => {
-    let id = req.params.id;
-    Bid.find({ user: id }, (err, bids) => {
-        if (err) {
-            res.json({ message: err.message });
-        } else {
-            res.json(bids);
-        }
-    });
+router.get("/user/:id", async (req, res) => {
+    try {
+        let id = req.params.id;
+        const bids = await Bid.find({ user: id }).exec();
+        res.json(bids);
+    } catch (err) {
+        res.json({ message: err.message });
+    }
 });
 
 // Devuelve las pujas realizadas en un producto

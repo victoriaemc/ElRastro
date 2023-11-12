@@ -132,3 +132,5 @@ dist
 # idea
 .idea/misc.xml
 .idea/workspace.xml
+.idea/jpa-buddy.xml
+.idea/vcs.xml
