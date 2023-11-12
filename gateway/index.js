@@ -41,7 +41,13 @@ const userRouter = require('../user/src/routes/users');
 app.use('/bids', proxy('http://localhost:8001'), bidRouter)
 app.use('/users', proxy('http://localhost:8003'), userRouter)
 app.use('/products', proxy('http://localhost:8002'), productRouter) // Product service
+//app.use('/', proxy('http://localhost:8002'), productRouter) // List products on root
 
 app.listen(8000, () => {
     console.log("Gateway listening to port 8000")
 });
+
+app.use('/', (req, res, next) => {
+    return res.status(200).json({"msg": "Welcome to El Rastro API. Please use /api-docs to see the documentation"})
+})
+
