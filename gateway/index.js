@@ -40,7 +40,7 @@ const productRouter = require('../product/src/routes/products');
 const userRouter = require('../user/src/routes/users');
 app.use('/bids', proxy('http://localhost:8001'), bidRouter)
 app.use('/users', proxy('http://localhost:8003'), userRouter)
-app.use('/', proxy('http://localhost:8002'), productRouter) // Product service
+app.use('/products', proxy('http://localhost:8002'), productRouter) // Product service
 
 app.listen(8000, () => {
     console.log("Gateway listening to port 8000")

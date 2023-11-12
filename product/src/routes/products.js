@@ -74,7 +74,7 @@ const User = require("../models/User");
 /* GET products listing. */
 /**
  * @swagger
- * /:
+ * /products:
  *  get:
  *    summary: Get all products
  *    description: Get all products
@@ -89,7 +89,7 @@ const User = require("../models/User");
  *                      items:
  *                          $ref: '#/components/schemas/Product'
  */
-router.get("/", async (req, res) => {
+router.get("/products", async (req, res) => {
     try {
         const products = await Product.find().exec();
         res.json(products);
@@ -102,7 +102,7 @@ router.get("/", async (req, res) => {
 // Devuelve los productos a la venta de un usuario
 /**
  * @swagger
- * /myProducts/{id}:
+ * /products/myProducts/{id}:
  *  get:
  *    summary: Products sold by user
  *    description: Get all products sold by an user
@@ -135,7 +135,7 @@ router.get("/myProducts/:id", async (req, res) => {
 
 /**
  * @swagger
- * /finished/{finished}:
+ * /products/finished/{finished}:
  *  get:
  *    summary: Finished/unfinished auctions
  *    description: Get products depending on whether their sale is finished or not.
@@ -170,7 +170,7 @@ router.get("/finished/:finished", async (req, res) => {
 
 /**
  * @swagger
- * /greaterThan/{amount}:
+ * /products/greaterThan/{amount}:
  *  get:
  *    summary: Filter by last bid
  *    description: Get products whose last bid is greater than a given amount.
@@ -205,7 +205,7 @@ router.get("/greaterThan/:amount", async (req, res) => {
 
 /**
  * @swagger
- * /lowerThan/{amount}:
+ * /products/lowerThan/{amount}:
  *  get:
  *    summary: Filter by last bid
  *    description: Get products whose last bid is lower than a given amount.
@@ -240,7 +240,7 @@ router.get("/lowerThan/:amount", async (req, res) => {
 
 /**
  * @swagger
- * /before/{hours}:
+ * /products/before/{hours}:
  *  get:
  *    summary: Recently posted products
  *    description: Get products that have been posted in the last :hours hours.
@@ -281,7 +281,7 @@ router.get("/before/:hours", async (req, res) => {
 
 /**
  * @swagger
- * /add:
+ * /products/add:
  *    post:
  *     summary: Add product
  *     description: Add a new product to the database.
@@ -356,7 +356,7 @@ router.post("/add", async (req, res) => {
 
 /**
  * @swagger
- * /delete/{productId}:
+ * /products/delete/{productId}:
  *  delete:
  *    summary: Delete product
  *    description: Delete a prodcut given an ID
@@ -396,7 +396,7 @@ router.delete("/delete/:productId", (req, res) => {
 
 /**
  * @swagger
- * /update/{productId}:
+ * /products/update/{productId}:
  *   put:
  *     summary: Update product
  *     description: Change the values of a product given an ID

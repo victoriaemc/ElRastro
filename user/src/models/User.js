@@ -19,5 +19,5 @@ const userSchema = new mongoose.Schema({
    /*, myProducts:{
         type: mongoose.Schema.type.list
     }*/
-}, {collection: 'User'});
+}, {collection: 'User', versionKey: false});
 module.exports = mongoose.model("User", userSchema);

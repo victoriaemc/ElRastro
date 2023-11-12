@@ -21,6 +21,6 @@ const bidSchema = new mongoose.Schema({
         default: Date.now
     }
 
-}, {collection: 'Bid'});
+}, {collection: 'Bid', versionKey: false});
 
 module.exports = mongoose.model("Bid", bidSchema);

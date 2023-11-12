@@ -48,6 +48,12 @@ var bodyParser = require('body-parser');
  *    responses:
  *      200:
  *          description: Success
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: array
+ *                      items:
+ *                          $ref: '#/components/schemas/User'
  */
 router.get("/", (req, res) => {
     User.find()
@@ -74,9 +80,9 @@ router.get("/", (req, res) => {
  *          200:
  *              description: Success
  *              content:
- *              application/json:
- *                  schema:
- *                      $ref: '#/components/schemas/User'
+ *                  application/json:
+ *                      schema:
+ *                          $ref: '#/components/schemas/User'
  *
  */
 router.get("/:id", (req, res) => {
@@ -237,6 +243,12 @@ router.delete("/:id",bodyParser.json(), (req, res)=>{
  *    responses:
  *      200:
  *          description: Success
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: array
+ *                      items:
+ *                          $ref: '#/components/schemas/User'
  */
 router.get("/bidders/:id", async (req, res) => {
     try {
@@ -260,6 +272,12 @@ router.get("/bidders/:id", async (req, res) => {
  *    responses:
  *      200:
  *          description: Success
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: array
+ *                      items:
+ *                          $ref: '#/components/schemas/User'
  */
 
 router.get("/bidders", async (req, res) => {
@@ -294,11 +312,51 @@ router.get("/bidders", async (req, res) => {
  *    responses:
  *      200:
  *          description: Success
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: array
+ *                      items:
+ *                          $ref: '#/components/schemas/User'
  */
 router.get("/users/sellers", (req, res) => {
     Product.distinct('user')
         .populate('user', 'username email') // Populate para obtener los datos de usuario de cada producto
         .exec()
+        .then(users => {
+            res.json(users);
+        })
+        .catch(err => {
+            res.status(500).json({ message: err.message });
+        });
+})
+
+// GET users by name
+/**
+ * @swagger
+ * /users/name/{name}:
+ *  get:
+ *    summary: Users by name
+ *    description: Get all users whos names match with the name/chain given
+ *    tags: [User]
+ *    parameters:
+ *      - in: path
+ *        name: name
+ *        schema:
+ *          type: string
+ *        required: true
+ *    responses:
+ *      200:
+ *          description: Success
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: array
+ *                      items:
+ *                          $ref: '#/components/schemas/User'
+ */
+router.get("/name/:name", (req, res) => {
+    User.find({name: {$regex: new RegExp(req.params.name, 'i')}})
         .then(users => {
             res.json(users);
         })
