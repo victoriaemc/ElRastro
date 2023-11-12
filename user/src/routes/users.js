@@ -88,9 +88,9 @@ router.get("/", (req, res) => {
 router.get("/:id", (req, res) => {
     let id = req.params.id;
     User.findById(id)
-        .then(bid => {
-            if (bid) {
-                res.json(bid);
+        .then(user => {
+            if (user) {
+                res.json(user);
             } else {
                 res.status(404).json({ message: "User not found" });
             }
