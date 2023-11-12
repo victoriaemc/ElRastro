@@ -99,7 +99,7 @@ router.get("/", (req, res) => {
  * /users/{id}:
  *  get:
  *      summary: Get user by id
- *      description: Get user that matches the id
+ *      description: Get user that matches the id. Email is checked for correct format using an external API
  *      tags: [User]
  *      parameters:
  *      - in: path
@@ -131,7 +131,24 @@ router.get("/:id", (req, res) => {
         });
 });
 
+// Check email validity
+async function checkEmail(email) {
+    const response = await fetch(`https://www.disify.com/api/email/${email}`);
 
+    if (response.ok){
+        const data = await response.json();
+
+        if (data.hasOwnProperty('format')){
+            return data.format; // true or false
+        }else{
+            console.log('Error: ${data.message}');
+            return null;
+        }
+    }else{
+        console.log('Error: ${response.status}');
+        return null;
+    }
+}
 
 /* Add users */
 router.get("/add", (req, res) =>{
@@ -164,22 +181,34 @@ router.get("/add", (req, res) =>{
  *                    type: string
  *                    description: The user's password.
  *                    example: badpassword123
+ *                  email:
+ *                    type: string
+ *                    description: The user's email.
+ *                    example: hello@mail.com
  *    responses:
  *      200:
  *          description: Created
  */
 router.post('/add', bodyParser.json(), async (req, res) => {
     try {
-        const user = new User({
-            name: req.body.name,
-            username: req.body.username,
-            password: req.body.password
-        });
+        const email = req.body.email;
 
-        console.log(req.body.username + " Este es el body " + req.body.name);
+        // Verifica si el correo tiene el formato correcto utilizando la función checkEmail
+        const isValidEmail = await checkEmail(email);
 
-        await user.save();
-        res.redirect('/users');
+        if (isValidEmail === true) {
+            const user = new User({
+                name: req.body.name,
+                username: req.body.username,
+                password: req.body.password,
+                email: email
+            });
+
+            await user.save();
+            res.redirect('/users');
+        } else {
+            res.json({ message: 'Invalid email format', type: 'danger' });
+        }
     } catch (err) {
         res.json({ message: err.message, type: 'danger' });
     }
@@ -210,12 +239,20 @@ router.post('/add', bodyParser.json(), async (req, res) => {
  *              description: Success
  *
  */
-router.put("/:id", async(req, res) => {
+router.put("/:id", bodyParser.json(), async (req, res) => {
     try {
         const id = req.params.id;
         const update = req.body; // Assuming the request body contains the updated user data
 
-        // `new: true` option returns the modified document rather than the original
+        if (update.email) {
+            const isValidEmail = await checkEmail(update.email);
+
+            if (!isValidEmail) {
+                return res.status(400).json({ message: "Invalid email format", type: "danger" });
+            }
+        }
+
+        // If the email is valid or not present in the update, proceed with user update
         const updatedUser = await User.findOneAndUpdate({ _id: id }, update, { new: true });
 
         if (updatedUser) {
@@ -227,6 +264,7 @@ router.put("/:id", async(req, res) => {
         res.status(500).json({ message: err.message });
     }
 });
+
 
 
 // Borrar un usuario
