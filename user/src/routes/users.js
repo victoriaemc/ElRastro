@@ -4,6 +4,7 @@ const User = require('../models/User');
 const Bid = require('../models/Bid');
 const Product = require('../models/Product');
 var bodyParser = require('body-parser');
+const axios = require('axios');
 
 /**
  * @swagger
@@ -36,6 +37,36 @@ var bodyParser = require('body-parser');
  *              email: mariamail@gmail.com
  *
  */
+
+/**
+ * @swagger
+ * /users/userLocation:
+ *  get:
+ *    summary: Get users's location
+ *    description: Get users's location
+ *    tags: [User]
+ *    responses:
+ *      200:
+ *          description: Success
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: array
+ *                      items:
+ *                          $ref: '#/components/schemas/User'
+ */
+router.get("/userLocation", async (req, res) => {
+    try {
+        const apiUrl = 'https://ipgeolocation.abstractapi.com/v1/?api_key=cb808f11678847c4963ae38b582c4345';
+        const response = await axios.get(apiUrl);
+        const jsonData = response.data;
+
+        res.json(jsonData);
+    } catch (error) {
+        console.error('Error al obtener datos de la API:', error.message);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+});
 
 /* GET users listing. */
 /**
@@ -364,7 +395,7 @@ router.get("/name/:name", (req, res) => {
             res.status(500).json({ message: err.message });
         });
 })
-module.exports = router;
+
 
 // GET users by email
 /**
@@ -402,5 +433,7 @@ router.get("/email/:email", (req, res) => {
             res.status(500).json({ message: err.message });
         });
 });
+
+
 
 module.exports = router;
