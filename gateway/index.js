@@ -47,7 +47,7 @@ app.listen(8000, () => {
     console.log("Gateway listening to port 8000")
 });
 
-app.use('/', (req, res, next) => {
+app.use('/', (req, res) => {
     return res.status(200).json({"msg": "Welcome to El Rastro API. Please use /api-docs to see the documentation"})
 })
 
