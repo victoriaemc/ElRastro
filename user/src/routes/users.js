@@ -274,10 +274,10 @@ router.put("/:id", bodyParser.json(), async (req, res) => {
  *  delete:
  *    summary: Delete user
  *    description: Delete a user
- *    tags: [User]
+ *    tags: [Usuario]
  *    parameters:
  *      - in: path
- *        name: id
+ *        name: email
  *        schema:
  *          type: string
  *        required: true

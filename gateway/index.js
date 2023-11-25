@@ -35,12 +35,12 @@ db.once("open", () => console.log("Conected to the database!"));
 app.use(cors());
 app.use(express.json());
 
-const bidRouter = require('../bid/src/routes/bids');
-const productRouter = require('../product/src/routes/products');
-const userRouter = require('../user/src/routes/users');
-app.use('/bids', proxy('http://localhost:8001'), bidRouter)
-app.use('/users', proxy('http://localhost:8003'), userRouter)
-app.use('/products', proxy('http://localhost:8002'), productRouter) // Product service
+//const bidRouter = require('../bid/src/routes/bids');
+//const productRouter = require('../product/src/routes/products');
+//const userRouter = require('../user/src/routes/users');
+app.use('/bids', proxy('http://bid:8001'))
+app.use('/users', proxy('http://user:8003'))
+app.use('/', proxy('http://product:8002')) // Product service
 //app.use('/', proxy('http://localhost:8002'), productRouter) // List products on root
 
 app.listen(8000, () => {
