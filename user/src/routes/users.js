@@ -3,6 +3,7 @@ var router = express.Router();
 const User = require('../models/User');
 const Bid = require('../models/Bid');
 const Product = require('../models/Product');
+const Rating = require('../models/Rating');
 var bodyParser = require('body-parser');
 const axios = require('axios');
 
