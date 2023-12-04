@@ -1,10 +1,9 @@
+import React, { useState, useEffect } from "react";
 import logo from './logo.svg';
 import './App.css';
-import { useEffect } from 'react';
 import axios from "axios";
 
 // Imports cloudinary
-import { useState } from "react";
 import CloudinaryUploadWidget from "./components/CloudinaryUploadWidget";
 import { Cloudinary } from "@cloudinary/url-gen";
 import { AdvancedImage, responsive, placeholder } from "@cloudinary/react";
@@ -36,6 +35,12 @@ function App() {
   });
   const myImage = cld.image(publicId);
   // -------------------------------------------------------------
+  const [message, setMessage] = useState("");
+  useEffect(() => {
+    fetch("http://localhost:8000/users/200")
+        .then((res) => res.json())
+        .then((data) => setMessage(data.message));
+  }, []);
   return (
     <div className="App">
       <header className="App-header">
