@@ -12,8 +12,8 @@ import { AdvancedImage, responsive, placeholder } from "@cloudinary/react";
 function App() {
   // Cloudinary vars----------------------------------------------
   const [publicId, setPublicId] = useState("");
-  const [cloudName] = useState("hzxyensd5");
-  const [uploadPreset] = useState("aoh4fpwm");
+  const [cloudName] = useState("daef41lib");
+  const [uploadPreset] = useState("x1njk2mp");
   const [uwConfig] = useState({
     cloudName,
     uploadPreset
