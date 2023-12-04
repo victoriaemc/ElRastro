@@ -34,6 +34,16 @@ services:
       - "8003:8003"
     volumes:
         - ./user:/index
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "3000:3000"
+    volumes:
+        - ./frontend:/index
+    depends_on:
+      - gateway
+
 
 volumes:
   data:

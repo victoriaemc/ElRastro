@@ -24,6 +24,13 @@ export default function Header(){
                 </Col>
             </Row>
         </Form>
-        <Navbar.Brand href="/">Login y eso</Navbar.Brand>
+        <Row>
+            <Col xs="auto">
+                <Button variant="primary">Nuevo Producto</Button>
+            </Col>
+            <Col xs="auto">
+                <Button variant="outline-primary">Perfil</Button>
+            </Col>
+        </Row>
     </Navbar>);
 };

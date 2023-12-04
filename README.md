@@ -9,5 +9,5 @@
 ## Uso 
 Para ejecutar la aplicacion se debe ejecutar el comando `docker-compose up` en la raiz del proyecto.
 
-Para acceder a la aplicación entrar en `localhost:8000` en el navegador.
+Para acceder a la aplicación entrar en `localhost:3000` en el navegador.
 
