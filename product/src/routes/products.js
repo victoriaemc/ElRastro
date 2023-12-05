@@ -91,7 +91,7 @@ const User = require("../models/User");
  */
 router.get("/", async (req, res) => {
     try {
-        const products = await Product.find().exec();
+        const products = await Product.find().sort({ publicationDate: -1 }).exec();
         res.json(products);
     } catch (err) {
         res.json({ message: err.message });
@@ -112,7 +112,7 @@ router.get("/search", async (req, res) => {
             }
             : {};
 
-        const products = await Product.find(queryConditions).exec();
+        const products = await Product.find(queryConditions).sort({ publicationDate: -1 }).exec();
 
         res.status(200).json(products);
     } catch (err) {
