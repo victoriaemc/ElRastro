@@ -25,6 +25,22 @@ router.get('/:userId/ratings', async (req, res) => {
     }
 });
 
+// GET AVERAGE RATING FOR AN USER (FOR PROFILE PAGE)
+router.get('/:userId/ratings/average', async (req, res) => {
+    try {
+        let userId = req.params.userId;
+        const ratings = await Rating.find({user: userId}).exec();
+        let average = 0;
+        for (let i = 0; i < ratings.length; i++) {
+            average += ratings[i].rating;
+        }
+        average = average / ratings.length;
+        res.json(average);
+    } catch (err) {
+        res.json({ message: err });
+    }
+});
+
 // CREATE NEW RATING FOR A USER
 router.post('/:userId/ratings', async (req, res) => {
     const rating = new Rating({
