@@ -91,14 +91,36 @@ const User = require("../models/User");
  */
 router.get("/", async (req, res) => {
     try {
-        const products = await Product.find().exec();
+        const products = await Product.find().sort({ publicationDate: -1 }).exec();
         res.json(products);
     } catch (err) {
         res.json({ message: err.message });
     }
 });
 
-// Find Auction By ID
+// Get a list of products that contain the search string in either the name or the description
+router.get("/search", async (req, res) => {
+    try {
+        const searchString = req.query.searchString;
+
+        const queryConditions = searchString
+            ? {
+                $or: [
+                    { name: { $regex: searchString, $options: 'i' } },
+                    { description: { $regex: searchString, $options: 'i' } }
+                ]
+            }
+            : {};
+
+        const products = await Product.find(queryConditions).sort({ publicationDate: -1 }).exec();
+
+        res.status(200).json(products);
+    } catch (err) {
+        res.status(500).json({ message: err.message, type: 'danger' });
+    }
+});
+
+// Find Product By ID
 /**
  * @swagger
  * /products/{id}:
