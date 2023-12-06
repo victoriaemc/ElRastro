@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const User = require('../models/User');
-const Bid = require('../models/Bid');
-const Product = require('../models/Product');
+//const User = require('../models/User');
+//const Bid = require('../models/Bid');
+//const Product = require('../models/Product');
 const Rating = require('../models/Rating');
-const bodyParser = require('body-parser');
-const axios = require('axios');
+//const bodyParser = require('body-parser');
+//const axios = require('axios');
 
 // GET ALL RATINGS
 router.get('/ratings', async (req, res) => {
@@ -14,30 +14,36 @@ router.get('/ratings', async (req, res) => {
         .catch(err => res.json({message: err.message}));
 });
 
-// GET ALL RATINGS FOR AN USER (FOR PROFILE PAGE)
-router.get('/:userId/ratings', async (req, res) => {
-    try {
-        let userId = req.params.userId;
-        const ratings = await Rating.find({user: userId}).exec();
-        res.json(ratings);
-    } catch (err) {
-        res.json({ message: err });
-    }
-});
 
-// GET AVERAGE RATING FOR AN USER (FOR PROFILE PAGE)
-router.get('/:userId/ratings/average', async (req, res) => {
+// GET ALL RATINGS FOR AN USER (FOR PROFILE PAGE)
+// You also get average rating of the user
+// localhost:8000/users?ratings=654926ac75aa4e12761f4ab9
+router.get('/', async (req, res) => {
     try {
-        let userId = req.params.userId;
-        const ratings = await Rating.find({user: userId}).exec();
-        let average = 0;
-        for (let i = 0; i < ratings.length; i++) {
-            average += ratings[i].rating;
+        let userId = req.query.ratings;
+
+        if (!userId) {
+            return res.status(400).json({ message: "Missing 'ratings' parameter. Please provide a valid user ID." });
         }
-        average = average / ratings.length;
-        res.json(average);
+
+        const ratings = await Rating.find({ user: userId }).exec();
+
+        if (ratings.length === 0) {
+            return res.json({ message: "No ratings found for the specified user." });
+        }
+
+        // Calculate the average rating
+        const totalRating = ratings.reduce((sum, rating) => sum + rating.rating, 0);
+        const averageRating = totalRating / ratings.length;
+        // Use toFixed to round the average rating to 2 decimal places
+        const roundedAverageRating = parseFloat(averageRating.toFixed(2));
+
+        res.json({
+            ratings: ratings,
+            averageRating: roundedAverageRating
+        });
     } catch (err) {
-        res.json({ message: err });
+        res.status(500).json({ message: err.message });
     }
 });
 

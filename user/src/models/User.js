@@ -16,8 +16,5 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: false,
     }
-   /*, myProducts:{
-        type: mongoose.Schema.type.list
-    }*/
 }, {collection: 'User', versionKey: false});
 module.exports = mongoose.model("User", userSchema);
