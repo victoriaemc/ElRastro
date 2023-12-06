@@ -12,8 +12,8 @@ import {Link} from 'react-router-dom';
 export default function ElRastroNavbar(){
     return (
         <Container fluid>
-        <ElRastroNavbar expand="sm" className="bg-body-tertiary justify-content-between">
-        <ElRastroNavbar.Brand href="/" className="ml-sm-2">El Rastro</ElRastroNavbar.Brand>
+        <Navbar expand="sm" className="bg-body-tertiary justify-content-between">
+        <Navbar.Brand href="/" className="ml-sm-2">El Rastro</Navbar.Brand>
         <Form inline>
             <Row>
                 <Col xs="auto">
@@ -44,6 +44,6 @@ export default function ElRastroNavbar(){
                 </Link>
             </Col>
         </Row>
-    </ElRastroNavbar>
+    </Navbar>
         </Container>);
 };
