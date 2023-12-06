@@ -1,3 +1,5 @@
+import React from "react";
+import ProductList from "../components/ProductList";
 function HomePage(){
   return (
     <div class="container login-container mt-5">
@@ -29,8 +31,10 @@ function HomePage(){
           <td>@twitter</td>
         </tr>
       </tbody>
-      </table>       
+      </table>
+        <ProductList />
     </div>
+
   )
 }
 
