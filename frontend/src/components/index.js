@@ -1,4 +1,4 @@
-export * from './Navbar.js';
+export * from './ElRastroNavbar.js';
 export * from './CloudinaryUploadWidget.js';
 export * from '/userInfo.js';
 

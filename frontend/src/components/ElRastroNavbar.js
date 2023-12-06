@@ -9,11 +9,11 @@ import Container from 'react-bootstrap/Container';
 import {Link} from 'react-router-dom';
 
 
-export default function Navbar(){
+export default function ElRastroNavbar(){
     return (
         <Container fluid>
-        <Navbar expand="sm" className="bg-body-tertiary justify-content-between">
-        <Navbar.Brand href="/" className="ml-sm-2">El Rastro</Navbar.Brand>
+        <ElRastroNavbar expand="sm" className="bg-body-tertiary justify-content-between">
+        <ElRastroNavbar.Brand href="/" className="ml-sm-2">El Rastro</ElRastroNavbar.Brand>
         <Form inline>
             <Row>
                 <Col xs="auto">
@@ -44,6 +44,6 @@ export default function Navbar(){
                 </Link>
             </Col>
         </Row>
-    </Navbar>
+    </ElRastroNavbar>
         </Container>);
 };

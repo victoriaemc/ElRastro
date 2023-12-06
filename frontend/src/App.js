@@ -11,7 +11,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 // Imports Pages
 import LoginPage from './pages/LoginPage'; 
 import HomePage from './pages/HomePage'
-import Navbar from './components/Navbar';
+import ElRastroNavbar from './components/ElRastroNavbar';
 import ProductDetails from './pages/ProductDetails';
 
 function App() {
@@ -53,7 +53,7 @@ function App() {
     <div className="App">
       {/* RUTAS DE LAS PAGINAS  */}
       <BrowserRouter>
-        <Navbar/>
+        <ElRastroNavbar/>
         <Routes>
           <Route path="/" element={<h1><HomePage/></h1>}/>
           <Route path="/login" element={<LoginPage/>}/>
