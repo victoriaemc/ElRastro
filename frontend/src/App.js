@@ -12,6 +12,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LoginPage from './pages/LoginPage'; 
 import HomePage from './pages/HomePage'
 import Header from './components/Header';
+import ProductDetails from './pages/ProductDetails';
 
 function App() {
   // Cloudinary vars----------------------------------------------
@@ -57,6 +58,7 @@ function App() {
           <Route path="/" element={<h1><HomePage/></h1>}/>
           <Route path="/login" element={<LoginPage/>}/>
           <Route path="/etc" element={<h1>Etc page</h1>}/>
+          <Route path="/productDetails" element={<ProductDetails/>}/>
         </Routes>
       </BrowserRouter>
       {/* Div para el widget 
