@@ -3,95 +3,80 @@ var router = express.Router();
 //const User = require('../models/User');
 //const Bid = require('../models/Bid');
 const Product = require('../models/Product');
-const User = require("../models/User");
+//const User = require("../models/User");
 //var bodyParser = require('body-parser');
 
-/**
- * @swagger
- * components:
- *  schemas:
- *      Product:
- *          type: object
- *          properties:
- *              name:
- *                  type: string
- *                  description: Name of the product
- *              description:
- *                  type: string
- *                  description: Description of the product
- *              user:
- *                  type: ObjectId
- *                  description: User selling the product
- *              startingPrice:
- *                  type: number
- *                  description: Starting price of the product
- *                  default: 0.0
- *              lastBid:
- *                  type: number
- *                  description: Last bid of the product
- *                  default: 0.0
- *              latitude:
- *                  type: string
- *                  description: Latitude of the product
- *              longitude:
- *                  type: string
- *                  description: Longitude of the product
- *              publicationDate:
- *                  type: Date
- *                  description: Publication date of the product
- *                  default: Date.now
- *              endingDate:
- *                  type: Date
- *                  description: Date and time when the bidding ends
- *              finished:
- *                  type: boolean
- *                  description: Indicates if the bidding has ended
- *                  default: false
- *          required:
- *              - name
- *              - user
- *              - startingPrice
- *              - lastBid
- *              - latitude
- *              - longitude
- *              - publicationDate
- *              - endingDate
- *              - finished
- *          example:
- *              name: iPhone 12
- *              description: Smartphone
- *              user: 5f9d7b7b9c9a7b1b1c9a7b1b
- *              startingPrice: 500
- *              lastBid: 500
- *              latitude: 40.4167
- *              longitude: 3.70325
- *              publicationDate: 2020-10-31T12:00:00.000Z
- *              endingDate: 2020-11-30T12:00:00.000Z
- *              finished: false
- *
- */
 
-/* GET products listing. */
-/**
- * @swagger
- * /products:
- *  get:
- *    summary: Get all products
- *    description: Get all products
- *    tags: [Product]
- *    responses:
- *      200:
- *          description: Success
- *          content:
- *              application/json:
- *                  schema:
- *                      type: array
- *                      items:
- *                          $ref: '#/components/schemas/Product'
- */
-router.get("/", async (req, res) => {
+
+// Devuelve las subastas finalizadas o no (Boolean true/false)
+// localhost:8000/finished?value=true
+router.get("/finished", async (req, res) => {
     try {
-        const products = await Product.find().sort({ publicationDate: -1 }).exec();
+        const finishedValue = Boolean(req.query.value === 'true');
+
+        const products = await Product.find({ finished: finishedValue }).exec();
+        res.json(products);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: err.message });
+    }
+});
+
+
+// Devuelve los productos cuya ultima puja sea mayor a una cantidad
+// localhost:8000/greaterThan?amount=100
+router.get("/greaterThan", async (req, res) => {
+    try {
+        const greaterThanValue = req.query.amount;
+
+        // Ensure that greaterThanValue is a valid number before querying the database
+        if (isNaN(greaterThanValue)) {
+            return res.status(400).json({ message: "Invalid 'greaterThan' value. Must be a number." });
+        }
+
+        const products = await Product.find({ lastBid: { $gt: greaterThanValue } }).exec();
+        res.json(products);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
+// Devuelve los productos cuya ultima puja sea inferior a una cantidad
+// localhost:8000/lowerThan?amount=100
+router.get("/lowerThan", async (req, res) => {
+    try {
+        const lowerThanValue = req.query.amount;
+
+        // Ensure that lowerThanValue is a valid number before querying the database
+        if (isNaN(lowerThanValue)) {
+            return res.status(400).json({ message: "Invalid 'lowerThan' value. Must be a number." });
+        }
+
+        const products = await Product.find({ lastBid: { $lt: lowerThanValue } }).exec();
+        res.json(products);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
+// Devuelve los productos publicados en las últimas n horas
+// localhost:8000/before?hours=2
+router.get("/before", async (req, res) => {
+    try {
+        const hours = parseFloat(req.query.hours);
+
+        // Ensure that hours is a valid number before proceeding
+        if (isNaN(hours)) {
+            return res.status(400).json({ message: "Invalid 'hours' value. Must be a number." });
+        }
+
+        const currentDateMinusNHours = new Date();
+        currentDateMinusNHours.setMilliseconds(currentDateMinusNHours.getMilliseconds() - hours * 3600 * 1000);
+
+        const products = await Product.find({
+            publicationDate: { $gte: currentDateMinusNHours, $lte: new Date() }
+        }).exec();
+
         res.json(products);
     } catch (err) {
         res.json({ message: err.message });
@@ -99,9 +84,10 @@ router.get("/", async (req, res) => {
 });
 
 // Get a list of products that contain the search string in either the name or the description
-router.get("/search", async (req, res) => {
+// http://localhost:8000/?search=iphone
+router.get(["/search", "/"], async (req, res) => {
     try {
-        const searchString = req.query.searchString;
+        const searchString = req.query.searchString || req.query.search;
 
         const queryConditions = searchString
             ? {
@@ -120,275 +106,110 @@ router.get("/search", async (req, res) => {
     }
 });
 
-// Find Product By ID
-/**
- * @swagger
- * /products/{id}:
- *  get:
- *    summary: Find Auction by ID
- *    description: Get the auction corresponding to an ID
- *    tags: [Product]
- *    parameters:
- *      - in: path
- *        name: id
- *        schema:
- *          type: string
- *        required: true
- *    responses:
- *      200:
- *          description: Success
- *          content:
- *              application/json:
- *                  schema:
- *                      $ref: '#/components/schemas/Product'
- */
-router.get("/:id", (req, res) => {
-    Product.findById(req.params.id)
-           .then(product => {
-                if(product){
-                    res.json(product);
-                }else{
-                    res.status(404).json({message: "User not found"});
-                }
-           }).catch(err => {
-                res.status(500).json({ message: err.message });
-           });
+
+// Devuelve los productos a la venta de un usuario, dada la ID del usuario
+// localhost:8000/myProducts?user=654926ac75aa4e12761f4ab5
+router.get("/myProducts", async (req, res) => {
+    try {
+        let userId = req.query.user;
+
+        if (!userId) {
+            return res.status(400).json({ message: 'User ID is required in the query parameter "user"' });
+        }
+
+        const products = await Product.find({ user: userId }).exec();
+        res.json(products);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
 });
 
-// Devuelve los productos a la venta de un usuario
-/**
- * @swagger
- * /products/myProducts/{id}:
- *  get:
- *    summary: Products sold by user
- *    description: Get all products sold by an user
- *    tags: [Product]
- *    parameters:
- *      - in: path
- *        name: id
- *        schema:
- *          type: string
- *        required: true
- *    responses:
- *      200:
- *          description: Success
- *          content:
- *              application/json:
- *                  schema:
- *                      type: array
- *                      items:
- *                          $ref: '#/components/schemas/Product'
- */
-router.get("/myProducts/:id", async (req, res) => {
+
+
+// Get a product and output its starting bid and latest bid in another currency (using external api)
+async function convertCurrency(baseAmount, currencyCode) {
+    const response = await fetch(`https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/eur/${currencyCode}.json`);
+
+    if (response.ok) {
+        const data = await response.json();
+
+        // Verifica si la propiedad currencyCode existe en la respuesta
+        if (data.hasOwnProperty(currencyCode)) {
+            const rate = data[currencyCode];
+            return rate * baseAmount;
+        } else {
+            console.log('Currency code not found');
+            return null; // Devuelve null si no se encuentra el código de moneda
+        }
+    } else {
+        throw new Error('Failed to fetch currency data');
+    }
+}
+
+// Get product info in another currency (given the product ID and the currency code)
+// localhost:8000/6549293875aa4e12761f4ac5?currency=cny
+// Can also be used to just get product back in original currency (without specifying currency query parameter)
+// localhost:8000/6549293875aa4e12761f4ac5
+router.get("/:productId", async (req, res) => {
     try {
-        let id = req.params.id;
-        const products = await Product.find({ user: id }).exec();
+        const productId = req.params.productId;
+        const currency = req.query.currency;
+
+        if (!productId) {
+            return res.status(400).json({ message: "Product ID is required." });
+        }
+
+        const product = await Product.findById(productId).exec();
+
+        if (product) {
+            const startingPrice = product.startingPrice;
+            const lastBid = product.lastBid;
+
+            let startingPriceInCurrency, lastBidInCurrency;
+
+            if (currency) {
+                // Convert to the specified currency
+                startingPriceInCurrency = await convertCurrency(startingPrice, currency);
+                lastBidInCurrency = await convertCurrency(lastBid, currency);
+            } else {
+                // Use the original currency
+                startingPriceInCurrency = startingPrice;
+                lastBidInCurrency = lastBid;
+            }
+
+            res.json({
+                name: product.name,
+                description: product.description,
+                user: product.user,
+                startingPrice: startingPriceInCurrency,
+                lastBid: lastBidInCurrency,
+                latitude: product.latitude,
+                longitude: product.longitude,
+                publicationDate: product.publicationDate,
+                endingDate: product.endingDate,
+                finished: product.finished
+            });
+        } else {
+            res.json({ message: 'Product not found', type: 'danger' });
+        }
+    } catch (err) {
+        res.json({ message: err.message, type: 'danger' });
+    }
+});
+
+
+/* GET products listing. */
+router.get("/", async (req, res) => {
+    try {
+        const products = await Product.find().sort({ publicationDate: -1 }).exec();
         res.json(products);
     } catch (err) {
         res.json({ message: err.message });
     }
 });
 
-/**
- * @swagger
- * /products/finished/{finished}:
- *  get:
- *    summary: Finished/unfinished auctions
- *    description: Get products depending on whether their sale is finished or not.
- *    tags: [Product]
- *    parameters:
- *      - in: path
- *        name: finished
- *        schema:
- *          type: boolean
- *        required: true
- *    responses:
- *      200:
- *          description: Success
- *          content:
- *              application/json:
- *                  schema:
- *                      type: array
- *                      items:
- *                          $ref: '#/components/schemas/Product'
- */
-// Devuelve las subastas finalizadas o no
-
-router.get("/finished/:finished", async (req, res) => {
-    try {
-        const finishedValue = req.params.finished;
-        const products = await Product.find({ finished: finishedValue }).exec();
-        res.json(products);
-    } catch (err) {
-        res.json({ message: err.message });
-    }
-});
-
-/**
- * @swagger
- * /products/greaterThan/{amount}:
- *  get:
- *    summary: Filter by last bid
- *    description: Get products whose last bid is greater than a given amount.
- *    tags: [Product]
- *    parameters:
- *      - in: path
- *        name: amount
- *        schema:
- *          type: number
- *        required: true
- *    responses:
- *      200:
- *          description: Success
- *          content:
- *              application/json:
- *                  schema:
- *                      type: array
- *                      items:
- *                          $ref: '#/components/schemas/Product'
- */
-
-// Devuelve los productos cuya ultima puja sea mayor a una cantidad
-router.get("/greaterThan/:amount", async (req, res) => {
-    try {
-        const amountValue = req.params.amount;
-        const products = await Product.find({ lastBid: { $gt: amountValue } }).exec();
-        res.json(products);
-    } catch (err) {
-        res.json({ message: err.message });
-    }
-});
-
-/**
- * @swagger
- * /products/lowerThan/{amount}:
- *  get:
- *    summary: Filter by last bid
- *    description: Get products whose last bid is lower than a given amount.
- *    tags: [Product]
- *    parameters:
- *      - in: path
- *        name: amount
- *        schema:
- *          type: number
- *        required: true
- *    responses:
- *      200:
- *          description: Success
- *          content:
- *              application/json:
- *                  schema:
- *                      type: array
- *                      items:
- *                          $ref: '#/components/schemas/Product'
- */
-
-// Devuelve los productos cuya ultima puja sea inferior a una cantidad
-router.get("/lowerThan/:amount", async (req, res) => {
-    try {
-        const amountValue = req.params.amount;
-        const products = await Product.find({ lastBid: { $lt: amountValue } }).exec();
-        res.json(products);
-    } catch (err) {
-        res.json({ message: err.message });
-    }
-});
-
-/**
- * @swagger
- * /products/before/{hours}:
- *  get:
- *    summary: Recently posted products
- *    description: Get products that have been posted in the last :hours hours.
- *    tags: [Product]
- *    parameters:
- *      - in: path
- *        name: hours
- *        schema:
- *          type: number
- *        required: true
- *    responses:
- *      200:
- *          description: Success
- *          content:
- *              application/json:
- *                  schema:
- *                      type: array
- *                      items:
- *                          $ref: '#/components/schemas/Product'
- */
-
-// Devuelve los productos publicados en las últimas :hours horas
-router.get("/before/:hours", async (req, res) => {
-    try {
-        const hours = parseFloat(req.params.hours);
-        const currentDateMinusNHours = new Date();
-        currentDateMinusNHours.setMilliseconds(currentDateMinusNHours.getMilliseconds() - hours * 3600 * 1000);
-
-        const products = await Product.find({
-            publicationDate: { $gte: currentDateMinusNHours, $lte: new Date() }
-        }).exec();
-
-        res.json(products);
-    } catch (err) {
-        res.json({ message: err.message });
-    }
-});
-
-/**
- * @swagger
- * /products/add:
- *    post:
- *     summary: Add product
- *     description: Add a new product to the database.
- *     tags: [Product]
- *     requestBody:
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *               description:
- *                 type: string
- *               user:
- *                 type: string
- *               startingPrice:
- *                 type: number
- *               lastBid:
- *                 type: number
- *               latitude:
- *                 type: number
- *               longitude:
- *                 type: number
- *               publicationDate:
- *                 type: string
- *                 format: date-time # Cambiado a tipo Date
- *               endingDate:
- *                 type: string
- *                 format: date-time # Cambiado a tipo Date
- *               finished:
- *                 type: boolean
- *     responses:
- *       200:
- *         description: Producto añadido con éxito
- *         content:
- *           application/json:
- *             example:
- *                 name: iPhone 12
- *                 description: Smartphone
- *                 user: 5f9d7b7b9c9a7b1b1c9a7b1b
- *                 startingPrice: 500
- *                 lastBid: 500
- *                 latitude: 40.4167
- *                 longitude: 3.70325
- *                 publicationDate: 2020-10-31T12:00:00.000Z
- *                 endingDate: 2020-11-30T12:00:00.000Z
- *                 finished: false
- */
-
-router.post("/add", async (req, res) => {
+// POST request to add a new product
+router.post("/", async (req, res) => {
     try {
         const product = new Product({
             name: req.body.name,
@@ -410,107 +231,9 @@ router.post("/add", async (req, res) => {
     }
 });
 
-/**
- * @swagger
- * /products/delete/{productId}:
- *  delete:
- *    summary: Delete product
- *    description: Delete a prodcut given an ID
- *    tags: [Product]
- *    parameters:
- *      - in: path
- *        name: productId
- *        schema:
- *          type: string
- *        required: true
- *    responses:
- *      200:
- *          description: Success
- *          content:
- *              application/json:
- *                  schema:
- *                      type: array
- *                      items:
- *                          $ref: '#/components/schemas/Product'
- */
 
-router.delete("/delete/:productId", (req, res) => {
-    const productId = req.params.productId;
-
-    Product.findByIdAndDelete(productId)
-        .then(product => {
-            if (product) {
-                res.json({ message: 'Product deleted successfully!' });
-            } else {
-                res.json({ message: 'Product not found', type: 'danger' });
-            }
-        })
-        .catch(err => {
-            res.json({ message: err.message, type: 'danger' });
-        });
-});
-
-/**
- * @swagger
- * /products/update/{productId}:
- *   put:
- *     summary: Update product
- *     description: Change the values of a product given an ID
- *     tags: [Product]
- *     parameters:
- *       - in: path
- *         name: productId
- *         required: true
- *         description: ID del producto a actualizar
- *         schema:
- *           type: string
- *     requestBody:
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *               description:
- *                 type: string
- *               user:
- *                 type: string
- *               startingPrice:
- *                 type: number
- *               lastBid:
- *                 type: number
- *               latitude:
- *                 type: number
- *               longitude:
- *                 type: number
- *               publicationDate:
- *                 type: string
- *                 format: date-time
- *               endingDate:
- *                 type: string
- *                 format: date-time
- *               finished:
- *                 type: boolean
- *     responses:
- *       200:
- *         description: Producto actualizado con éxito
- *         content:
- *           application/json:
- *             example:
- *               name: iPhone 12 Pro
- *               description: Smartphone avanzado
- *               user: 5f9d7b7b9c9a7b1b1c9a7b1b
- *               startingPrice: 600
- *               lastBid: 600
- *               latitude: 40.4167
- *               longitude: 3.70325
- *               publicationDate: 2020-10-31T12:00:00.000Z
- *               endingDate: 2020-12-15T12:00:00.000Z
- *               finished: true
- */
-
-router.put("/update/:productId", async (req, res) => {
+// Update a product given its ID
+router.put("/:productId", async (req, res) => {
     try {
         const productId = req.params.productId;
 
@@ -539,80 +262,21 @@ router.put("/update/:productId", async (req, res) => {
     }
 });
 
-// Get a product and output its starting bid and latest bid in another currency (using external api)
+// Delete a product given its ID
+router.delete("/:productId", (req, res) => {
+    const productId = req.params.productId;
 
-async function convertCurrency(baseAmount, currencyCode) {
-    const response = await fetch(`https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/eur/${currencyCode}.json`);
-
-    if (response.ok) {
-        const data = await response.json();
-
-        // Verifica si la propiedad currencyCode existe en la respuesta
-        if (data.hasOwnProperty(currencyCode)) {
-            const rate = data[currencyCode];
-            return rate * baseAmount;
-        } else {
-            console.log('Currency code not found');
-            return null; // Devuelve null si no se encuentra el código de moneda
-        }
-    } else {
-        throw new Error('Failed to fetch currency data');
-    }
-}
-
-/**
- * @swagger
- * /products/currency/{id}/{currency}:
- *  get:
- *      summary: Get product info in another currency
- *      description: Get base price and last bid of a product in another currency, given the product ID and the currency code.
- *      tags: [Product]
- *      parameters:
- *      - in: path
- *        name: id
- *        schema:
- *          type: string
- *        required: true
- *      - in: path
- *        name: currency
- *        schema:
- *          type: string
- *        required: true
- *      responses:
- *          200:
- *              description: Success
- *              content:
- *              application/json:
- *                  schema:
- *                      $ref: '#/components/schemas/Product'
- *
- */
-router.get("/currency/:id/:currency", async (req, res) => {
-    try {
-        const id = req.params.id;
-        const currency = req.params.currency;
-        const product = await Product.findById(id).exec();
-
-        if (product) {
-            const startingPrice = product.startingPrice;
-            const lastBid = product.lastBid;
-
-            const startingPriceInCurrency = await convertCurrency(startingPrice, currency);
-            const lastBidInCurrency = await convertCurrency(lastBid, currency);
-
-            res.json({
-                name: product.name,
-                description: product.description,
-                user: product.user,
-                startingPrice: startingPriceInCurrency,
-                lastBid: lastBidInCurrency
-            });
-        } else {
-            res.json({ message: 'Product not found', type: 'danger' });
-        }
-    } catch (err) {
-        res.json({ message: err.message, type: 'danger' });
-    }
+    Product.findByIdAndDelete(productId)
+        .then(product => {
+            if (product) {
+                res.json({ message: 'Product deleted successfully!' });
+            } else {
+                res.json({ message: 'Product not found', type: 'danger' });
+            }
+        })
+        .catch(err => {
+            res.json({ message: err.message, type: 'danger' });
+        });
 });
 
 module.exports = router;
