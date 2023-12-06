@@ -9,7 +9,7 @@ import Container from 'react-bootstrap/Container';
 import {Link} from 'react-router-dom';
 
 
-export default function Header(){
+export default function Navbar(){
     return (
         <Container fluid>
         <Navbar expand="sm" className="bg-body-tertiary justify-content-between">

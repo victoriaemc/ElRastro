@@ -1,4 +1,4 @@
-export * from './Header.js';
+export * from './Navbar.js';
 export * from './CloudinaryUploadWidget.js';
 export * from '/userInfo.js';
 
