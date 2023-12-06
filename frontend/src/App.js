@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import logo from './logo.svg';
 import './App.css';
 import axios from "axios";
 
@@ -7,6 +6,12 @@ import axios from "axios";
 import CloudinaryUploadWidget from "./components/CloudinaryUploadWidget";
 import { Cloudinary } from "@cloudinary/url-gen";
 import { AdvancedImage, responsive, placeholder } from "@cloudinary/react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+// Imports Pages
+import LoginPage from './pages/LoginPage'; 
+import HomePage from './pages/HomePage'
+import Header from './components/Header';
 
 function App() {
   // Cloudinary vars----------------------------------------------
@@ -35,34 +40,31 @@ function App() {
   });
   const myImage = cld.image(publicId);
   // -------------------------------------------------------------
+  /*
   const [message, setMessage] = useState("");
   useEffect(() => {
     fetch("http://localhost:8000/users/200")
         .then((res) => res.json())
         .then((data) => setMessage(data.message));
   }, []);
+  */
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-      {/* Div para el widget */}
+      {/* RUTAS DE LAS PAGINAS  */}
+      <BrowserRouter>
+        <Header/>
+        <Routes>
+          <Route path="/" element={<h1><HomePage/></h1>}/>
+          <Route path="/login" element={<LoginPage/>}/>
+          <Route path="/etc" element={<h1>Etc page</h1>}/>
+        </Routes>
+      </BrowserRouter>
+      {/* Div para el widget 
       <div>
         <h3>Cloudinary Upload Widget Example</h3>
         <CloudinaryUploadWidget uwConfig={uwConfig} setPublicId={setPublicId} />
       </div>
-      {/* Div para mostrar la imagen */}
+      {/* Div para mostrar la imagen 
       <div style={{ width: "800px" }}>
         <AdvancedImage
           style={{ maxWidth: "100%" }}
@@ -70,6 +72,7 @@ function App() {
           plugins={[responsive(), placeholder()]}
         />
       </div>
+      */}
     </div>
   );
 }

@@ -6,6 +6,8 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 
+import {Link} from 'react-router-dom';
+
 
 export default function Header(){
     return (
@@ -30,8 +32,16 @@ export default function Header(){
             <Col xs="auto">
                 <Button variant="primary">Nuevo Producto</Button>
             </Col>
+            <Col xs="auto">
+                <Button variant="primary">Mis pujas</Button>
+            </Col>
             <Col xs="auto" >
                 <Button variant="outline-primary">Perfil</Button>
+            </Col>
+            <Col xs="auto">
+                <Link to="/login">
+                    <Button variant="outline-primary">Iniciar Sesion</Button>
+                </Link>
             </Col>
         </Row>
     </Navbar>
