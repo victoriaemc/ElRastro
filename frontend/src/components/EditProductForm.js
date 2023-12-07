@@ -6,8 +6,11 @@ import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import Col from "react-bootstrap/Col";
 import InputGroup from "react-bootstrap/InputGroup";
+import { useParams } from 'react-router-dom';
 
 const EditProductForm = ({productId}) => {
+    const { id } = useParams();
+
     const [formData, setFormData] = useState({
         name: '',
         description: '',
@@ -21,7 +24,7 @@ const EditProductForm = ({productId}) => {
         // Fetch existing product details using productId and set the form state
         const fetchProductDetails = async () => {
             try {
-                const response = await axios.get(`http://localhost:8000/${productId}`);
+                const response = await axios.get(`http://localhost:8000/${id}`);
                 const existingProduct = response.data;
                 console.log(existingProduct);
                 setFormData({
@@ -52,7 +55,7 @@ const EditProductForm = ({productId}) => {
 
         try {
             // Make a PUT request to update the existing product
-            await axios.put(`http://localhost:8000/${productId}`, formData);
+            await axios.put(`http://localhost:8000/${id}`, formData);
         } catch (error) {
             console.error('Error updating product:', error);
         }
