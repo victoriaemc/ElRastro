@@ -38,6 +38,16 @@ const UserDetails = ({userId}) => {
                     <h2 className="text-center mb-5">Perfil de usuario</h2>
                     <Row>
                         <Col>
+                            <Button variant="primary" href={`/userProfile/${id}/edit`}>Editar perfil</Button>
+                        </Col>
+                        <Col>
+                            <Button variant="danger" href={`/users/${id}/delete`}>Eliminar cuenta</Button>
+                        </Col>
+
+                    </Row>
+
+                    <Row>
+                        <Col>
                            {/* <img src={user.profilePicture} alt="Imagen de perfil" width="200" height="200"/>*/}
                             <p>Foto de perfil aquí</p>
                         </Col>

@@ -17,6 +17,7 @@ import BiddingUpPage from './pages/BiddingUpPage';
 import CreateProduct from "./pages/CreateProduct";
 import EditProduct from "./pages/EditProduct";
 import UserProfile from "./pages/UserProfile";
+import EditUser from "./pages/EditUser";
 
 
 function App() {
@@ -69,6 +70,7 @@ function App() {
           <Route path="/createProduct" element={<CreateProduct/>}/>
           <Route path="/editProduct/:id" element={<EditProduct/>}/>
           <Route path="/userProfile/:id" element={<UserProfile/>}/>
+          <Route path="/userProfile/:id/edit" element={<EditUser/>}/>
         </Routes>
       </BrowserRouter>
       {/* Div para el widget 
