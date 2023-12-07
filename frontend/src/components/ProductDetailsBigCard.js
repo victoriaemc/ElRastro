@@ -1,10 +1,11 @@
 // ProductDetailsBigCard.js
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { Card, Row } from 'react-bootstrap';
+import { Card, Row, Col } from 'react-bootstrap';
 import ProductImage from "./ProductImage";
 import BidDetails from "./BidDetails";
 import ProductDetails from "./ProductDetails";
+import Countdown from "./Countdown";
 
 const ProductDetailsBigCard = () => {
     const location = useLocation();
@@ -41,7 +42,10 @@ const ProductDetailsBigCard = () => {
                     <Card.Body>
                         <Row style={{maxHeight: '300px'}}>
                             <ProductImage productName={product.name} />
-                            <BidDetails lastBid={product.lastBid} endingDate={product.endingDate} />
+                            <Col md={4}>
+                                <BidDetails lastBid={product.lastBid} endingDate={product.endingDate} />
+                                <Countdown lastBid={product.lastBid} endingDate={product.endingDate} />
+                            </Col>
                         </Row>
                         <ProductDetails productName={product.name} productDescription={product.description} />
                     </Card.Body>

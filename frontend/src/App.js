@@ -13,6 +13,7 @@ import LoginPage from './pages/LoginPage';
 import HomePage from './pages/HomePage'
 import ElRastroNavbar from './components/ElRastroNavbar';
 import ProductDetails from './pages/ProductDetails';
+import BiddingUpPage from './pages/BiddingUpPage';
 
 function App() {
   // Cloudinary vars----------------------------------------------
@@ -59,6 +60,7 @@ function App() {
           <Route path="/login" element={<LoginPage/>}/>
           <Route path="/etc" element={<h1>Etc page</h1>}/>
           <Route path="/productDetails" element={<ProductDetails/>}/>
+          <Route path="/bidUp" element={<BiddingUpPage/>}/>
         </Routes>
       </BrowserRouter>
       {/* Div para el widget 
