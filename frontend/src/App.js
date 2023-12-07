@@ -13,6 +13,7 @@ import LoginPage from './pages/LoginPage';
 import HomePage from './pages/HomePage'
 import ElRastroNavbar from './components/ElRastroNavbar';
 import ProductDetails from './pages/ProductDetails';
+import BiddingUpPage from './pages/BiddingUpPage';
 import CreateProduct from "./pages/CreateProduct";
 
 function App() {
@@ -60,7 +61,6 @@ function App() {
           <Route path="/login" element={<LoginPage/>}/>
           <Route path="/etc" element={<h1>Etc page</h1>}/>
           <Route path="/productDetails" element={<ProductDetails/>}/>
-          <Route path="/createProduct" element={<CreateProduct/>}/>
         </Routes>
       </BrowserRouter>
       {/* Div para el widget 
