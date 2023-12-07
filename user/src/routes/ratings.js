@@ -17,10 +17,10 @@ router.get('/ratings', async (req, res) => {
 
 // GET ALL RATINGS FOR AN USER (FOR PROFILE PAGE)
 // You also get average rating of the user
-// localhost:8000/users?ratings=654926ac75aa4e12761f4ab9
-router.get('/', async (req, res) => {
+// localhost:8000/users/ratings?user=654926ac75aa4e12761f4ab9
+router.get('/ratings', async (req, res) => {
     try {
-        let userId = req.query.ratings;
+        let userId = req.query.user;
 
         if (!userId) {
             return res.status(400).json({ message: "Missing 'ratings' parameter. Please provide a valid user ID." });
