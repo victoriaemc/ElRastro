@@ -1,13 +1,13 @@
-// ProductDetailsBigCard.js
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Card, Row, Col } from 'react-bootstrap';
 import ProductImage from "./ProductImage";
-import BidDetails from "./BidDetails";
+import BidDetailsWithoutButton from "./BidDetailsWithoutButton";
 import ProductDetails from "./ProductDetails";
 import Countdown from "./Countdown";
+import SubmitBid from "./SubmitBid";
 
-const ProductDetailsBigCard = () => {
+const BidUpCard = () => {
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
     const productId = searchParams.get("ProductId");
@@ -36,25 +36,34 @@ const ProductDetailsBigCard = () => {
     }
 
     return (
+
         <section className="section-content padding-y bg">
             <div className="container">
                 <Card className="mx-auto my-4">
+                    <Card.Title className="mt-4">Pujar por {product.name}</Card.Title>
+                    <hr />
                     <Card.Body>
                         <Row style={{maxHeight: '300px'}}>
-                            <Col md={8} className="d-flex justify-content-center align-items-center" style={{ maxHeight: "300px", backgroundColor: "#f5f5f5" }}>
+                            <Col className="d-flex justify-content-center align-items-center" style={{ maxHeight: "300px", backgroundColor: "#f5f5f5" }}>
                                 <ProductImage productName={product.name} />
                             </Col>
-                            <Col md={4}>
-                                <BidDetails lastBid={product.lastBid} endingDate={product.endingDate} productId={productId}/>
+                        </Row>
+                        <Row>
+                            <Col md={6}>
+                                <BidDetailsWithoutButton lastBid={product.lastBid} endingDate={product.endingDate} />
+                            </Col>
+                            <Col md={6}>
                                 <Countdown lastBid={product.lastBid} endingDate={product.endingDate} />
                             </Col>
                         </Row>
-                        <ProductDetails productName={product.name} productDescription={product.description} />
+                        <Row>
+                            <SubmitBid product={product} endingDate={product.endingDate}/>
+                        </Row>
                     </Card.Body>
                 </Card>
             </div>
         </section>
-    );
+    )
 }
 
-export default ProductDetailsBigCard;
+export default BidUpCard;
