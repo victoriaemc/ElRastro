@@ -61,6 +61,8 @@ function App() {
           <Route path="/login" element={<LoginPage/>}/>
           <Route path="/etc" element={<h1>Etc page</h1>}/>
           <Route path="/productDetails" element={<ProductDetails/>}/>
+          <Route path="/bidUp" element={<BiddingUpPage/>}/>
+          <Route path="/createProduct" element={<CreateProduct/>}/>
         </Routes>
       </BrowserRouter>
       {/* Div para el widget 
