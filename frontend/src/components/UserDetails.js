@@ -8,17 +8,19 @@ import axios from "axios";
 const UserDetails = ({userId}) => {
     const {id} = useParams();
     const [user, setUser] = useState(null);
+    const [ratings, setRatings] = useState(null);
 
 
     useEffect(() => {
         const fetchUserDetails = async () => {
             try {
                 const response = await axios.get(`http://localhost:8000/users/${id}`);
-                console.log(response)
+                const ratingsResponse = await axios.get(`http://localhost:8000/users/ratings/average?user=${id}`);
                 if (response.status===200) {
                     const userData = await response.data;
-                    console.log(userData);
                     setUser(userData);
+                    const ratingsData = await ratingsResponse.data;
+                    setRatings(ratingsData);
                 } else {
                     console.error('Failed to fetch user details');
                 }
@@ -37,17 +39,18 @@ const UserDetails = ({userId}) => {
                 <div>
                     <h2 className="text-center mb-5">Perfil de usuario</h2>
                     <Row>
-                        <Col>
+                        <Col key="edit">
                             <Button variant="primary" href={`/userProfile/${id}/edit`}>Editar perfil</Button>
                         </Col>
-                        <Col>
+                        <Col key="delete">
                             <Button variant="danger" href={`/users/${id}/delete`}>Eliminar cuenta</Button>
                         </Col>
 
                     </Row>
 
                     <Row>
-                        <Col>
+                        <Col key="rating">
+                            <h2>Valoración media : {ratings ? ratings.averageRating : <p>Cargando valoración media...</p>}</h2>
                            {/* <img src={user.profilePicture} alt="Imagen de perfil" width="200" height="200"/>*/}
                             <p>Foto de perfil aquí</p>
                         </Col>
