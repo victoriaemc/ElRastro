@@ -15,6 +15,7 @@ import ElRastroNavbar from './components/ElRastroNavbar';
 import ProductDetails from './pages/ProductDetails';
 import BiddingUpPage from './pages/BiddingUpPage';
 import CreateProduct from "./pages/CreateProduct";
+import EditProduct from "./pages/EditProduct";
 
 function App() {
   // Cloudinary vars----------------------------------------------
@@ -61,6 +62,9 @@ function App() {
           <Route path="/login" element={<LoginPage/>}/>
           <Route path="/etc" element={<h1>Etc page</h1>}/>
           <Route path="/productDetails" element={<ProductDetails/>}/>
+          <Route path="/biddingUp" element={<BiddingUpPage/>}/>
+          <Route path="/createProduct" element={<CreateProduct/>}/>
+          <Route path={"/editProduct/:id"} element={<EditProduct/>}/>
         </Routes>
       </BrowserRouter>
       {/* Div para el widget 

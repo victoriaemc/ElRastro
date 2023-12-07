@@ -6,7 +6,7 @@ const Product = (props) => (
         <td>{props.product.description}</td>
         <td>{props.product.startingPrice}</td>
         <td>
-            <Link className="btn btn-link" to={`/edit/${props.product._id}`}>Edit</Link> |
+            <Link className="btn btn-link" to={`/editProduct/${props.product._id}`}>Edit</Link> |
             <button className="btn btn-link"
                     onClick={() => {
                         props.deleteProduct(props.product._id);
