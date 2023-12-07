@@ -1,10 +1,15 @@
 import React, { useState } from "react";
 import { Col, Row, Card, Form, Button, Alert } from 'react-bootstrap';
+import axios from 'axios';
+import { useLocation } from "react-router-dom";
 
 const SubmitBid = ({ product, endingDate }) => {
     const [amount, setAmount] = useState("");
     const [error, setError] = useState(null);
 
+    const location = useLocation();
+    const searchParams = new URLSearchParams(location.search);
+    const productId = searchParams.get("ProductId");
     const handleSubmit = (event) => {
         event.preventDefault();
 
@@ -19,7 +24,31 @@ const SubmitBid = ({ product, endingDate }) => {
         } else {
             // Lógica para manejar la presentación de la puja
             // ...
+
+            console.log(productId);
+            axios.put(`http://localhost:8000/${productId}`, {
+                name: product.name,
+                description: product.description,
+                user: product.user,
+                startingPrice: product.startingPrice,
+                lastBid: Number(amount),
+                latitude: product.latitude,
+                longitude: product.longitude,
+                publicationDate: product.publicationDate,
+                endingDate: product.endingDate,
+                finished: product.finished
+            })
+                .then(response => {
+                    console.log('Actualización exitosa:', response.data);
+                    window.location.reload();
+                })
+                .catch(error => {
+                    console.error('Error al actualizar el producto:', error);
+                    setError("Error al realizar la puja. Inténtalo de nuevo.");
+                });
+
             setError(null); // Reiniciar el mensaje de error si la validación es exitosa
+
         }
     };
 
