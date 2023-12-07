@@ -39,7 +39,9 @@ export default function ElRastroNavbar(){
                 <Button variant="primary">Mis pujas</Button>
             </Col>
             <Col xs="auto" >
-                <Button variant="outline-primary">Perfil</Button>
+                <Link to="/userProfile/6550a4a5fadb65a38330bff9">
+                    <Button variant="outline-primary">Perfil</Button>
+                </Link>
             </Col>
             <Col xs="auto">
                 <Link to="/login">

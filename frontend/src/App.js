@@ -16,6 +16,8 @@ import ProductDetails from './pages/ProductDetails';
 import BiddingUpPage from './pages/BiddingUpPage';
 import CreateProduct from "./pages/CreateProduct";
 import EditProduct from "./pages/EditProduct";
+import UserProfile from "./pages/UserProfile";
+
 
 function App() {
   // Cloudinary vars----------------------------------------------
@@ -66,6 +68,7 @@ function App() {
           <Route path="/biddingUp" element={<BiddingUpPage/>}/>
           <Route path="/createProduct" element={<CreateProduct/>}/>
           <Route path="/editProduct/:id" element={<EditProduct/>}/>
+          <Route path="/userProfile/:id" element={<UserProfile/>}/>
         </Routes>
       </BrowserRouter>
       {/* Div para el widget 
