@@ -30,7 +30,10 @@ export default function ElRastroNavbar(){
         </Form>
         <Row className="mr-sm-2">
             <Col xs="auto">
-                <Button variant="primary">Nuevo Producto</Button>
+                {/* Link the "Nuevo Producto" button to the CreateProduct page */}
+                <Link to="/createProduct">
+                    <Button variant="primary">Nuevo Producto</Button>
+                </Link>
             </Col>
             <Col xs="auto">
                 <Button variant="primary">Mis pujas</Button>

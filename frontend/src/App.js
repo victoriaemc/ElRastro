@@ -8,11 +8,12 @@ import { Cloudinary } from "@cloudinary/url-gen";
 import { AdvancedImage, responsive, placeholder } from "@cloudinary/react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-// Imports Pages
+// Imports Pages and Components
 import LoginPage from './pages/LoginPage'; 
 import HomePage from './pages/HomePage'
 import ElRastroNavbar from './components/ElRastroNavbar';
 import ProductDetails from './pages/ProductDetails';
+import CreateProduct from "./pages/CreateProduct";
 
 function App() {
   // Cloudinary vars----------------------------------------------
@@ -59,6 +60,7 @@ function App() {
           <Route path="/login" element={<LoginPage/>}/>
           <Route path="/etc" element={<h1>Etc page</h1>}/>
           <Route path="/productDetails" element={<ProductDetails/>}/>
+          <Route path="/createProduct" element={<CreateProduct/>}/>
         </Routes>
       </BrowserRouter>
       {/* Div para el widget 
