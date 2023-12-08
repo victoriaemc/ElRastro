@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import Button from 'react-bootstrap/Button';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
 const Product = (props) => (
     <tr>
         <td>{props.product.name}</td>
         <td>{props.product.description}</td>
         <td>{props.product.startingPrice}</td>
         <td>
-            <Link className="btn btn-link" to={`/editProduct/${props.product._id}`}>Edit</Link> |
-            <button className="btn btn-link"
-                    onClick={() => {
+            <ButtonGroup aria-label="Basic example">
+                <Button variant="outline-secondary" href={`/editProduct/${props.product._id}`}>Edit</Button>
+                <Button variant="outline-danger" onClick={
+                    () => {
                         props.deleteProduct(props.product._id);
-                    }}
-            >
-                Delete
-            </button>
+                    }
+                }>Delete</Button>
+            </ButtonGroup>
         </td>
     </tr>
 );
@@ -62,8 +63,8 @@ export default function ProductList() {
                 <thead>
                 <tr>
                     <th>Name</th>
-                    <th>Position</th>
-                    <th>Level</th>
+                    <th>Description</th>
+                    <th>Starting Price</th>
                     <th>Action</th>
                 </tr>
                 </thead>
