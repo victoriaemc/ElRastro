@@ -50,7 +50,7 @@ const UserProducts = ({ userId }) => {
                                     <div className="card-body">
                                         <h5 className="card-title">{product.name}</h5>
                                         <p className="card-text">{product.description}</p>
-                                        <a href={`/${product._id}`} className="btn btn-outline-secondary">Ver producto</a>
+                                        <a href={`http://localhost:3000/productDetails?ProductId=${product._id}`} className="btn btn-outline-secondary">Ver producto</a>
                                     </div>
                                 </div>
                             </Col>

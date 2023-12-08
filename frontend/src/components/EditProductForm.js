@@ -19,6 +19,8 @@ const EditProductForm = ({productId}) => {
         longitude: '',
         endingDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
     });
+    const [endNowClicked, setEndNowClicked] = useState(false);
+
 
     useEffect(() => {
         // Fetch existing product details using productId and set the form state
@@ -60,6 +62,14 @@ const EditProductForm = ({productId}) => {
             console.error('Error updating product:', error);
         }
     };
+
+    function handleEndNowClick() {
+        setEndNowClicked(true);
+        setFormData({
+            ...formData,
+            endingDate: new Date(Date.now()).toISOString().split('T')[0],
+        });
+    }
 
     return (
         <Form onSubmit={handleSubmit}>
@@ -132,14 +142,23 @@ const EditProductForm = ({productId}) => {
 
             <Form.Group controlId="formEndingDate">
                 <Form.Label>Ending Date</Form.Label>
-                <Form.Control
-                    type="date"
-                    name="endingDate"
-                    value={formData.endingDate}
-                    onChange={handleChange}
-                    required
-                    style={{ width: '800px', position: 'relative', left: '50%', transform: 'translateX(-50%)', marginBottom: '10px' }}
-                />
+                <Row style={{ width: '800px', position: 'relative', left: '50%', transform: 'translateX(-50%)', marginBottom: '10px'}}>
+                    <Col xs={9}>
+                        <Form.Control
+                            type="date"
+                            name="endingDate"
+                            value={formData.endingDate}
+                            onChange={handleChange}
+                            required
+                        />
+                    </Col>
+                    <Col xs={3}>
+                        <Button variant="danger" type="button" onClick={handleEndNowClick} style={{ marginTop: '10px' }}>
+                            End now
+                        </Button>
+                    </Col>
+                </Row>
+
             </Form.Group>
 
             <CloudinaryUploadWidget style={{ marginTop: '10px', marginBottom: '10px' }}/>
