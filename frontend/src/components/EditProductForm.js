@@ -7,9 +7,12 @@ import Row from 'react-bootstrap/Row';
 import Col from "react-bootstrap/Col";
 import InputGroup from "react-bootstrap/InputGroup";
 import { useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+
 
 const EditProductForm = ({productId}) => {
     const { id } = useParams();
+    const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
         name: '',
@@ -17,18 +20,18 @@ const EditProductForm = ({productId}) => {
         startingPrice: 0.0,
         latitude: '',
         longitude: '',
-        endingDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+        endingDate: new Date(Date.now()).toISOString().split('T')[0],
     });
     const [endNowClicked, setEndNowClicked] = useState(false);
 
 
     useEffect(() => {
-        // Fetch existing product details using productId and set the form state
+        // Fetch existing product details using id from useParams and set the form state
         const fetchProductDetails = async () => {
             try {
                 const response = await axios.get(`http://localhost:8000/${id}`);
                 const existingProduct = response.data;
-                console.log(existingProduct);
+                console.log(existingProduct.endingDate);
                 setFormData({
                     name: existingProduct.name,
                     description: existingProduct.description,
@@ -43,12 +46,14 @@ const EditProductForm = ({productId}) => {
         };
 
         fetchProductDetails().then(r => console.log("Product details fetched"));
-    }, [productId]);
+    }, [id]); // Use id instead of productId
 
     const handleChange = (e) => {
+        const { name, value } = e.target;
+
         setFormData({
             ...formData,
-            [e.target.name]: e.target.value,
+            [name]: value,
         });
     };
 
@@ -58,6 +63,7 @@ const EditProductForm = ({productId}) => {
         try {
             // Make a PUT request to update the existing product
             await axios.put(`http://localhost:8000/${id}`, formData);
+            navigate(-1);
         } catch (error) {
             console.error('Error updating product:', error);
         }

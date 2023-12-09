@@ -6,6 +6,8 @@ import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import Col from "react-bootstrap/Col";
 import InputGroup from "react-bootstrap/InputGroup";
+import { useNavigate } from 'react-router-dom';
+
 const CreateProductForm = () => {
     const [formData, setFormData] = useState({
         name: '',
@@ -15,6 +17,7 @@ const CreateProductForm = () => {
         longitude: '',
         endingDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
     });
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchUserLocation = async () => {
@@ -57,6 +60,7 @@ const CreateProductForm = () => {
         try {
             // Make a POST request to your API endpoint to save the new product
             await axios.post('http://localhost:8000/', formData);
+            navigate(-1);
         } catch (error) {
             console.error('Error creating product:', error);
         }
