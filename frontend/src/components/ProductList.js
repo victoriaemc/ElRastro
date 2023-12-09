@@ -1,21 +1,9 @@
 import React, { useEffect, useState } from "react";
-import Button from 'react-bootstrap/Button';
-import ButtonGroup from 'react-bootstrap/ButtonGroup';
 const Product = (props) => (
     <tr>
         <td>{props.product.name}</td>
         <td>{props.product.description}</td>
         <td>{props.product.startingPrice}</td>
-        <td>
-            <ButtonGroup aria-label="Basic example">
-                <Button variant="outline-secondary" href={`/editProduct/${props.product._id}`}>Edit</Button>
-                <Button variant="outline-danger" onClick={
-                    () => {
-                        props.deleteProduct(props.product._id);
-                    }
-                }>Delete</Button>
-            </ButtonGroup>
-        </td>
     </tr>
 );
 export default function ProductList() {
@@ -35,21 +23,14 @@ export default function ProductList() {
         getProduct();
         return;
     }, [products.length]);
-    // This method will delete a record
-    async function deleteProduct(id) {
-        await fetch(`http://localhost:8000/${id}`, {
-            method: "DELETE"
-        });
-        const newProduct = products.filter((el) => el._id !== id);
-        setProducts(newProduct);
-    }
+
     // This method will map out the records on the table
     function productList() {
         return products.map((product) => {
             return (
                 <Product
                     product={product}
-                    deleteProduct={() => deleteProduct(product._id)}
+
                     key={product._id}
                 />
             );
@@ -65,7 +46,6 @@ export default function ProductList() {
                     <th>Name</th>
                     <th>Description</th>
                     <th>Starting Price</th>
-                    <th>Action</th>
                 </tr>
                 </thead>
                 <tbody>{productList()}</tbody>
