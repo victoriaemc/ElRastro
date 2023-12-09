@@ -72,7 +72,8 @@ const ProductDetailsBigCard = () => {
                         <ProductDetails productName={product.name} productDescription={product.description} />
                         <Row>
                             <Col>
-                                <p><b>Vendido por:</b>  {sellerUser ?  <a href={`localhost:8000/users/${sellerUser.id}`}>sellerUser.username</a> : "Cargando..."}</p>
+                                <p><b>Vendido por:</b>  {sellerUser ?  <a href={`/userProfile/${sellerUser._id}`}>{sellerUser.username}</a> : "Cargando..."}</p>
+
                             </Col>
                             <Col>
                                 <Button variant="secondary">Chat con el vendedor</Button>
