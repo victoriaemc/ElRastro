@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import CloudinaryUploadWidget from "./CloudinaryUploadWidget";
 import axios from "axios";
 import Form from 'react-bootstrap/Form';
@@ -15,6 +15,30 @@ const CreateProductForm = () => {
         longitude: '',
         endingDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
     });
+
+    useEffect(() => {
+        const fetchUserLocation = async () => {
+            try {
+                const apiUrl = 'http://localhost:8000/users/userLocation';
+                const response = await axios.get(apiUrl);
+
+                // Extract latitude and longitude from the API response
+                const { latitude, longitude } = response.data;
+
+                // Update the form data with the obtained latitude and longitude
+                setFormData(prevFormData => ({
+                    ...prevFormData,
+                    latitude: latitude.toString(),
+                    longitude: longitude.toString()
+                }));
+            } catch (error) {
+                console.error('Error fetching user location:', error.message);
+            }
+        };
+
+        fetchUserLocation().then(r => console.log('User location fetched'));
+    }, []);
+
     const handleChange = (e) => {
         setFormData({
             ...formData,
@@ -83,6 +107,7 @@ return (
 
         <Form.Group controlId="formLocation">
             <Form.Label>Location</Form.Label>
+            <p>Coordinates are filled in automatically with your current position.</p>
             <Row style={{ width: '800px', position: 'relative', left: '50%', transform: 'translateX(-50%)' }}>
                 <Col>
                     <Form.Control
