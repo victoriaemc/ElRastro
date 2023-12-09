@@ -9,7 +9,7 @@ const Product = (props) => (
             </Link>
         </td>
         <td>{props.product.description}</td>
-        <td>{props.product.startingPrice}</td>
+        <td>{props.product.startingPrice>=props.product.lastBid ? props.product.startingPrice : props.product.lastBid}</td>
     </tr>
 );
 export default function ProductList() {
@@ -51,7 +51,7 @@ export default function ProductList() {
                 <tr>
                     <th>Name</th>
                     <th>Description</th>
-                    <th>Starting Price</th>
+                    <th>Last bid/Starting price</th>
                 </tr>
                 </thead>
                 <tbody>{productList()}</tbody>
