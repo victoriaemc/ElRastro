@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from "react";
+import {Link} from "react-router-dom";
+import {Container} from "react-bootstrap";
 const Product = (props) => (
     <tr>
-        <td>{props.product.name}</td>
+        <td>
+            <Link to={`/productDetails?ProductId=${props.product._id}`}>
+                {props.product.name}
+            </Link>
+        </td>
         <td>{props.product.description}</td>
         <td>{props.product.startingPrice}</td>
     </tr>
