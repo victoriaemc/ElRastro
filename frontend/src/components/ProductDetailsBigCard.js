@@ -6,6 +6,7 @@ import ProductImage from "./ProductImage";
 import BidDetails from "./BidDetails";
 import ProductDetails from "./ProductDetails";
 import Countdown from "./Countdown";
+import ProductLocation from "./ProductLocation";
 
 const ProductDetailsBigCard = () => {
     const location = useLocation();
@@ -51,6 +52,9 @@ const ProductDetailsBigCard = () => {
                         </Row>
                         <ProductDetails productName={product.name} productDescription={product.description} />
                     </Card.Body>
+                </Card>
+                <Card className="mx-auto my-4">
+                    <ProductLocation latitude={product.latitude} longitude={product.longitude} />
                 </Card>
             </div>
         </section>

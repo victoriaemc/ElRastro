@@ -1,6 +1,5 @@
-
 import React from "react";
-import { Col, Card } from 'react-bootstrap';
+import Card from 'react-bootstrap/Card';
 
 const ProductImage = ({ productName }) => (
     <Card.Img
