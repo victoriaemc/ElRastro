@@ -1,7 +1,7 @@
 // ProductDetailsBigCard.js
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { Card, Row, Col } from 'react-bootstrap';
+import {Card, Row, Col, Button} from 'react-bootstrap';
 import ProductImage from "./ProductImage";
 import BidDetails from "./BidDetails";
 import ProductDetails from "./ProductDetails";
@@ -14,6 +14,7 @@ const ProductDetailsBigCard = () => {
     const productId = searchParams.get("ProductId");
 
     const [product, setProduct] = useState({});
+    const [sellerUser, setSellerUser] = useState({});
 
     useEffect(() => {
         async function getProduct() {
@@ -24,13 +25,31 @@ const ProductDetailsBigCard = () => {
                 }
                 const product = await response.json();
                 setProduct(product);
+                // Call getSellerUsername with the user ID after setting the product
+                getSellerUsername(product.user);
             } catch (error) {
                 console.error('Error fetching product:', error);
             }
         }
 
         getProduct();
+
+
     }, [productId]);
+
+    async function getSellerUsername(userId) {
+        try {
+            const response = await fetch(`http://localhost:8000/users/${userId}`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            const user = await response.json();
+            setSellerUser(user);
+        } catch (error) {
+            console.error('Error fetching seller:', error);
+        }
+    }
+
 
     if (!product || Object.keys(product).length === 0) {
         return <p>Cargando...</p>;
@@ -51,6 +70,15 @@ const ProductDetailsBigCard = () => {
                             </Col>
                         </Row>
                         <ProductDetails productName={product.name} productDescription={product.description} />
+                        <Row>
+                            <Col>
+                                <p><b>Vendido por:</b>  {sellerUser ?  <a href={`localhost:8000/users/${sellerUser.id}`}>sellerUser.username</a> : "Cargando..."}</p>
+                            </Col>
+                            <Col>
+                                <Button variant="secondary">Chat con el vendedor</Button>
+                            </Col>
+                        </Row>
+
                     </Card.Body>
                 </Card>
                 <Card className="mx-auto my-4">
