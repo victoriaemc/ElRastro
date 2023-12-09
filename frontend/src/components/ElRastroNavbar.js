@@ -36,7 +36,9 @@ export default function ElRastroNavbar(){
                 </Link>
             </Col>
             <Col xs="auto">
-                <Button variant="primary">Mis pujas</Button>
+                <Link to="/myBids/65720e41e0700cc1b8534119">
+                    <Button variant="primary">Mis pujas</Button>
+                </Link>
             </Col>
             <Col xs="auto" >
                 <Link to="/userProfile/6550a4a5fadb65a38330bff9">
