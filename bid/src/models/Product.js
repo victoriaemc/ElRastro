@@ -44,7 +44,11 @@ const productSchema = new mongoose.Schema({
         type: Boolean,
         required: true,
         default: false
-    }
+    },
+    imageId: {
+        type: String,
+        required: true,
+    },
 
 }, {collection: 'Product', versionKey: false });
 module.exports = mongoose.model("Product", productSchema);
