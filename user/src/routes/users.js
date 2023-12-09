@@ -141,7 +141,8 @@ router.post('/', bodyParser.json(), async (req, res) => {
                 name: req.body.name,
                 username: req.body.username,
                 password: req.body.password,
-                email: email
+                email: email,
+                propicId: req.body.propicId,
             });
 
             await user.save();
