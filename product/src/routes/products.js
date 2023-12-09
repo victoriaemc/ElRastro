@@ -221,6 +221,7 @@ router.post("/", async (req, res) => {
             longitude: req.body.longitude,
             publicationDate: req.body.publicationDate,
             endingDate: req.body.endingDate,
+            imageId: req.body.imageId,
             finished: req.body.finished
         });
 
@@ -247,6 +248,7 @@ router.put("/:productId", async (req, res) => {
             longitude: req.body.longitude,
             publicationDate: req.body.publicationDate,
             endingDate: req.body.endingDate,
+            imageId: req.body.imageId,
             finished: req.body.finished
         };
 
