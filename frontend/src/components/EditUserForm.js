@@ -3,13 +3,12 @@ import CloudinaryUploadWidget from "./CloudinaryUploadWidget";
 import axios from "axios";
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import Row from 'react-bootstrap/Row';
-import Col from "react-bootstrap/Col";
-import InputGroup from "react-bootstrap/InputGroup";
 import { useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const EditUserForm = ({userId}) => {
     const { id } = useParams();
+    const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
         name: '',
@@ -54,6 +53,7 @@ const EditUserForm = ({userId}) => {
         try {
             // Make a PUT request to update the existing product
             await axios.put(`http://localhost:8000/users/${id}`, formData);
+            navigate(-1);
         } catch (error) {
             console.error('Error updating user:', error);
         }
