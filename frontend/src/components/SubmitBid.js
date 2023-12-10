@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Col, Row, Card, Form, Button, Alert } from 'react-bootstrap';
 import axios from 'axios';
 import { useLocation } from "react-router-dom";
+import InputGroup from "react-bootstrap/InputGroup";
 
 const SubmitBid = ({ product, endingDate }) => {
     const [amount, setAmount] = useState("");
@@ -19,6 +20,8 @@ const SubmitBid = ({ product, endingDate }) => {
 
         if (Number(amount) <= Number(product.lastBid)) {
             setError("La cantidad debe ser mayor a la puja más alta.");
+        } else if (Number(amount) <= Number(product.startingPrice)) {
+            setError("La cantidad debe ser mayor al precio inicial.");
         } else if (currentTimestamp >= endingDate) {
             setError("Esta subasta ya ha finalizado.");
         } else {
@@ -36,7 +39,8 @@ const SubmitBid = ({ product, endingDate }) => {
                 longitude: product.longitude,
                 publicationDate: product.publicationDate,
                 endingDate: product.endingDate,
-                finished: product.finished
+                finished: product.finished,
+                imageId: product.imageId
             })
                 .then(response => {
                     console.log('Actualización exitosa:', response.data);
@@ -56,16 +60,19 @@ const SubmitBid = ({ product, endingDate }) => {
         <Form onSubmit={handleSubmit} className="d-flex align-items-center">
 
             <Row>
-                <div className="mb-2 p-2 border rounded d-flex flex-column justify-content-center" style={{ width: "100%" }}>
+                <div className="mb-2 p-2 border rounded d-flex flex-column justify-content-center mx-auto" style={{ width: "100%"}}>
 
                     <Col>
                         <Form.Group controlId="bidAmount" className="flex-grow-1 mr-2">
+                            <InputGroup>
                             <Form.Control
                                 type="number"
                                 placeholder="Ingrese la cantidad"
                                 value={amount}
                                 onChange={(e) => setAmount(e.target.value)}
                             />
+                                <InputGroup.Text id="basic-addon2">€</InputGroup.Text>
+                        </InputGroup>
                         </Form.Group>
                     </Col>
                     <Col>

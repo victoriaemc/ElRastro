@@ -6,6 +6,7 @@ import BidDetailsWithoutButton from "./BidDetailsWithoutButton";
 import ProductDetails from "./ProductDetails";
 import Countdown from "./Countdown";
 import SubmitBid from "./SubmitBid";
+import CloudinaryImage from "./CloudinaryImage";
 
 const BidUpCard = () => {
     const location = useLocation();
@@ -45,7 +46,14 @@ const BidUpCard = () => {
                     <Card.Body>
                         <Row style={{maxHeight: '300px'}}>
                             <Col className="d-flex justify-content-center align-items-center" style={{ maxHeight: "300px", backgroundColor: "#f5f5f5" }}>
-                                <ProductImage productName={product.name} />
+                                <img src={CloudinaryImage(product.imageId)}  alt={"Imagen"}
+                                    // style the images so that they mantain their aspect ratio but have a max height of 200px
+                                     style={{
+                                         width: "auto",
+                                         height: "300px",
+                                         objectFit: "cover"
+                                     }}
+                                />
                             </Col>
                         </Row>
                         <Row>

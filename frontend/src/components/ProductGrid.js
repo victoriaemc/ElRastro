@@ -12,7 +12,7 @@ const ProductGrid = ({ products, title }) => {
             <Link to= {`/productDetails?ProductId=${product._id}`}>
               <img src={CloudinaryImage(product.imageId)}  alt={"Image"}/>
               <h2>{ product.name }</h2>
-              <h2> ${product.startingPrice>=product.lastBid ? product.startingPrice : product.lastBid}</h2>
+              <h2> {product.startingPrice>=product.lastBid ? product.startingPrice : product.lastBid}€</h2>
             </Link>
           </div>
         ))}
