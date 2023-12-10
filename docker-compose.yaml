@@ -1,0 +1,51 @@
+version: "3.7"
+services:
+  gateway:
+    build:
+      context: ./gateway
+    ports:
+      - "8000:8000"
+    volumes:
+        - ./gateway:/index
+    depends_on:
+      - bid
+      - product
+      - user
+  bid:
+    build:
+      context: ./bid
+    ports:
+      - "8001:8001"
+    volumes:
+        - ./bid:/index
+
+  product:
+    build:
+      context: ./product
+    ports:
+      - "8002:8002"
+    volumes:
+        - ./product:/index
+
+  user:
+    build:
+      context: ./user
+    ports:
+      - "8003:8003"
+    volumes:
+        - ./user:/index
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "3000:3000"
+    volumes:
+        - ./frontend:/index
+    depends_on:
+      - gateway
+
+
+volumes:
+  data:
+  logs:
+

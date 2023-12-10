@@ -4,7 +4,10 @@ const app = express();
 app.use(express.json());
 
 const userRoutes = require('./src/routes/users')
+const ratingRoutes = require('./src/routes/ratings')
+app.use('/', ratingRoutes);
 app.use('/', userRoutes);
+
 
 app.use('/', (req, res, next) => {
     return res.status(200).json({"msg": "User service is running"})

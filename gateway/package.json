@@ -8,7 +8,7 @@
     "product": "cd ../product && nodemon index.js",
     "user": "cd ../user && nodemon index.js",
     "gateway": "cd ../gateway && nodemon index.js",
-    "start": "concurrently \"npm run bid\" \"npm run product\" \"npm run user\" \"npm run gateway\"",
+    "start": "nodemon index.js",
     "prep": "cd ../bid && npm install && cd ../product && npm install && cd ../user && npm install && cd ../gateway && npm install"
   },
   "keywords": [],
@@ -20,10 +20,11 @@
     "express": "^4.18.2",
     "express-http-proxy": "^2.0.0",
     "mongoose": "^8.0.0",
+    "socket.io": "^4.7.2",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0"
   },
   "devDependencies": {
-    "nodemon": "^3.0.1"
+    "nodemon": "^3.0.2"
   }
 }

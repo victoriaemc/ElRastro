@@ -15,9 +15,10 @@ const userSchema = new mongoose.Schema({
     email:{
         type: String,
         required: false,
-    }
-   /*, myProducts:{
-        type: mongoose.Schema.type.list
-    }*/
+    },
+    propicId:{
+        type: String,
+        required: false,
+    },
 }, {collection: 'User', versionKey: false});
 module.exports = mongoose.model("User", userSchema);
