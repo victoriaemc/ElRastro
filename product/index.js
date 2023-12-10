@@ -4,8 +4,9 @@ const app = express();
 app.use(express.json());
 
 const productRoutes = require('./src/routes/products');
+const chatRoutes = require('./src/routes/chat');
 app.use('/', productRoutes);
-
+app.use('/chat', chatRoutes);
 
 mongoose.connect("mongodb+srv://xmariafdz:d6sNRoSlX55dLrCQ@ingweb.zuuicah.mongodb.net/elrastro", {useNewUrlParser: true});
 const db = mongoose.connection;
