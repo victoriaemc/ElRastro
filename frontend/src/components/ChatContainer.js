@@ -1,21 +1,27 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from "react-router-dom";
-import axios from "axios";
-import ChatInput from "../components/ChatInput";
-import { Card } from "react-bootstrap"
+import { useParams } from 'react-router-dom';
+import { Card, Row, Col } from 'react-bootstrap';
+import ChatInput from '../components/ChatInput';
 
 const ChatContainer = () => {
     const [messages, setMessages] = useState([]);
+    const [nombreProduct, setNombreProduct] = useState('');
     const { productId } = useParams();
-    const userId = "654fc829545069d773dc1fdd";
+    const userId = '654fc829545069d773dc1fdd';
 
     useEffect(() => {
         const fetchMessages = async () => {
             try {
-                // console.log("Esto es prodfijisj " + productId);
-                const response = await fetch(`http://localhost:8000/chat?from=${userId}&productId=${productId}`);
+                const response = await fetch(
+                    `http://localhost:8000/chat?from=${userId}&productId=${productId}`
+                );
                 const data = await response.json();
                 setMessages(data);
+
+                const nombreProductResponse = await fetch(`http://localhost:8000/${productId}`);
+                const nombreProductData = await nombreProductResponse.json();
+                console.log(nombreProductData)
+                setNombreProduct(nombreProductData.name);  // Ajusta esto según la estructura de tu respuesta
             } catch (error) {
                 console.error('Error fetching messages:', error);
             }
@@ -38,7 +44,6 @@ const ChatContainer = () => {
                 }),
             });
 
-            // Utilizar una función de actualización que garantiza que siempre se tiene un array
             setMessages((prevMessages) => [
                 ...prevMessages,
                 { sender: userId, text: message },
@@ -48,24 +53,49 @@ const ChatContainer = () => {
         }
     };
 
-
     return (
         <div>
-            <div>
-                {messages.length > 0 && (
+            <h1 className="display-4">Chat del producto {nombreProduct}</h1>
+            <Card className="container mt-3">
+                <div>
+
                     <div>
-                        {messages.map((msg, index) => (
-                            <div key={index}>
-                                {console.log(msg)}
-                                <strong>{msg.sender || msg.msg.sender}:</strong> {msg.text || msg.msg.text}
-                            </div>
-                        ))}
+                        {messages.length > 0 && (
+                            <Row className="mt-3">
+                                <Col md="6">
+                                    {messages.map((msg, index) => (
+                                        <div
+                                            key={index}
+                                            className={`mb-2 ${
+                                                ((msg.sender == userId) || (msg.msg.sender == userId)) ? 'text-right' : 'text-left'
+                                            } mb-2`}
+                                        >
+                                            <Card
+                                                className={`${
+                                                    (msg.sender == userId) || (msg.msg.sender == userId)
+                                                        ? 'bg-secondary text-white text-right'
+                                                        : 'bg-light text-left'
+                                                }`}
+                                            >
+                                                <Card.Body className="d-flex justify-content-between">
+                                                    <div>
+                                                        {msg.text || msg.msg.text}
+                                                    </div>
+                                                    <small>{(msg.msg === undefined) ? new Date().toISOString() : msg.msg.date}</small>
+                                                </Card.Body>
+                                            </Card>
+                                        </div>
+                                    ))}
+                                </Col>
+                            </Row>
+                        )}
                     </div>
-                )}
-            </div>
-            {/* Componente de entrada de mensajes */}
-            <ChatInput onSendMessage={handleSendMessage} />
+                    {/* Componente de entrada de mensajes */}
+                    <ChatInput onSendMessage={handleSendMessage} />
+                </div>
+            </Card>
         </div>
+
     );
 };
 
