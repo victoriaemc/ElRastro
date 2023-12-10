@@ -62,31 +62,40 @@ const ChatContainer = () => {
                     <div>
                         {messages.length > 0 && (
                             <Row className="mt-3">
-                                <Col md="6">
+                                <Col>
                                     {messages.map((msg, index) => (
-                                        <div
-                                            key={index}
-                                            className={`mb-2 ${
-                                                ((msg.sender == userId) || (msg.msg.sender == userId)) ? 'text-right' : 'text-left'
-                                            } mb-2`}
-                                        >
-                                            <Card
-                                                className={`${
-                                                    (msg.sender == userId) || (msg.msg.sender == userId)
-                                                        ? 'bg-secondary text-white text-right'
-                                                        : 'bg-light text-left'
-                                                }`}
-                                            >
-                                                <Card.Body className="d-flex justify-content-between">
-                                                    <div>
-                                                        {msg.text || msg.msg.text}
-                                                    </div>
-                                                    <small>{(msg.msg === undefined) ? new Date().toISOString() : msg.msg.date}</small>
-                                                </Card.Body>
-                                            </Card>
-                                        </div>
+                                        <Row key={index} className="mb-2">
+                                            {((msg.sender == userId) || (msg.msg.sender == userId)) ? (
+                                                <>
+                                                    <Col md="6"></Col> {/* Columna vacía para equilibrar la fila */}
+                                                    <Col md="6" className="text-right">
+                                                        {/* Contenido para el mensaje del usuario */}
+                                                        <Card className="bg-secondary text-white">
+                                                            <Card.Body className="d-flex justify-content-between">
+                                                                <div>{msg.text || msg.msg.text}</div>
+                                                                <small>{(msg.msg === undefined) ? new Date().toISOString() : msg.msg.date}</small>
+                                                            </Card.Body>
+                                                        </Card>
+                                                    </Col>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <Col md="6" className="text-left">
+                                                        {/* Contenido para el mensaje de otro usuario */}
+                                                        <Card className="bg-light">
+                                                            <Card.Body className="d-flex justify-content-between">
+                                                                <div>{msg.text || msg.msg.text}</div>
+                                                                <small>{(msg.msg === undefined) ? new Date().toISOString() : msg.msg.date}</small>
+                                                            </Card.Body>
+                                                        </Card>
+                                                    </Col>
+                                                    <Col md="6"></Col> {/* Columna vacía para equilibrar la fila */}
+                                                </>
+                                            )}
+                                        </Row>
                                     ))}
                                 </Col>
+
                             </Row>
                         )}
                     </div>
