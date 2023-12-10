@@ -4,6 +4,7 @@ import Row from 'react-bootstrap/Row';
 import Col from "react-bootstrap/Col";
 import Button from 'react-bootstrap/Button';
 import axios from "axios";
+import CloudinaryImage from "./CloudinaryImage";
 
 const UserDetails = ({userId}) => {
     const {id} = useParams();
@@ -51,8 +52,11 @@ const UserDetails = ({userId}) => {
                     <Row>
                         <Col key="rating">
                             <h2>Valoración media : {ratings ? ratings.averageRating : <p>Cargando valoración media...</p>}</h2>
-                           {/* <img src={user.profilePicture} alt="Imagen de perfil" width="200" height="200"/>*/}
-                            <p>Foto de perfil aquí</p>
+                            <img src={CloudinaryImage(user.propicId)}  alt={"Image"} style={{
+                                width: "auto",
+                                height: "200px",
+                                objectFit: "cover"
+                            }}/>
                         </Col>
                         <Col>
                             <h4>Nombre: {user.name}</h4>

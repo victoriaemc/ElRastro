@@ -14,11 +14,6 @@ db.once("open", () => console.log("Connected to the database!"));
 app.use(cors());
 app.use(express.json());
 
-// Middleware para manejar Socket.io
-app.use((req, res, next) => {
-    req.io = io; // Agrega el objeto io a la solicitud para que esté disponible en las rutas
-    next();
-});
 
 // Rutas de proxy a microservicios
 app.use('/bids', proxy('http://bid:8001'));

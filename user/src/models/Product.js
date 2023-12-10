@@ -47,7 +47,6 @@ const productSchema = new mongoose.Schema({
     },
     imageId: {
         type: String,
-        required: true,
     },
 
 }, {collection: 'Product', versionKey: false });

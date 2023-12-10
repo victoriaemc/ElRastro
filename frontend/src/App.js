@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import './App.css';
 import axios from "axios";
-import io from "socket.io-client";
 
 // Imports cloudinary
 import CloudinaryUploadWidget from "./components/CloudinaryUploadWidget";
@@ -21,26 +20,10 @@ import UserProfile from "./pages/UserProfile";
 import EditUser from "./pages/EditUser";
 import MyBids from "./pages/MyBids";
 import ChatPage from "./pages/ChatPage";
+import SearchPage from "./pages/SearchPage";
 
 function App() {
-  const [socket, setSocket] = useState(null);
-  useEffect(() => {
-    // Establecer conexión con el servidor Socket.io
-    const newSocket = io("http://localhost:8000");
 
-    // Manejar eventos o realizar otras acciones según sea necesario
-    newSocket.on("connect", () => {
-      console.log("Conectado al servidor Socket.io");
-    });
-
-    // Guardar el objeto de socket en el estado
-    setSocket(newSocket);
-
-    // Limpiar la conexión al desmontar el componente
-    return () => {
-      newSocket.disconnect();
-    };
-  }, []);
   // Cloudinary vars----------------------------------------------
   const [publicId, setPublicId] = useState("");
   const [cloudName] = useState("daef41lib");
@@ -93,6 +76,7 @@ function App() {
           <Route path="/userProfile/:id/edit" element={<EditUser/>}/>
           <Route path="/myBids/:id" element={<MyBids/>}/>
           <Route path="/chat/:productId" element={<ChatPage/>}/>
+          <Route path="/search/:filter" element={<SearchPage/>}/>
         </Routes>
       </BrowserRouter>
       {/* Div para el widget 
