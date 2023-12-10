@@ -6,12 +6,20 @@ import { Col, Row, Button, Card } from 'react-bootstrap';
 // TODO: PONER EL ENLACE DE PUJA A DETALLES DEL PRODUCTO PARA PUJAR
 const Bid = (props) => {
     const {hours, minutes, seconds} = calculateRemainingTime(new Date(props.bid.productDetails.endingDate));
+    const canPlaceBid = props.bid.productDetails.lastBid > props.bid.price;
     return (
         <tr>
             <td>{props.bid.productDetails.name}</td>
             <td>{props.bid.price}</td>
+            <td>{props.bid.productDetails.lastBid}</td>
             <td>{`${hours}h ${minutes}m ${seconds}s faltan`}</td>
-            <td><Button variant="outline-success" href={`/${props.bid.product}`}>Pujar PENDIENTE</Button></td> 
+            <td>
+                {canPlaceBid && (
+                <Button variant="outline-success" href={`/productDetails?ProductId=${props.bid.product}`}>
+                    Pujar
+                </Button>
+                )}
+            </td> 
         </tr>
     );
 }
@@ -19,6 +27,11 @@ const Bid = (props) => {
 const calculateRemainingTime = (endDate) => {
     const now = new Date();
     const difference = Math.floor((endDate - now) / 1000);
+
+    if (difference <= 0) {
+        // Si el tiempo restante es menor o igual a cero, establecerlo en cero
+        return { hours: 0, minutes: 0, seconds: 0 };
+    }
 
     const hours = Math.floor(difference / 3600);
     const minutes = Math.floor((difference % 3600) / 60);
@@ -80,6 +93,7 @@ const MyBids = () => {
                 <thead>
                 <tr>
                     <th>Product</th>
+                    <th>Your bid</th>
                     <th>Max. Bid</th>
                     <th>Remaining time</th>
                     <th>Action</th>
