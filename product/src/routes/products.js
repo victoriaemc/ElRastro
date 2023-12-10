@@ -187,7 +187,8 @@ router.get("/:productId", async (req, res) => {
                 longitude: product.longitude,
                 publicationDate: product.publicationDate,
                 endingDate: product.endingDate,
-                finished: product.finished
+                finished: product.finished,
+                imageId: product.imageId
             });
         } else {
             res.json({ message: 'Product not found', type: 'danger' });
