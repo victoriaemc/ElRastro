@@ -65,7 +65,7 @@ const ProductDetailsBigCard = () => {
                             <Col md={8} className="d-flex justify-content-center align-items-center" style={{ maxHeight: "300px", backgroundColor: "#f5f5f5" }}>
 {/*                                 <ProductImage productName={product.name} />
  */}                            
-                                <img src={CloudinaryImage(product.imageId)} />
+                                <img src={CloudinaryImage(product.imageId)} className="productDetailImg"/>
                             </Col>
                             <Col md={4}>
                                 <BidDetails lastBid={product.lastBid} endingDate={product.endingDate} productId={productId}/>
