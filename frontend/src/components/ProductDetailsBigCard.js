@@ -79,7 +79,7 @@ const ProductDetailsBigCard = () => {
 
                             </Col>
                             <Col>
-                                <Button variant="secondary">Chat con el vendedor</Button>
+                                <Button variant="secondary" href={`/chat/${productId}`} >Chat con el vendedor</Button>
                             </Col>
                         </Row>
 
