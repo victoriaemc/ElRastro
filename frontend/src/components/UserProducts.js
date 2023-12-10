@@ -5,6 +5,7 @@ import Col from "react-bootstrap/Col";
 import Button from 'react-bootstrap/Button';
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import axios from "axios";
+import CloudinaryImage from "./CloudinaryImage";
 
 const UserProducts = ({ userId }) => {
     const { id } = useParams();
@@ -53,7 +54,14 @@ const UserProducts = ({ userId }) => {
                             <Col key={product._id}>
                                 <div className="card mb-4">
                                     <div className="card-body">
-                                        <p>Insertar foto del producto</p>
+                                        <img src={CloudinaryImage(product.imageId)}  alt={"Imagen"}
+                                             // style the images so that they mantain their aspect ratio but have a max height of 200px
+                                                style={{
+                                                    width: "auto",
+                                                    height: "200px",
+                                                    objectFit: "cover"
+                                                }}
+                                         />
                                     </div>
                                 </div>
                             </Col>
