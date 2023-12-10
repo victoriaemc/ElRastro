@@ -4,6 +4,9 @@ const app = express();
 app.use(express.json());
 
 const productRoutes = require('./src/routes/products');
+const chatRoutes = require('./src/routes/chat');
+
+app.use('/chat', chatRoutes);
 app.use('/', productRoutes);
 
 
