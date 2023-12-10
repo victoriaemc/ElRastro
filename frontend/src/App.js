@@ -20,7 +20,7 @@ import EditProduct from "./pages/EditProduct";
 import UserProfile from "./pages/UserProfile";
 import EditUser from "./pages/EditUser";
 import MyBids from "./pages/MyBids";
-
+import ChatPage from "./pages/ChatPage";
 
 function App() {
   const [socket, setSocket] = useState(null);
@@ -92,6 +92,7 @@ function App() {
           <Route path="/userProfile/:id" element={<UserProfile/>}/>
           <Route path="/userProfile/:id/edit" element={<EditUser/>}/>
           <Route path="/myBids/:id" element={<MyBids/>}/>
+          <Route path="/chat/:productId" element={<ChatPage/>}/>
         </Routes>
       </BrowserRouter>
       {/* Div para el widget 

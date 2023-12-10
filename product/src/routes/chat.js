@@ -10,9 +10,12 @@ router.get("/hola", (req, res) => {
 
 router.get("/", async (req, res) => {
     try {
+        console.log('Inside try block');
         const from = req.query.from;
         const productId = req.query.productId;
-        const product = await Messages.findById(productId);
+        console.log(productId);
+        const product = await Product.findById(productId).exec();
+        console.log(product);
         const to = product.user._id;
 
         const messages = await Messages.find({
@@ -24,8 +27,7 @@ router.get("/", async (req, res) => {
 
         const projectedMessages = messages.map((msg) => {
             return {
-                fromSelf: msg.sender.toString() === from,
-                message: msg.text,
+                msg
             };
         });
         res.json(projectedMessages);
