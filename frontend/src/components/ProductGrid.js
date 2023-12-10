@@ -9,7 +9,7 @@ const ProductGrid = ({ products, title }) => {
         <div className="product-list">
         {products.map(product => (
           <div className="product-preview" key={product._id}>
-            <Link to= {`/${product._id}`}>
+            <Link to= {`/productDetails?ProductId=${product._id}`}>
               <img src={CloudinaryImage(product.imageId)} />
               <h2>{ product.name }</h2>
               <h2> ${ product.startingPrice }</h2>

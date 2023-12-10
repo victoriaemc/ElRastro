@@ -7,6 +7,7 @@ import BidDetails from "./BidDetails";
 import ProductDetails from "./ProductDetails";
 import Countdown from "./Countdown";
 import ProductLocation from "./ProductLocation";
+import CloudinaryImage from "./CloudinaryImage";
 
 const ProductDetailsBigCard = () => {
     const location = useLocation();
@@ -62,7 +63,9 @@ const ProductDetailsBigCard = () => {
                     <Card.Body>
                         <Row style={{maxHeight: '300px'}}>
                             <Col md={8} className="d-flex justify-content-center align-items-center" style={{ maxHeight: "300px", backgroundColor: "#f5f5f5" }}>
-                                <ProductImage productName={product.name} />
+{/*                                 <ProductImage productName={product.name} />
+ */}                            
+                                <img src={CloudinaryImage(product.imageId)} />
                             </Col>
                             <Col md={4}>
                                 <BidDetails lastBid={product.lastBid} endingDate={product.endingDate} productId={productId}/>
