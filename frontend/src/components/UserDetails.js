@@ -52,7 +52,11 @@ const UserDetails = ({userId}) => {
                     <Row>
                         <Col key="rating">
                             <h2>Valoración media : {ratings ? ratings.averageRating : <p>Cargando valoración media...</p>}</h2>
-                            <CloudinaryImage imageId={user.propicId} width="200" height="200" crop="fill"/>
+                            <img src={CloudinaryImage(user.propicId)}  alt={"Image"} style={{
+                                width: "auto",
+                                height: "200px",
+                                objectFit: "cover"
+                            }}/>
                         </Col>
                         <Col>
                             <h4>Nombre: {user.name}</h4>
