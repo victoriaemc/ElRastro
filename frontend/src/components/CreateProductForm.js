@@ -22,7 +22,7 @@ const CreateProductForm = () => {
     useEffect(() => {
         const fetchUserLocation = async () => {
             try {
-                const apiUrl = 'http://localhost:8000/users/userLocation';
+                const apiUrl = process.env.REACT_APP_GATEWAY+'/users/userLocation';
                 const response = await axios.get(apiUrl);
 
                 // Extract latitude and longitude from the API response
@@ -59,7 +59,7 @@ const CreateProductForm = () => {
 
         try {
             // Make a POST request to your API endpoint to save the new product
-            await axios.post('http://localhost:8000/', formData);
+            await axios.post(process.env.REACT_APP_GATEWAY, formData);
             navigate(-1);
         } catch (error) {
             console.error('Error creating product:', error);

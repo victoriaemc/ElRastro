@@ -47,7 +47,7 @@ const CreateProductFormulary = () => {
 
         setIspending(true);
 
-        fetch('http://localhost:8000/', {
+        fetch(process.env.REACT_APP_GATEWAY, {
             method: 'POST',
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify(producto)
@@ -63,7 +63,7 @@ const CreateProductFormulary = () => {
     useEffect(() => {
         const fetchUserLocation = async () => {
             try {
-                const apiUrl = 'http://localhost:8000/users/userLocation';
+                const apiUrl = process.env.REACT_APP_GATEWAY+'/users/userLocation';
                 const response = await axios.get(apiUrl);
 
                 // Extract latitude and longitude from the API response

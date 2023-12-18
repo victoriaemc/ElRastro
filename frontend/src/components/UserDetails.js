@@ -15,8 +15,8 @@ const UserDetails = ({userId}) => {
     useEffect(() => {
         const fetchUserDetails = async () => {
             try {
-                const response = await axios.get(`http://localhost:8000/users/${id}`);
-                const ratingsResponse = await axios.get(`http://localhost:8000/users/ratings/average?user=${id}`);
+                const response = await axios.get(process.env.REACT_APP_GATEWAY+`/users/${id}`);
+                const ratingsResponse = await axios.get(process.env.REACT_APP_GATEWAY+`/users/ratings/average?user=${id}`);
                 if (response.status===200) {
                     const userData = await response.data;
                     setUser(userData);
