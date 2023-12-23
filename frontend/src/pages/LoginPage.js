@@ -1,22 +1,37 @@
 // EN LA CARPETA PAGES IRAN LAS PAGINAS DE NUESTRA APP
-
+import React from "react";
+import {GoogleLogin, useGoogleLogin} from "@react-oauth/google";
+import axios from "axios";
+import {jwtDecode} from "jwt-decode";
 function LoginPage(){
+  const login = useGoogleLogin({
+    onSuccess: async (response) => {
+      try {
+        const res = await axios.get(
+            "https://www.googleapis.com/oauth2/v3/userinfo",
+            {
+              headers: {
+                Authorization: `Bearer ${response.acces_token}`,
+              },
+            }
+        );
+        console.log(res);
+      } catch (err){
+        console.log(err);
+      }
+    },
+  });
   return(
-  <div class="container login-container mt-4">
-    <h2 class="text-center mb-5">Iniciar sesión</h2>
-    <form>
-      <div class="form-floating mb-3">
-        <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com" required/>
-        <label for="floatingInput">Email address</label>
-      </div>
-      <div class="form-floating mb-5">
-        <input type="password" class="form-control" id="floatingPassword" placeholder="Password" required/>
-        <label for="floatingPassword">Password</label>
-      </div>
-      <button type="submit" class="btn btn-primary">Iniciar sesión</button>
-    </form>
-</div>
-  )
+  <GoogleLogin
+    onSucces={(credentialResponse) => {
+      var credentialResponseDecoded = jwt_decode(credentialResponse.credential);
+      console.log(credentialResponse);
+    }}
+    onError={()=> {
+      console.log("Login failed");
+    }}
+    />
+  );
 }
 
 export default LoginPage
