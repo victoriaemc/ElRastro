@@ -11,7 +11,11 @@ const Bid = (props) => {
             <td>{props.bid.productDetails.name}</td>
             <td>{props.bid.price}</td>
             <td>{`${hours}h ${minutes}m ${seconds}s faltan`}</td>
-            <td><Button variant="outline-success" href={`/${props.bid.product}`}>Pujar PENDIENTE</Button></td> 
+            {props.bid.product.lastBid === props.bid.price && props.bid.product.finished === true ? (
+                <td><Button variant="outline-success" href={`/${props.bid.product}/pay`}>Pagar</Button></td>
+            ) : (
+                <td><Button variant="outline-success" href={`/${props.bid.product}`}>Pujar PENDIENTE</Button></td>
+            )}
         </tr>
     );
 }
