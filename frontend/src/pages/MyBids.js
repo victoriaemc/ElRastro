@@ -6,12 +6,13 @@ import { Col, Row, Button, Card } from 'react-bootstrap';
 // TODO: PONER EL ENLACE DE PUJA A DETALLES DEL PRODUCTO PARA PUJAR
 const Bid = (props) => {
     const {hours, minutes, seconds} = calculateRemainingTime(new Date(props.bid.productDetails.endingDate));
+    
     return (
         <tr>
             <td>{props.bid.productDetails.name}</td>
             <td>{props.bid.price}</td>
             <td>{`${hours}h ${minutes}m ${seconds}s faltan`}</td>
-            {props.bid.product.lastBid === props.bid.price && props.bid.product.finished === true ? (
+            {(props.bid.productDetails.lastBid === props.bid.price) && (props.bid.productDetails.finished === true) ? (
                 <td><Button variant="outline-success" href={`/${props.bid.product}/pay`}>Pagar</Button></td>
             ) : (
                 <td><Button variant="outline-success" href={`/${props.bid.product}`}>Pujar PENDIENTE</Button></td>
