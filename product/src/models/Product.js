@@ -40,14 +40,16 @@ const productSchema = new mongoose.Schema({
         type: Date,
         required: true,
     },
-    finished: {
-        type: Boolean,
-        required: true,
-        default: false
-    },
     imageId: {
         type: String,
     },
 
 }, {collection: 'Product', versionKey: false });
+
+productSchema.virtual('finished').get(function () {
+    return Date.now() > this.endingDate;
+});
+// Ensure virtuals are included in the JSON representation
+productSchema.set('toJSON', { getters: true });
+
 module.exports = mongoose.model("Product", productSchema);
