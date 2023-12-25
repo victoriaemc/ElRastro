@@ -21,7 +21,7 @@ import EditUser from "./pages/EditUser";
 import MyBids from "./pages/MyBids";
 import ChatPage from "./pages/ChatPage";
 import SearchPage from "./pages/SearchPage";
-
+import PaymentPage from "./pages/PaymentPage";
 function App() {
 
   // Cloudinary vars----------------------------------------------
@@ -77,6 +77,7 @@ function App() {
           <Route path="/myBids/:id" element={<MyBids/>}/>
           <Route path="/chat/:productId" element={<ChatPage/>}/>
           <Route path="/search/:filter" element={<SearchPage/>}/>
+          <Route path="/pay/:productId" element={<PaymentPage/>}/>
         </Routes>
       </BrowserRouter>
       {/* Div para el widget 
