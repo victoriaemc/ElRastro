@@ -250,7 +250,8 @@ router.put("/:productId", async (req, res) => {
             publicationDate: req.body.publicationDate,
             endingDate: req.body.endingDate,
             imageId: req.body.imageId,
-            finished: req.body.finished
+            finished: req.body.finished,
+            payed: req.body.payed
         };
 
         const product = await Product.findByIdAndUpdate(productId, updatedProduct, { new: true });
