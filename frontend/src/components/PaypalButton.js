@@ -3,15 +3,16 @@ import React from 'react';
 import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js';
 
 const PaypalButton = ({ amount }) => {
+    console.log(amount);
   return (
-    <PayPalScriptProvider options={{ 'client-id': 'AQCflpJzGTSa9XXgSMCbbjhKUNYOlMuE2iTBqhcUiPHImm1e7HDQhN90sHYKgdtEdkkb7NmviHc2zLOS' }}>
+    <PayPalScriptProvider options={{ 'client-id': 'AQCflpJzGTSa9XXgSMCbbjhKUNYOlMuE2iTBqhcUiPHImm1e7HDQhN90sHYKgdtEdkkb7NmviHc2zLOS', 'currency': "EUR" }}>
       <PayPalButtons
         createOrder={(data, actions) => {
           return actions.order.create({
             purchase_units: [
               {
                 amount: {
-                  value: amount,
+                  value: amount.toFixed(2),
                 },
               },
             ],

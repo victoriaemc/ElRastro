@@ -1,41 +1,42 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Card, Row, Col } from 'react-bootstrap';
-import ProductDetails from "./ProductDetails";
-import CloudinaryImage from "./CloudinaryImage";
-import PaypalButton from "./PaypalButton";
+import { Card, Row } from 'react-bootstrap';
+import PaypalButton from './PaypalButton';
 
 const Paypal = () => {
     const { productId } = useParams();
 
     const [product, setProduct] = useState({});
-    const [sellerUser, setSellerUser] = useState({});
-    const [show, setShow] = useState(false);
+    const [highestBid, setHighestBid] = useState({});
+    const [amount, setAmount] = useState(0);
 
     useEffect(() => {
-        async function getProduct() {
+        async function fetchData() {
             try {
-                const response = await fetch(`http://localhost:8000/${productId}`);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
+                // Fetch product details
+                const productResponse = await fetch(`http://localhost:8000/${productId}`);
+                if (!productResponse.ok) {
+                    throw new Error(`HTTP error! Status: ${productResponse.status}`);
                 }
-                const product = await response.json();
-                setProduct(product);
+                const productData = await productResponse.json();
+                setProduct(productData);
+                //console.log(productData);
+                //console.log(productData.lastBid)
+
+                setAmount(productData.lastBid.toFixed(2));
+                console.log(amount);
+
             } catch (error) {
-                console.error('Error fetching product:', error);
+                console.error('Error fetching data:', error);
             }
         }
-        getProduct();
-    }, [productId]);
 
-    // El bloque adicional fue eliminado
+        fetchData();
+    }, [productId]);
 
     if (!product || Object.keys(product).length === 0) {
         return <p>Cargando...</p>;
     }
-
-    const handleShow = () => setShow(true);
-    const handleClose = () => setShow(false);
 
     return (
         <section className="section-content padding-y bg">
@@ -46,16 +47,16 @@ const Paypal = () => {
                             <h2>Precio a pagar:</h2>
                         </Row>
                         <Row>
-                            <h3>{product.lastBid} euros</h3>
+                            <h3>{product.lastBid}</h3>
                         </Row>
                         <Row>
-                            <PaypalButton amount={product.lastBid} />
+                            <PaypalButton amount={parseFloat(amount)} />
                         </Row>
                     </Card.Body>
                 </Card>
             </div>
         </section>
     );
-}
+};
 
 export default Paypal;
