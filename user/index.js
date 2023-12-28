@@ -13,7 +13,7 @@ app.use('/', (req, res, next) => {
     return res.status(200).json({"msg": "User service is running"})
 })
 
-mongoose.connect("mongodb+srv://xmariafdz:d6sNRoSlX55dLrCQ@ingweb.zuuicah.mongodb.net/elrastro", {useNewUrlParser: true});
+mongoose.connect("mongodb+srv://xmariafdz:d6sNRoSlX55dLrCQ@ingweb.zuuicah.mongodb.net/elrastro4", {useNewUrlParser: true});
 const db = mongoose.connection;
 db.on('error', (error) => console.log(error));
 db.once("open", () => console.log("Conected to the database!"));
