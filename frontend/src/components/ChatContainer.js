@@ -13,12 +13,12 @@ const ChatContainer = () => {
         const fetchMessages = async () => {
             try {
                 const response = await fetch(
-                    `http://localhost:8000/chat?from=${userId}&productId=${productId}`
+                    process.env.REACT_APP_GATEWAY+`/chat?from=${userId}&productId=${productId}`
                 );
                 const data = await response.json();
                 setMessages(data);
 
-                const nombreProductResponse = await fetch(`http://localhost:8000/${productId}`);
+                const nombreProductResponse = await fetch(process.env.REACT_APP_GATEWAY+`/${productId}`);
                 const nombreProductData = await nombreProductResponse.json();
                 console.log(nombreProductData)
                 setNombreProduct(nombreProductData.name);  // Ajusta esto según la estructura de tu respuesta
@@ -32,7 +32,7 @@ const ChatContainer = () => {
 
     const handleSendMessage = async (message) => {
         try {
-            await fetch('http://localhost:8000/chat', {
+            await fetch(process.env.REACT_APP_GATEWAY+'/chat', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

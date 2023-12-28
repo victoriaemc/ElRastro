@@ -31,7 +31,7 @@ const MyBids = () => {
     useEffect(() => {
         // Extraer bids del usuario
         async function getBid(){
-            const response = await fetch('http://localhost:8000/bids?user=65720e41e0700cc1b8534119');
+            const response = await fetch(process.env.REACT_APP_GATEWAY+'/bids?user=65720e41e0700cc1b8534119');
             if (!response.ok){
                 const message = `An error occurred: ${response.statusText}`;
                 window.alert(message);
@@ -41,7 +41,7 @@ const MyBids = () => {
             // Extraer los detalles del producto asociado
             const bidsWithProductDetails = await Promise.all(
                 bids.map(async (bid) => {
-                    const productResponse = await fetch(`http://localhost:8000/${bid.product}`);
+                    const productResponse = await fetch(process.env.REACT_APP_GATEWAY+`/${bid.product}`);
                     if (!productResponse.ok){
                         const message = `An error ocurred fetching product details: ${productResponse.status}`;
                         window.alert(message);
