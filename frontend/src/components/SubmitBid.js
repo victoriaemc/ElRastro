@@ -29,7 +29,7 @@ const SubmitBid = ({ product, endingDate }) => {
             // ...
 
             console.log(productId);
-            axios.put(`http://localhost:8000/${productId}`, {
+            axios.put(process.env.REACT_APP_GATEWAY+`/${productId}`, {
                 name: product.name,
                 description: product.description,
                 user: product.user,

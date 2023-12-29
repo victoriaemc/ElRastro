@@ -5,7 +5,7 @@ import useApi from "../components/useApi"
 
 function HomePage(){
 
-  const {data, isPending, error} = useApi("http://localhost:8000/")
+  const {data, isPending, error} = useApi(process.env.REACT_APP_GATEWAY)
 
 
   return (

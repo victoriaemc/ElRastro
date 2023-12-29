@@ -29,7 +29,7 @@ const EditUserForm = ({userId}) => {
         const fetchUserDetails = async () => {
             try {
 
-                const apiUrl = `http://localhost:8000/users/${id}`;
+                const apiUrl = process.env.REACT_APP_GATEWAY+`/users/${id}`;
                 const response = await axios.get(apiUrl);
                 const { name, username, email, password, propicId } = response.data;
                 setName(name);
@@ -63,7 +63,7 @@ const EditUserForm = ({userId}) => {
 
         const updatedUser = { name, username, email, password, propicId };
 
-        axios.put(`http://localhost:8000/users/${id}`, updatedUser)
+        axios.put(process.env.REACT_APP_GATEWAY+`/users/${id}`, updatedUser)
             .then(() => {
                 console.log("User updated: " + JSON.stringify(updatedUser));
                 navigate(-1);

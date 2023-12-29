@@ -30,7 +30,7 @@ const EditProductFormulary = () => {
     useEffect(() => {
         const fetchProductDetails = async () => {
             try {
-                const apiUrl = `http://localhost:8000/${id}`;
+                const apiUrl = process.env.REACT_APP_GATEWAY+`/${id}`;
                 const response = await axios.get(apiUrl);
 
                 // Extract product details from the API response
@@ -74,7 +74,7 @@ const EditProductFormulary = () => {
             // ... other fields ...
         };
 
-        axios.put(`http://localhost:8000/${id}`, updatedProduct)
+        axios.put(process.env.REACT_APP_GATEWAY+`/${id}`, updatedProduct)
             .then(() => {
                 console.log("Product updated: " + JSON.stringify(updatedProduct));
                 navigate(-1);

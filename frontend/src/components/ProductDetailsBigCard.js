@@ -26,7 +26,7 @@ const ProductDetailsBigCard = () => {
     useEffect(() => {
         async function getProduct() {
             try {
-                const response = await fetch(`http://localhost:8000/${productId}`);
+                const response = await fetch(process.env.REACT_APP_GATEWAY+`/${productId}`);
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }
@@ -46,7 +46,7 @@ const ProductDetailsBigCard = () => {
 
     async function getSellerUsername(userId) {
         try {
-            const response = await fetch(`http://localhost:8000/users/${userId}`);
+            const response = await fetch(process.env.REACT_APP_GATEWAY+`/users/${userId}`);
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
@@ -82,7 +82,7 @@ const ProductDetailsBigCard = () => {
 
         try {
             // Make a POST request to your API endpoint to save the new rating
-            await axios.post(`http://localhost:8000/users/${sellerUser._id}/ratings`, ratingObject);
+            await axios.post(process.env.REACT_APP_GATEWAY+`/users/${sellerUser._id}/ratings`, ratingObject);
             handleClose();
         }catch (error) {
             console.error('Error creating rating:', error);

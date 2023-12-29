@@ -50,15 +50,7 @@ function App() {
     }
   });
   const myImage = cld.image(publicId);
-  // -------------------------------------------------------------
-  /*
-  const [message, setMessage] = useState("");
-  useEffect(() => {
-    fetch("http://localhost:8000/users/200")
-        .then((res) => res.json())
-        .then((data) => setMessage(data.message));
-  }, []);
-  */
+
   return (
     <div className="App">
       {/* RUTAS DE LAS PAGINAS  */}

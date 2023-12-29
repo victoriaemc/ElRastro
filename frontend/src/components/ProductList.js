@@ -17,7 +17,7 @@ export default function ProductList() {
     // This method fetches the records from the database.
     useEffect(() => {
         async function getProduct() {
-            const response = await fetch(`http://localhost:8000/`);
+            const response = await fetch(process.env.REACT_APP_GATEWAY);
             if (!response.ok) {
                 const message = `An error occurred: ${response.statusText}`;
                 window.alert(message);

@@ -7,7 +7,7 @@ import {useParams} from "react-router-dom";
 function HomePage(){
 
     const {filter} = useParams();
-    const {data, isPending, error} = useApi(`http://localhost:8000/?search=${filter}`);
+    const {data, isPending, error} = useApi(process.env.REACT_APP_GATEWAY+`/?search=${filter}`);
 
     return (
         <div className="home">
