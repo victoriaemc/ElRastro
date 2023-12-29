@@ -1,10 +1,10 @@
 // EN LA CARPETA PAGES IRAN LAS PAGINAS DE NUESTRA APP
 import React from "react";
-import {GoogleLogin, useGoogleLogin} from "@react-oauth/google";
+import {GoogleLogin, GoogleOAuthProvider} from "@react-oauth/google";
 import axios from "axios";
 import {jwtDecode} from "jwt-decode";
 function LoginPage(){
-  const login = useGoogleLogin({
+/*  const login = useGoogleLogin({
     onSuccess: async (response) => {
       try {
         const res = await axios.get(
@@ -20,17 +20,35 @@ function LoginPage(){
         console.log(err);
       }
     },
-  });
+  });*/
+    const handleLogin = async (credentialResponse) => {
+        var obj = jwtDecode(credentialResponse.credential);
+        //var data = JSON.stringify(obj);
+        //console.log(data);
+
+        //const data = {};
+
+        const config = {
+            method: 'POST',
+            url: 'http://localhost:8000',
+            headers: {},
+            //data: data
+        }
+
+        await axios(config)
+    }
   return(
+  <GoogleOAuthProvider clientId={"133771592681-sf648miprtjn4spn88k9flo64g3ajr22.apps.googleusercontent.com"}>
   <GoogleLogin
-    onSucces={(credentialResponse) => {
+    onSuccess={handleLogin}
+      /*onSucces={(credentialResponse) => {
       var credentialResponseDecoded = jwt_decode(credentialResponse.credential);
       console.log(credentialResponse);
-    }}
+    }}*/
     onError={()=> {
       console.log("Login failed");
     }}
-    />
+    /> </GoogleOAuthProvider>
   );
 }
 
