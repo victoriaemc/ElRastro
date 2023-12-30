@@ -188,7 +188,8 @@ router.get("/:productId", async (req, res) => {
                 publicationDate: product.publicationDate,
                 endingDate: product.endingDate,
                 finished: product.finished,
-                imageId: product.imageId
+                imageId: product.imageId,
+                payed: product.payed
             });
         } else {
             res.json({ message: 'Product not found', type: 'danger' });
@@ -223,7 +224,8 @@ router.post("/", async (req, res) => {
             publicationDate: req.body.publicationDate,
             endingDate: req.body.endingDate,
             imageId: req.body.imageId,
-            finished: req.body.finished
+            finished: req.body.finished,
+            payed: req.body.payed
         });
 
         await product.save();
@@ -238,7 +240,6 @@ router.post("/", async (req, res) => {
 router.put("/:productId", async (req, res) => {
     try {
         const productId = req.params.productId;
-
         const updatedProduct = {
             name: req.body.name,
             description: req.body.description,

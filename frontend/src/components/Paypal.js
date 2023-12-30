@@ -9,6 +9,7 @@ const Paypal = () => {
     const [product, setProduct] = useState({});
     const [highestBid, setHighestBid] = useState({});
     const [amount, setAmount] = useState(0);
+    const [payed, setPayed] = useState(false);
 
     useEffect(() => {
         async function fetchData() {
@@ -24,6 +25,8 @@ const Paypal = () => {
                 //console.log(productData.lastBid)
 
                 setAmount(productData.lastBid.toFixed(2));
+                setPayed(productData.payed);
+                payed = productData.payed;
                 console.log(amount);
 
             } catch (error) {
@@ -50,7 +53,8 @@ const Paypal = () => {
                             <h3>{product.lastBid}</h3>
                         </Row>
                         <Row>
-                            <PaypalButton amount={parseFloat(amount)} />
+                            {console.log("yo pague " + setPayed)}
+                            <PaypalButton amount={parseFloat(amount)} payed={payed} productId={productId}/>
                         </Row>
                     </Card.Body>
                 </Card>
