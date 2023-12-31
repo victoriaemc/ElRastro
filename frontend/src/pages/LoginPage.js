@@ -2,6 +2,8 @@ import React from "react";
 import {GoogleLogin, GoogleOAuthProvider} from "@react-oauth/google";
 import axios from "axios";
 import {jwtDecode} from "jwt-decode";
+import LoginButton from "../components/LoginButton";
+import {Container} from "react-bootstrap";
 function LoginPage(){
     const handleLogin = async (credentialResponse) => {
         try {
@@ -20,14 +22,11 @@ function LoginPage(){
     };
 
     return (
-        <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID_VICKY}>
-            <GoogleLogin
-                onSuccess={handleLogin}
-                onError={() => {
-                    console.log("Login failed");
-                }}
-            />
-        </GoogleOAuthProvider>
+
+        <Container>
+            <LoginButton/>
+        </Container>
+
     );
 }
 
