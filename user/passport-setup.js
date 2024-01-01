@@ -26,13 +26,10 @@ passport.use(new GoogleStrategy({
         done(null, user);
     }));
 
-passport.serializeUser((user, done) => {
-    done(null, user.id);
+passport.serializeUser((user, callback) => {
+    callback(null, user);
 });
 
-passport.deserializeUser((id, done) => {
-    User.findById(id, (err, user) => {
-        done(err, user);
-    });
+passport.deserializeUser((obj, callback) => {
+    callback(null, obj);
 });
-

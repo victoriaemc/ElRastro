@@ -25,6 +25,38 @@ import SearchPage from "./pages/SearchPage";
 
 function App() {
 
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const url = process.env.REACT_APP_GATEWAY+"/users/login/success";
+        const response = await fetch(url, {
+          method: 'GET',
+          credentials: 'include', // equivalent to withCredentials: true in axios
+          headers: {
+            Accept: 'application/json',
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        setUser(data.user._json);
+        console.log("User: ", data.user._json);
+      } catch (e) {
+        console.error(e);
+      }
+    };
+
+    fetchUser().then(() => console.log("User fetched"));
+  }, []);
+
+
+
+
   // Cloudinary vars----------------------------------------------
   const [publicId, setPublicId] = useState("");
   const [cloudName] = useState("daef41lib");
@@ -32,17 +64,6 @@ function App() {
   const [uwConfig] = useState({
     cloudName,
     uploadPreset
-    // cropping: true, //add a cropping step
-    // showAdvancedOptions: true,  //add advanced options (public_id and tag)
-    // sources: [ "local", "url"], // restrict the upload sources to URL and local files
-    // multiple: false,  //restrict upload to a single file
-    // folder: "user_images", //upload files to the specified folder
-    // tags: ["users", "profile"], //add the given tags to the uploaded files
-    // context: {alt: "user_uploaded"}, //add the given context data to the uploaded files
-    // clientAllowedFormats: ["images"], //restrict uploading to image files only
-    // maxImageFileSize: 2000000,  //restrict file size to less than 2MB
-    // maxImageWidth: 2000, //Scales the image down to a width of 2000 pixels before uploading
-    // theme: "purple", //change to a purple theme
   });
   const cld = new Cloudinary({
     cloud: {
@@ -55,7 +76,7 @@ function App() {
     <div className="App">
       {/* RUTAS DE LAS PAGINAS  */}
       <BrowserRouter>
-        <ElRastroNavbar/>
+        <ElRastroNavbar user={user}/>
         <Routes>
           <Route path="/" element={<h1><HomePage/></h1>}/>
           <Route path="/login" element={<LoginPage/>}/>
@@ -72,20 +93,6 @@ function App() {
           <Route path="/search/:filter" element={<SearchPage/>}/>
         </Routes>
       </BrowserRouter>
-      {/* Div para el widget 
-      <div>
-        <h3>Cloudinary Upload Widget Example</h3>
-        <CloudinaryUploadWidget uwConfig={uwConfig} setPublicId={setPublicId} />
-      </div>
-      {/* Div para mostrar la imagen 
-      <div style={{ width: "800px" }}>
-        <AdvancedImage
-          style={{ maxWidth: "100%" }}
-          cldImg={myImage}
-          plugins={[responsive(), placeholder()]}
-        />
-      </div>
-      */}
     </div>
   );
 }

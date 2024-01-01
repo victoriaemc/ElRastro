@@ -8,7 +8,7 @@ import Container from 'react-bootstrap/Container';
 
 import { Link, useNavigate } from 'react-router-dom';
 
-export default function ElRastroNavbar() {
+export default function ElRastroNavbar({user}) {
     const [searchTerm, setSearchTerm] = useState('');
     const history = useNavigate();
 
@@ -40,6 +40,14 @@ export default function ElRastroNavbar() {
                             <Button type="submit" onClick={handleSearch}>
                                 Submit
                             </Button>
+                        </Col>
+                        <Col xs="auto">
+
+                            {user ? (
+                                <Navbar.Text className="d-inline-block text-truncate">{user.name}</Navbar.Text>
+                            ):(
+                                <Navbar.Text className="d-inline-block text-truncate">Not logged in</Navbar.Text>
+                            )}
                         </Col>
                     </Row>
                 </Form>
