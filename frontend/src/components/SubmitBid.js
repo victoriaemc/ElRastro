@@ -8,6 +8,7 @@ const SubmitBid = ({ product, endingDate }) => {
     const [amount, setAmount] = useState("");
     const [error, setError] = useState(null);
 
+    const provisionalUserId = "65720e41e0700cc1b8534119";
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
     const productId = searchParams.get("ProductId");
@@ -41,6 +42,21 @@ const SubmitBid = ({ product, endingDate }) => {
                 endingDate: product.endingDate,
                 finished: product.finished,
                 imageId: product.imageId
+            })
+                .then(response => {
+                    console.log('Actualización exitosa:', response.data);
+                    window.location.reload();
+                })
+                .catch(error => {
+                    console.error('Error al actualizar el producto:', error);
+                    setError("Error al realizar la puja. Inténtalo de nuevo.");
+                });
+
+            axios.post(`http://localhost:8000/bids`, {
+                product: productId,
+                user: provisionalUserId,
+                price: Number(amount),
+                date: currentTimestamp
             })
                 .then(response => {
                     console.log('Actualización exitosa:', response.data);

@@ -25,7 +25,6 @@ async function convertCurrency(baseAmount, currencyCode) {
     }
 }
 
-
 // GET all bids listing. -> localhost:8000/bids
 // Si se especifica el parámetro ?user=userid, devuelve las pujas de ese usuario -> localhost:8000/bids?user=654926ac75aa4e12761f4ab4
 // Si se especifica el parámetro ?product=productid, devuelve las pujas de ese producto -> localhost:8000/bids?product=6549293875aa4e12761f4ac4
@@ -73,6 +72,29 @@ router.get("/", async (req, res) => {
         res.status(500).json({ message: err.message });
     }
 });
+
+// Devuelve la puja más alta sobre un producto, por ejemplo:
+// http://localhost:8000/bids/highestBid?product=6576eb0f255ebb18bc49cacd
+router.get("/highestBid", async (req, res) => {
+    try {
+        const productId = req.query.product;
+
+        if (!productId) {
+            return res.status(400).json({ message: "Missing 'product' parameter. Please provide a valid product ID." });
+        }
+
+        // Buscar la oferta más alta para un producto específico
+        const highestBid = await Bid.findOne({ product: productId })
+            .sort({ price: -1 }) // Ordenar en orden descendente según el precio
+            .exec();
+
+        res.json(highestBid);
+
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
 
 // Devuelve una puja por su id -> localhost:8000/bids/654a09ac75aa4e12761f4add
 // Si se especifica el parámetro ?currency=XXX, devuelve el precio en la moneda especificada
