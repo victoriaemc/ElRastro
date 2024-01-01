@@ -12,15 +12,19 @@ const Product = require('../models/Product');
 // localhost:8000/finished?value=true
 router.get("/finished", async (req, res) => {
     try {
-        const finishedValue = Boolean(req.query.value === 'true');
+        // Fetch all products
+        const allProducts = await Product.find();
 
-        const products = await Product.find({ finished: finishedValue }).exec();
+        // Filter products based on the finished virtual field
+        const products = allProducts.filter(product => product.finished === Boolean(req.query.value === 'true'));
+
         res.json(products);
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: err.message });
     }
 });
+
 
 
 // Devuelve los productos cuya ultima puja sea mayor a una cantidad
@@ -226,6 +230,7 @@ router.post("/", async (req, res) => {
             imageId: req.body.imageId,
             finished: req.body.finished,
             payed: req.body.payed
+
         });
 
         await product.save();
