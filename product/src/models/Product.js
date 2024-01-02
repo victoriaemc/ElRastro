@@ -43,6 +43,10 @@ const productSchema = new mongoose.Schema({
     imageId: {
         type: String,
     },
+    payed: {
+        type: Boolean,
+        default: false
+    },
 
 }, {collection: 'Product', versionKey: false });
 
