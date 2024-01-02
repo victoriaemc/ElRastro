@@ -28,12 +28,13 @@ const CreateProductFormulary = (user) => {
     const navigate = useNavigate();
 
     const handleSubmit = (e) => {
-        if (user != null){
+        if (user.user != null){
             e.preventDefault();
+            console.log(user.user._id);
             const producto = {
                 name,
                 description,
-                user: user._id,
+                user: user.user._id,
                 startingPrice,
                 lastBid,
                 latitude,
