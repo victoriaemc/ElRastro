@@ -91,7 +91,7 @@ function App() {
           <Route path="/" element={<h1><HomePage/></h1>}/>
           <Route path="/login" element={<LoginPage/>}/>
           <Route path="/etc" element={<h1>Etc page</h1>}/>
-          <Route path="/productDetails" element={<ProductDetails/>}/>
+          <Route path="/productDetails" element={<ProductDetails user={user}/>}/>
           <Route path="/bidUp" element={<BiddingUpPage/>}/>
           <Route path="/biddingUp" element={<BiddingUpPage/>}/>
           <Route path="/createProduct" element={<CreateProduct/>}/>

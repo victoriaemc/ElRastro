@@ -12,7 +12,7 @@ import CloudinaryImage from "./CloudinaryImage";
 import StarRatings from "react-star-ratings";
 import axios from "axios";
 
-const ProductDetailsBigCard = () => {
+const ProductDetailsBigCard = ({user}) => {
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
     const productId = searchParams.get("ProductId");
@@ -112,12 +112,20 @@ const ProductDetailsBigCard = () => {
                                 <p><b>Vendido por:</b>  {sellerUser ?  <a href={`/userProfile/${sellerUser._id}`}>{sellerUser.username}</a> : "Cargando..."}</p>
 
                             </Col>
-                            <Col>
-                                <Button variant="secondary" href={`/chat/${productId}`} >Chat con el vendedor</Button>
-                            </Col>
-                            <Col>
-                                <Button variant="secondary" onClick={handleShow}>Valorar vendedor</Button>
-                            </Col>
+                            {(user == null || sellerUser._id != user._id) ? (
+                                <>
+                                    <Col>
+                                        <Button variant="secondary" href={`/chat/${productId}`}>Chat con el vendedor</Button>
+                                    </Col>
+                                    <Col>
+                                        <Button variant="secondary" onClick={handleShow}>Valorar vendedor</Button>
+                                    </Col>
+                                </>
+                            ) : (
+                                <Col>
+                                    <Button variant="secondary" href={`/editProduct/${productId}`}>Editar este producto</Button>
+                                </Col>
+                            )}
 
                         </Row>
 

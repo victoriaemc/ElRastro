@@ -1,10 +1,10 @@
 import React from "react";
 import ProductDetailsBigCard from "../components/ProductDetailsBigCard";
 
-export default function ProductDetails(){
+export default function ProductDetails({user}){
     return (
         <div>
-            <ProductDetailsBigCard/>
+            <ProductDetailsBigCard user={user}/>
         </div>
     )
 }
