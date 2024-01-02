@@ -3,7 +3,12 @@ const passport = require('passport');
 const cors = require('cors');
 const router = express.Router();
 const User = require('../models/User');
-router.use(cors());
+router.use(cors(
+    {
+        credentials: true,
+        origin: process.env.CLIENT
+    }
+));
 
 router.get('/login/failed', (req, res) => {
     res.status(401).json({
@@ -15,12 +20,20 @@ router.get('/login/failed', (req, res) => {
 
 router.get('/login/success', (req, res) => {
     if (req.user) {
+        // CORS headers
+        res.header("Access-Control-Allow-Origin", process.env.CLIENT);
+        res.header("Access-Control-Allow-Credentials", true);
+
         res.status(200).json({
             success: true,
             message: 'User has successfully authenticated.',
             user: req.user
         });
     }else {
+        // CORS headers
+        res.header("Access-Control-Allow-Origin", process.env.CLIENT);
+        res.header("Access-Control-Allow-Credentials", true);
+
         res.status(403).json({
             error: true,
             message: 'Not authenticated.'
