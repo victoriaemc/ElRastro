@@ -11,7 +11,6 @@ import { Link, useNavigate } from 'react-router-dom';
 export default function ElRastroNavbar({user}) {
     const [searchTerm, setSearchTerm] = useState('');
     const history = useNavigate();
-    console.log("User prop: ", user);
 
     const handleSearch = (e) => {
         e.preventDefault();
