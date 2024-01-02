@@ -30,10 +30,10 @@ function App() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const url = process.env.REACT_APP_GATEWAY+"/users/login/success";
+        const url = process.env.REACT_APP_GATEWAY + "/users/login/success";
         const response = await fetch(url, {
           method: 'GET',
-          credentials: 'include', // equivalent to withCredentials: true in axios
+          credentials: 'include',
           headers: {
             Accept: 'application/json',
           },
@@ -44,17 +44,27 @@ function App() {
         }
 
         const data = await response.json();
-        setUser(data.user._json);
-        console.log("User: ", data.user._json);
+        console.log("Data from /users/login/success:", data);
+        console.log("User from /users/login/success:", data.user);
+
+        setUser(data.user);
+
+        if (data.user) {
+          console.log("User data structure is correct:", data.user);
+        } else {
+          console.error("User data structure is incorrect:", data);
+        }
+
+        // Use the updated user immediately after setting it
+        console.log("User: ", data.user);
       } catch (e) {
         console.error(e);
       }
     };
 
-    fetchUser().then(() => console.log("User fetched"));
+
+    fetchUser();
   }, []);
-
-
 
 
   // Cloudinary vars----------------------------------------------
