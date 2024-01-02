@@ -94,7 +94,7 @@ function App() {
           <Route path="/productDetails" element={<ProductDetails user={user}/>}/>
           <Route path="/bidUp" element={<BiddingUpPage/>}/>
           <Route path="/biddingUp" element={<BiddingUpPage/>}/>
-          <Route path="/createProduct" element={<CreateProduct/>}/>
+          <Route path="/createProduct" element={<CreateProduct user={user}/>}/>
           <Route path="/editProduct/:id" element={<EditProduct/>}/>
           <Route path="/userProfile/:id" element={<UserProfile user={user}/>}/>
           <Route path="/userProfile/:id/edit" element={<EditUser/>}/>
