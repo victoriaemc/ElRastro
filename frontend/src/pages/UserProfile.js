@@ -5,9 +5,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import UserDetails from "../components/UserDetails";
 import UserProducts from "../components/UserProducts";
 
-export default function UserProfile(){
+export default function UserProfile({user}){
     return(<div>
-        <UserDetails/>
-        <UserProducts/>
+        <UserDetails userId={user._id}/>
+        <UserProducts user={user}/>
     </div>)
 }

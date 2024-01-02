@@ -53,22 +53,27 @@ export default function ElRastroNavbar({user}) {
                     </Row>
                 </Form>
                 <Row className="mr-sm-2">
-                    <Col xs="auto">
-                        {/* Link the "Nuevo Producto" button to the CreateProduct page */}
-                        <Link to="/createProduct">
-                            <Button variant="primary">Nuevo Producto</Button>
-                        </Link>
-                    </Col>
-                    <Col xs="auto">
-                        <Link to="/myBids/65720e41e0700cc1b8534119">
-                            <Button variant="primary">Mis pujas</Button>
-                        </Link>
-                    </Col>
-                    <Col xs="auto">
-                        <Link to="/userProfile/6550a4a5fadb65a38330bff9">
-                            <Button variant="outline-primary">Perfil</Button>
-                        </Link>
-                    </Col>
+                    {user != null ? (
+                        <>
+                            <Col xs="auto">
+                                {/* Link the "Nuevo Producto" button to the CreateProduct page */}
+                                <Link to="/createProduct">
+                                    <Button variant="primary">Nuevo Producto</Button>
+                                </Link>
+                            </Col>
+                            <Col xs="auto">
+                                <Link to={`/myBids/${user._id}`}>
+                                    <Button variant="primary">Mis pujas</Button>
+                                </Link>
+                            </Col>
+                            <Col xs="auto">
+                                <Link to={`/userProfile/${user._id}`}>
+                                    <Button variant="outline-primary">Perfil</Button>
+                                </Link>
+                            </Col>
+                        </>
+                    ) : null }
+
                     <Col xs="auto">
                         <Link to="/login">
                             <Button variant="outline-primary">Iniciar Sesion</Button>
