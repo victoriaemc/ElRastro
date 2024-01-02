@@ -26,8 +26,9 @@ const userRoutes = require('./src/routes/users')
 const ratingRoutes = require('./src/routes/ratings')
 const authRoutes = require('./src/routes/auth')
 app.use('/', ratingRoutes);
-app.use('/', userRoutes);
 app.use('/', authRoutes);
+app.use('/', userRoutes);
+
 
 
 app.use('/', (req, res, next) => {

@@ -53,6 +53,7 @@ router.get('/google',
 router.get('/logout', (req, res, next) => {
     req.logout((err) => {
         if (err) {
+            console.error(err);
             return next(err);
         }
         res.redirect(process.env.CLIENT);

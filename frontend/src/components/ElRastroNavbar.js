@@ -45,7 +45,7 @@ export default function ElRastroNavbar({user}) {
                         <Col xs="auto">
 
                             {user ? (
-                                <Navbar.Text className="d-inline-block text-truncate">{user.name}</Navbar.Text>
+                                <Navbar.Text className="d-inline-block text-truncate">¡Hola, {user.name}!</Navbar.Text>
                             ):(
                                 <Navbar.Text className="d-inline-block text-truncate">Not logged in</Navbar.Text>
                             )}
@@ -71,14 +71,20 @@ export default function ElRastroNavbar({user}) {
                                     <Button variant="outline-primary">Perfil</Button>
                                 </Link>
                             </Col>
+                            <Col xs="auto">
+                                <Link to={process.env.REACT_APP_GATEWAY+`/users/logout`}>
+                                    <Button variant="outline-danger">Cerrar sesión</Button>
+                                </Link>
+                            </Col>
                         </>
-                    ) : null }
+                    ) : (
 
                     <Col xs="auto">
                         <Link to="/login">
                             <Button variant="outline-primary">Iniciar Sesion</Button>
                         </Link>
                     </Col>
+                    ) }
                 </Row>
             </Navbar>
         </Container>
