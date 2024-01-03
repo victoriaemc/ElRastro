@@ -21,13 +21,10 @@ const Paypal = () => {
                 }
                 const productData = await productResponse.json();
                 setProduct(productData);
-                //console.log(productData);
-                //console.log(productData.lastBid)
 
                 setAmount(productData.lastBid.toFixed(2));
                 setPayed(productData.payed);
                 payed = productData.payed;
-                console.log(amount);
 
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -53,7 +50,7 @@ const Paypal = () => {
                             <h3>{product.lastBid}</h3>
                         </Row>
                         <Row>
-                            {console.log("yo pague " + setPayed)}
+                            {console.log("Yo pagué " + setPayed)}
                             <PaypalButton amount={parseFloat(amount)} payed={payed} productId={productId}/>
                         </Row>
                     </Card.Body>

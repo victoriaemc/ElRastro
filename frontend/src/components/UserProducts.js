@@ -17,7 +17,6 @@ const UserProducts = ({ userId }) => {
             try {
                 const response = await axios.get(process.env.REACT_APP_GATEWAY+`/myProducts?user=${id}`);
                 const userData = await axios.get(process.env.REACT_APP_GATEWAY+`/users/${id}`);
-                console.log(response);
                 if (response.status === 200) {
                     const userProducts = response.data;
                     setProducts(userProducts);

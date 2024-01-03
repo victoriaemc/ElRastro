@@ -31,7 +31,6 @@ const EditProductForm = ({productId}) => {
             try {
                 const response = await axios.get(process.env.REACT_APP_GATEWAY+`/${id}`);
                 const existingProduct = response.data;
-                console.log(existingProduct.endingDate);
                 setFormData({
                     name: existingProduct.name,
                     description: existingProduct.description,

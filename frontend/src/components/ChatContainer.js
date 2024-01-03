@@ -20,7 +20,6 @@ const ChatContainer = () => {
 
                 const nombreProductResponse = await fetch(process.env.REACT_APP_GATEWAY+`/${productId}`);
                 const nombreProductData = await nombreProductResponse.json();
-                console.log(nombreProductData)
                 setNombreProduct(nombreProductData.name);  // Ajusta esto según la estructura de tu respuesta
             } catch (error) {
                 console.error('Error fetching messages:', error);

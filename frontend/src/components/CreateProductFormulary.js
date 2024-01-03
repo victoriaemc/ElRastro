@@ -30,7 +30,6 @@ const CreateProductFormulary = (user) => {
     const handleSubmit = (e) => {
         if (user.user != null){
             e.preventDefault();
-            console.log(user.user._id);
             const producto = {
                 name,
                 description,
@@ -45,7 +44,6 @@ const CreateProductFormulary = (user) => {
                 finished
             };
 
-            console.log(imageId);
 
             setIspending(true);
 

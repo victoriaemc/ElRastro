@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Col, Row, Card, Form, Button, Alert } from 'react-bootstrap';
+import { Col, Row, Form, Button, Alert } from 'react-bootstrap';
 import axios from 'axios';
 import { useLocation } from "react-router-dom";
 import InputGroup from "react-bootstrap/InputGroup";
@@ -29,7 +29,6 @@ const SubmitBid = ({ product, endingDate }) => {
             // Lógica para manejar la presentación de la puja
             // ...
 
-            console.log(productId);
             axios.put(process.env.REACT_APP_GATEWAY+`/${productId}`, {
                 name: product.name,
                 description: product.description,
@@ -44,7 +43,6 @@ const SubmitBid = ({ product, endingDate }) => {
                 imageId: product.imageId
             })
                 .then(response => {
-                    console.log('Actualización exitosa:', response.data);
                     window.location.reload();
                 })
                 .catch(error => {
@@ -59,7 +57,6 @@ const SubmitBid = ({ product, endingDate }) => {
                 date: currentTimestamp
             })
                 .then(response => {
-                    console.log('Actualización exitosa:', response.data);
                     window.location.reload();
                 })
                 .catch(error => {

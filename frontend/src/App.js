@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import './App.css';
-import axios from "axios";
 
 
 // Imports cloudinary
@@ -44,8 +43,6 @@ function App() {
         }
 
         const data = await response.json();
-        //console.log("Data from /users/login/success:", data);
-        //console.log("User from /users/login/success:", data.user);
 
         setUser(data.user);
 
@@ -53,8 +50,6 @@ function App() {
           console.error("User data structure is incorrect:", data);
         }
 
-        // Use the updated user immediately after setting it
-        //console.log("User: ", data.user);
       } catch (e) {
         console.error(e);
       }
