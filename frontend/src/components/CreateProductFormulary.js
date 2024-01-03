@@ -74,12 +74,6 @@ const CreateProductFormulary = (user) => {
                 // Extract latitude and longitude from the API response
                 const { latitude, longitude } = response.data;
 
-                // Update the form data with the obtained latitude and longitude
-                /* setFormData(prevFormData => ({
-                    ...prevFormData,
-                    latitude: latitude.toString(),
-                    longitude: longitude.toString()
-                })); */
                 setLatitude(latitude.toString());
                 setLongitude(longitude.toString());
             } catch (error) {
@@ -91,60 +85,6 @@ const CreateProductFormulary = (user) => {
     }, []);
 
     return (
-/*        <div>
-        {(user.user !== null) ? (
-        <div className="create">
-            <h2> Sube un producto </h2>
-            <form onSubmit={handleSubmit}>
-                <label> Nombre del producto: </label>
-                <input
-                    type="text"
-                    required
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                />
-                <label> Descripción del producto: </label>
-                <textarea
-                    required
-                    value = {description}
-                    onChange={(e) => setDescription(e.target.value)}
-                ></textarea>
-                <label> Starting Price: </label>
-                <input
-                    type="number"
-                    required
-                    value={startingPrice}
-                    onChange={(e) => setStartingPrice(e.target.value)}
-                />
-                <label> Location: </label>
-                <input
-                    type="number"
-                    required
-                    value={latitude}
-                    onChange={(e) => setLatitude(e.target.value)}
-                />
-                <input
-                    type="number"
-                    required
-                    value={longitude}
-                    onChange={(e) => setLongitude(e.target.value)}
-                />
-                <label> Ending Date: </label>
-                <input
-                    type="date"
-                    required
-                    value={endingDate}
-                    onChange={(e) => setEndingDate(e.target.value)}
-                />
-                <CloudinaryUploadWidget uwConfig={uwConfig} setPublicId={setImageId} />
-                { !isPending && <button> Subir producto </button> }
-                { isPending && <button disabled> Subiendo producto... </button> }
-            </form>
-        </div>
-        ) : (
-            <LoginButton/>
-        )}
-        </div>*/
         <Form onSubmit={handleSubmit}>
            <Form.Group controlId="formName">
                <Form.Label>Nombre</Form.Label>

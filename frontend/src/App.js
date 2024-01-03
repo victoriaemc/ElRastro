@@ -88,7 +88,7 @@ function App() {
           <Route path="/bidUp" element={<BiddingUpPage/>}/>
           <Route path="/biddingUp" element={<BiddingUpPage/>}/>
           <Route path="/createProduct" element={<CreateProduct user={user}/>}/>
-          <Route path="/editProduct/:id" element={<EditProduct/>}/>
+          <Route path="/editProduct/:id" element={<EditProduct user={user}/>}/>
           <Route path="/userProfile/:id" element={<UserProfile user={user}/>}/>
           <Route path="/userProfile/:id/edit" element={<EditUser/>}/>
           <Route path="/myBids/:id" element={<MyBids/>}/>
