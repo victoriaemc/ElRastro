@@ -1,7 +1,11 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import CloudinaryUploadWidget from "./CloudinaryUploadWidget";
-import LoginButton from "./LoginButton";
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
+import Row from 'react-bootstrap/Row';
+import Col from "react-bootstrap/Col";
+import InputGroup from "react-bootstrap/InputGroup";
 import axios from "axios";
 
 const CreateProductFormulary = (user) => {
@@ -87,19 +91,19 @@ const CreateProductFormulary = (user) => {
     }, []);
 
     return (
-        <div>
+/*        <div>
         {(user.user !== null) ? (
         <div className="create">
-            <h2> Add a new blog </h2>
+            <h2> Sube un producto </h2>
             <form onSubmit={handleSubmit}>
-                <label> Product name: </label>
+                <label> Nombre del producto: </label>
                 <input
                     type="text"
                     required
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                 />
-                <label> Product description: </label>
+                <label> Descripción del producto: </label>
                 <textarea
                     required
                     value = {description}
@@ -133,14 +137,107 @@ const CreateProductFormulary = (user) => {
                     onChange={(e) => setEndingDate(e.target.value)}
                 />
                 <CloudinaryUploadWidget uwConfig={uwConfig} setPublicId={setImageId} />
-                { !isPending && <button> Add Product </button> }
-                { isPending && <button disabled> Adding Product... </button> }
+                { !isPending && <button> Subir producto </button> }
+                { isPending && <button disabled> Subiendo producto... </button> }
             </form>
         </div>
         ) : (
             <LoginButton/>
         )}
-        </div>
+        </div>*/
+        <Form onSubmit={handleSubmit}>
+           <Form.Group controlId="formName">
+               <Form.Label>Nombre</Form.Label>
+               <Form.Control
+                   type="text"
+                   placeholder="Nombre del producto"
+                   name="name"
+                   value={name}
+                   onChange={(e) => setName(e.target.value)}
+                   required
+                   style={{ width: '800px', position: 'relative', left: '50%', transform: 'translateX(-50%)' }}
+               />
+              </Form.Group>
+
+            <Form.Group controlId="formDescription">
+                <Form.Label>Descripción</Form.Label>
+                <Form.Control
+                    as="textarea"
+                    rows={3}
+                    placeholder="Descripción del producto"
+                    name="description"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    style={{ width: '800px', position: 'relative', left: '50%', transform: 'translateX(-50%)' }}
+                />
+            </Form.Group>
+
+                <Form.Group controlId="formStartingPrice">
+                    <Form.Label>Precio de salida</Form.Label>
+                    <InputGroup style={{ width: '800px', position: 'relative', left: '50%', transform: 'translateX(-50%)' }}>
+                        <Form.Control
+                            type="number"
+                            placeholder="Precio de salida"
+                            name="startingPrice"
+                            value={startingPrice}
+                            onChange={(e) => setStartingPrice(e.target.value)}
+                            required
+                        />
+                        <InputGroup.Text id="basic-addon2">€</InputGroup.Text>
+                    </InputGroup>
+                </Form.Group>
+            <Form.Group controlId={"formLocation"}>
+                <Form.Label>Localización</Form.Label>
+                <p>Las coordenadas se rellenan automáticamente con tu posición actual.</p>
+                <Row style={{ width: '800px', position: 'relative', left: '50%', transform: 'translateX(-50%)' }}>
+                    <Col>
+                        <Form.Control
+                            type="text"
+                            placeholder="Latitud"
+                            name="latitude"
+                            value={latitude}
+                            onChange={(e) => setLatitude(e.target.value)}
+                            required
+                        />
+                    </Col>
+                    <Col>
+                        <Form.Control
+                            type="text"
+                            placeholder="Longitud"
+                            name="longitude"
+                            value={longitude}
+                            onChange={(e) => setLongitude(e.target.value)}
+                            required
+                        />
+                    </Col>
+                </Row>
+            </Form.Group>
+
+            <Form.Group controlId="formEndingDate">
+                <Form.Label>Fecha de finalización</Form.Label>
+                <Form.Control
+                    type="date"
+                    name="endingDate"
+                    value={endingDate}
+                    onChange={(e) => setEndingDate(e.target.value)}
+                    required
+                    style={{ width: '800px', position: 'relative', left: '50%', transform: 'translateX(-50%)' }}
+                />
+            </Form.Group>
+
+            <CloudinaryUploadWidget uwConfig={uwConfig} setPublicId={setImageId} />
+
+            <Form.Group controlId="formSubmit">
+                { !isPending && <Button variant="primary" type="submit" style={{ marginTop: '10px' }}>
+                    Subir producto
+                </Button>}
+                { isPending && <Button variant="primary" type="submit" style={{ marginTop: '10px' }} disabled={true}>
+                    Subir producto
+                </Button> }
+            </Form.Group>
+
+
+        </Form>
      );
 }
  
