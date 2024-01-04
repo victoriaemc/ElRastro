@@ -3,24 +3,35 @@ import { useParams } from 'react-router-dom';
 import { Card, Row, Col } from 'react-bootstrap';
 import ChatInput from '../components/ChatInput';
 
-const ChatContainer = () => {
+const ChatContainer = ({user}) => {
+    const thisUser = JSON.parse(user);
     const [messages, setMessages] = useState([]);
     const [nombreProduct, setNombreProduct] = useState('');
-    const { productId } = useParams();
-    const userId = '654fc829545069d773dc1fdd';
+    const { productId,buyerId } = useParams();
+    const userId = thisUser._id;
+    const [thisUsers, setThisUsers] = useState([]);
 
     useEffect(() => {
         const fetchMessages = async () => {
             try {
                 const response = await fetch(
-                    process.env.REACT_APP_GATEWAY+`/chat?from=${userId}&productId=${productId}`
+                    process.env.REACT_APP_GATEWAY+`/chat?from=${buyerId}&productId=${productId}`
                 );
                 const data = await response.json();
                 setMessages(data);
 
                 const nombreProductResponse = await fetch(process.env.REACT_APP_GATEWAY+`/${productId}`);
                 const nombreProductData = await nombreProductResponse.json();
-                setNombreProduct(nombreProductData.name);  // Ajusta esto según la estructura de tu respuesta
+                setNombreProduct(nombreProductData.name);
+                if(nombreProductData.user == userId) {
+                    console.log("Soy ese");
+                    setThisUsers([userId, buyerId]);
+                } else {
+                    setThisUsers([userId, nombreProductData.user]);
+                    console.log("No soy ese");
+                }
+
+                console.log(thisUsers);
             } catch (error) {
                 console.error('Error fetching messages:', error);
             }
@@ -40,6 +51,7 @@ const ChatContainer = () => {
                     from: userId,
                     message: message,
                     productId: productId,
+                    users: thisUsers
                 }),
             });
 
@@ -51,6 +63,8 @@ const ChatContainer = () => {
             console.error('Error sending message:', error);
         }
     };
+
+    console.log(messages);
 
     return (
         <div>

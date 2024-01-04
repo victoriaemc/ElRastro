@@ -45,7 +45,7 @@ export default function ElRastroNavbar({user, setUser}) {
                         </Col>
                         <Col xs="auto">
                             <Button type="submit" onClick={handleSearch}>
-                                Submit
+                                Buscar
                             </Button>
                         </Col>
                         <Col xs="auto">

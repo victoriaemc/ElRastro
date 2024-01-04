@@ -26,20 +26,26 @@ export default function MyChatsContainer({user}) {
     return (
         <div>
             {data.map((chat) => (
-                <Container>
-                    <Row>
-                        <Col></Col>
-                        <Col xs={8}>
-                            <Link to={`/chat/${chat.product}`}>
-                                <ChatPreview
-                                    //key={`${chat.users.join(',')}_${chat.product}`}
-                                    productId={chat.product}
-                                    lastMessage={chat.messages[0].text}
-                                />
-                            </Link>
-                        </Col>
-                        <Col></Col>
-                    </Row>
+                <Container key={chat.product}>
+
+                    {chat.productOwner ? (
+                        <Row>
+                            <Col></Col>
+                            <Col xs={8}>
+                                <Link to={(thisUser._id != chat.productOwner)
+                                    ? `/chat/${chat.product}/${thisUser._id}`
+                                    : `/chat/${chat.product}/${chat.users[0]}`}
+                                      style={{ textDecoration: 'none' }}>
+                                    <ChatPreview
+                                        productId={chat.product}
+                                        lastMessage={chat.messages[0].text}
+                                    />
+                                </Link>
+                            </Col>
+                            <Col></Col>
+                        </Row>
+                    ) : null }
+
                 </Container>
             ))}
         </div>

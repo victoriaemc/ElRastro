@@ -17,9 +17,7 @@ router.get("/", async (req, res) => {
         const to = product.user._id;
 
         const messages = await Messages.find({
-            users: {
-                $all: [from, to],
-            },
+            users: { $in : [from] },
             product: productId
         }).sort({ date: 1 });
 
@@ -41,10 +39,11 @@ try {
     const from = req.body.from;
     const message = req.body.message;
     const productId = req.body.productId;
+    const usersArray = req.body.users;
 
     // Agregar al remitente y al usuario del producto al array users
     const product = await Product.findById(productId);
-    const usersArray = [from, product.user];
+    //const usersArray = [from, product.user];
 
     const data = await Messages.create({
         text: message,
@@ -82,22 +81,29 @@ router.get("/myChats", async (req, res) => {
         const chatMap = new Map();
 
         // Agrupar mensajes por combinaciones únicas de usuarios
-        userMessages.forEach((message) => {
+        for (const message of userMessages) {
             const otherUsers = message.users.filter(user => user != userId).sort();
-            const product = message.product;
-            //console.log(otherUsers);
-            const key = `${otherUsers.join(',')}_${product}`;
+            const productId = message.product;
+
+            // Utiliza await para esperar la resolución de la promesa
+            const product = await Product.findById(productId);
+
+            const productOwner = product.user;
+            console.log("Este es el product  " + product);
+
+            const key = `${otherUsers.join(',')}_${productId}`;
 
             if (!conversations[key]) {
                 conversations[key] = {
                     users: otherUsers,
-                    product: product,
+                    product: productId,
+                    productOwner: productOwner,
                     messages: []
                 };
             }
 
             conversations[key].messages.push(message);
-        });
+        };
 
         // Convertir el mapa a un array de chats
         const chats = Object.values(conversations);

@@ -99,7 +99,7 @@ function App() {
           <Route path="/userProfile/:id" element={<UserProfile user={user}/>}/>
           <Route path="/userProfile/:id/edit" element={<EditUser/>}/>
           <Route path="/myBids/:id" element={<MyBids/>}/>
-          <Route path="/chat/:productId" element={<ChatPage/>}/>
+          <Route path="/chat/:productId/:buyerId" element={<ChatPage/>}/>
           <Route path="/search/:filter" element={<SearchPage/>}/>
           <Route path="/pay/:productId" element={<PaymentPage/>}/>
           <Route path="/myChats" element={<MyChats user={user}/>}/>

@@ -115,7 +115,7 @@ const ProductDetailsBigCard = ({user}) => {
                             {(user == null || sellerUser._id != user._id) ? (
                                 <>
                                     <Col>
-                                        <Button variant="secondary" href={`/chat/${productId}`}>Chat con el vendedor</Button>
+                                        <Button variant="secondary" href={`/chat/${productId}/${user._id}`}>Chat con el vendedor</Button>
                                     </Col>
                                     <Col>
                                         <Button variant="secondary" onClick={handleShow}>Valorar vendedor</Button>
