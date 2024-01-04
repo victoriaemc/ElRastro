@@ -22,9 +22,14 @@ import MyBids from "./pages/MyBids";
 import ChatPage from "./pages/ChatPage";
 import SearchPage from "./pages/SearchPage";
 import PaymentPage from "./pages/PaymentPage";
+import MyChats from "./pages/MyChats";
 function App() {
 
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => {
+    // Try to get user data from localStorage on component mount
+    const storedUser = localStorage.getItem('user');
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -49,6 +54,8 @@ function App() {
         if (!data.user) {
           console.error("User data structure is incorrect:", data);
         }
+
+        localStorage.setItem('user', JSON.stringify(data.user));
 
       } catch (e) {
         console.error(e);
@@ -79,7 +86,7 @@ function App() {
     <div className="App">
       {/* RUTAS DE LAS PAGINAS  */}
       <BrowserRouter>
-        <ElRastroNavbar user={user}/>
+        <ElRastroNavbar user={user} setUser={setUser}/>
         <Routes>
           <Route path="/" element={<h1><HomePage/></h1>}/>
           <Route path="/login" element={<LoginPage/>}/>
@@ -95,6 +102,7 @@ function App() {
           <Route path="/chat/:productId" element={<ChatPage/>}/>
           <Route path="/search/:filter" element={<SearchPage/>}/>
           <Route path="/pay/:productId" element={<PaymentPage/>}/>
+          <Route path="/myChats" element={<MyChats user={user}/>}/>
         </Routes>
       </BrowserRouter>
     </div>

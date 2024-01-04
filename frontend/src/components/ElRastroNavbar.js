@@ -8,7 +8,7 @@ import Container from 'react-bootstrap/Container';
 
 import { Link, useNavigate } from 'react-router-dom';
 
-export default function ElRastroNavbar({user}) {
+export default function ElRastroNavbar({user, setUser}) {
     const [searchTerm, setSearchTerm] = useState('');
     const history = useNavigate();
 
@@ -17,6 +17,13 @@ export default function ElRastroNavbar({user}) {
         // Construye la URL de búsqueda y realiza la redirección
         const searchUrl = `/search/${searchTerm}`;
         history(searchUrl);
+    };
+
+    const handleLogout = () => {
+        // Limpiar el estado local
+        setUser(null);
+        // Limpiar el localStorage
+        localStorage.removeItem('user');
     };
 
     return (
@@ -71,8 +78,13 @@ export default function ElRastroNavbar({user}) {
                                 </Link>
                             </Col>
                             <Col xs="auto">
-                                <Link to={process.env.REACT_APP_GATEWAY+`/users/logout`}>
+                                <Link to={process.env.REACT_APP_GATEWAY+`/users/logout`} onClick={handleLogout}>
                                     <Button variant="outline-danger">Cerrar sesión</Button>
+                                </Link>
+                            </Col>
+                            <Col xs="auto">
+                                <Link to={`/myChats`}>
+                                    <Button variant="outline-primary">Mis chats</Button>
                                 </Link>
                             </Col>
                         </>
