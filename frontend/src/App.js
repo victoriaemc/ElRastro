@@ -97,7 +97,7 @@ function App() {
           <Route path="/createProduct" element={<CreateProduct user={user}/>}/>
           <Route path="/editProduct/:id" element={<EditProduct user={user}/>}/>
           <Route path="/userProfile/:id" element={<UserProfile user={user}/>}/>
-          <Route path="/userProfile/:id/edit" element={<EditUser/>}/>
+          <Route path="/userProfile/:id/edit" element={<EditUser user={user}/>}/>
           <Route path="/myBids/:id" element={<MyBids/>}/>
           <Route path="/chat/:productId/:buyerId" element={<ChatPage/>}/>
           <Route path="/search/:filter" element={<SearchPage/>}/>

@@ -1,5 +1,6 @@
 const express = require('express');
 const passport = require('passport');
+const session = require('express-session');
 const cors = require('cors');
 const router = express.Router();
 const User = require('../models/User');
@@ -52,10 +53,15 @@ router.get('/google',
 
 router.get('/logout', (req, res, next) => {
     req.logout((err) => {
+        // CORS headers
+        res.header("Access-Control-Allow-Origin", process.env.CLIENT);
+        res.header("Access-Control-Allow-Credentials", true);
         if (err) {
             console.error(err);
             return next(err);
         }
+        // Clear the session cookie
+        req.session = null;
         res.redirect(process.env.CLIENT);
     });
 });
