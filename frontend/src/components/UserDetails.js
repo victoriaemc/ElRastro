@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {useParams} from "react-router-dom";
+import {useParams, useNavigate} from "react-router-dom";
 import Row from 'react-bootstrap/Row';
 import Col from "react-bootstrap/Col";
 import Button from 'react-bootstrap/Button';
@@ -10,6 +10,8 @@ const UserDetails = ({userId}) => {
     const {id} = useParams();
     const [user, setUser] = useState(null);
     const [ratings, setRatings] = useState(null);
+    const navigate = useNavigate();
+
 
 
     useEffect(() => {
@@ -32,20 +34,38 @@ const UserDetails = ({userId}) => {
         fetchUserDetails().then(r => console.log("User details fetched"));
 
     }, [userId]);
-    // TODO: Add a button to edit the user details (only if logged in user is the same as the user being viewed)
-    // TODO: Add a button to delete the user (only if logged in user is the same as the user being viewed)
-    // TODO:
+
+    const handleDelete = async () => {
+        try {
+            const response = await axios.delete(process.env.REACT_APP_GATEWAY + `/users/${userId}`);
+            console.log('Respuesta borrado:', response.data);
+            if (response.status === 200) {
+                console.log("User deleted successfully");
+                // Logout
+                await axios.get(process.env.REACT_APP_GATEWAY + '/users/logout')
+                // Limpiar el localStorage
+                setUser(null);
+                localStorage.removeItem('user');
+                navigate('/');
+            } else {
+                console.error('Failed to delete user');
+            }
+        } catch (error) {
+            console.error('Error deleting user:', error);
+        }
+    };
+
     return(<div>
             {user ? (
                 <div>
                     <h2 className="text-center mb-5">Perfil de usuario</h2>
-                    {user === userId ? (
+                    {user._id == userId ? (
                         <Row>
                             <Col key="edit">
-                                <Button variant="primary" href={`/userProfile/${id}/edit`}>Editar perfil</Button>
+                                <Button variant="primary" href={`/userProfile/${userId}/edit`}>Editar perfil</Button>
                             </Col>
                             <Col key="delete">
-                                <Button variant="danger" href={`/users/${id}/delete`}>Eliminar cuenta</Button>
+                                <Button variant="danger" onClick={handleDelete}>Eliminar cuenta</Button>
                             </Col>
 
                         </Row>
