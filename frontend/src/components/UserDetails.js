@@ -39,15 +39,20 @@ const UserDetails = ({userId}) => {
             {user ? (
                 <div>
                     <h2 className="text-center mb-5">Perfil de usuario</h2>
-                    <Row>
-                        <Col key="edit">
-                            <Button variant="primary" href={`/userProfile/${id}/edit`}>Editar perfil</Button>
-                        </Col>
-                        <Col key="delete">
-                            <Button variant="danger" href={`/users/${id}/delete`}>Eliminar cuenta</Button>
-                        </Col>
+                    {user === userId ? (
+                        <Row>
+                            <Col key="edit">
+                                <Button variant="primary" href={`/userProfile/${id}/edit`}>Editar perfil</Button>
+                            </Col>
+                            <Col key="delete">
+                                <Button variant="danger" href={`/users/${id}/delete`}>Eliminar cuenta</Button>
+                            </Col>
 
-                    </Row>
+                        </Row>
+                    ):(
+                        <p></p>
+                    )}
+
 
                     <Row>
                         <Col key="rating">
