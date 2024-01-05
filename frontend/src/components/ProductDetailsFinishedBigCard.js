@@ -1,4 +1,4 @@
-// ProductDetailsBigCard.js
+// ProductDetailsFinishedBigCard.js
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import {Card, Row, Col, Button} from 'react-bootstrap';
@@ -12,7 +12,7 @@ import CloudinaryImage from "./CloudinaryImage";
 import StarRatings from "react-star-ratings";
 import axios from "axios";
 
-const ProductDetailsBigCard = ({user}) => {
+const ProductDetailsFinishedBigCard = ({user}) => {
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
     const productId = searchParams.get("ProductId");
@@ -102,7 +102,6 @@ const ProductDetailsBigCard = ({user}) => {
                                 <img src={CloudinaryImage(product.imageId)} className="productDetailImg" alt={"Image"}/>
                             </Col>
                             <Col md={4}>
-                                <BidDetails lastBid={product.lastBid} endingDate={product.endingDate} productId={productId}/>
                                 <Countdown lastBid={product.lastBid} endingDate={product.endingDate} />
                             </Col>
                         </Row>
@@ -173,4 +172,4 @@ const ProductDetailsBigCard = ({user}) => {
     );
 }
 
-export default ProductDetailsBigCard;
+export default ProductDetailsFinishedBigCard;

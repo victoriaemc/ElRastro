@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import ProductDetailsBigCard from "../components/ProductDetailsBigCard";
 import { useLocation } from "react-router-dom";
+import ProductDetailsFinishedBigCard from "../components/ProductDetailsFinishedBigCard";
 
 
 export default function ProductDetails({user}){
@@ -52,18 +53,21 @@ export default function ProductDetails({user}){
 
     if(product.finished){
        getWinner(productId);
-        if(winner.username === user.username || user.username === sellerUser.username){
+        if(winner.name === user.name || user.name === sellerUser.name){
        return (
         <div>
-            <ProductDetailsBigCard user={user}/>
+            <ProductDetailsFinishedBigCard user={user}/>
         </div>
     )
-        }}else {
-       /* return (
+        }else{
+
+        }
+    }else {
+        return (
             <div>
                 <ProductDetailsBigCard user={user}/>
             </div>
-        )*/
+        )
     }
 
 }
