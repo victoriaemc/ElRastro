@@ -138,6 +138,7 @@ router.get("/active", async (req, res) => {
     }
 });
 
+//TODO: agrupar wonBids y losBids en un solo método
 
 // Devuelve las subastas ganadas por un usuario
 router.get("/wonBids", async (req, res) => {
@@ -167,6 +168,50 @@ router.get("/wonBids", async (req, res) => {
         const filteredWonBids = wonBids.filter((bid) => bid !== null);
 
         res.json(filteredWonBids);
+
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
+// Devuelve las subastas perdidas por un usuario
+// Devuelve las subastas perdidas por un usuario
+router.get("/lostBids", async (req, res) => {
+    try {
+        const userId = req.query.userId;
+
+        if (!userId) {
+            return res.status(400).json({ message: "Missing 'userId' parameter. Please provide a valid user ID." });
+        }
+
+        // Obtén todas las pujas del usuario
+        const userBids = await Bid.find({ user: userId });
+
+        // Obtén las subastas ganadas por el usuario excluyendo las pujas que tienen un precio mayor
+        const wonBids = await Promise.all(userBids.map(async (bid) => {
+            // Obtén los detalles del producto asociado a la puja
+            const product = await Product.findById(bid.product);
+            const now = new Date();
+            if (bid.price === product.lastBid && new Date(product.endingDate) < now) {
+                return bid;
+            } else {
+                return null;
+            }
+        }));
+
+        // Filtra las pujas ganadas excluyendo los elementos null
+        const filteredWonBids = wonBids.filter((bid) => bid !== null);
+
+        console.log(filteredWonBids);
+
+        // Filtra las pujas perdidas excluyendo las que tienen una versión más alta en las ganadoras
+        const lostBids = userBids.filter((bid) => {
+            // Verifica si existe una puja ganadora con un precio mayor y es sobre el mismo producto
+            const isHigherBid = filteredWonBids.some((wonBid) => wonBid.price >= bid.price && wonBid.product.toString() == bid.product.toString());
+            return !isHigherBid;
+        });
+
+        res.json(lostBids);
 
     } catch (err) {
         res.status(500).json({ message: err.message });

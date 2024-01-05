@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from 'react-router-dom';
 import {Button, Table} from 'react-bootstrap';
 
-const WonBids = () => {
+const LostBids = () => {
     const [wonBids, setWonBids] = useState([]);
     const user = localStorage.getItem("user");
     const thisUser = JSON.parse(user);
@@ -12,7 +12,7 @@ const WonBids = () => {
         // Realiza la llamada a la API para obtener las subastas ganadas por el usuario
         const fetchWonBids = async () => {
             try {
-                const response = await fetch(`${process.env.REACT_APP_GATEWAY}/bids/wonBids?userId=${userId}`);
+                const response = await fetch(`${process.env.REACT_APP_GATEWAY}/bids/lostBids?userId=${userId}`);
                 if (!response.ok) {
                     throw new Error(`Error fetching won bids: ${response.statusText}`);
                 }
@@ -43,7 +43,7 @@ const WonBids = () => {
 
     return (
         <div>
-            <h3>Subastas ganadas</h3>
+            <h3>Subastas perdidas</h3>
             {wonBids.length > 0 ? (
                 <Table striped bordered hover>
                     <thead>
@@ -60,19 +60,16 @@ const WonBids = () => {
                                     {bid.productDetails.name}
                                 </Link>
                             </td>
-                            <td>{bid.price}</td>
-                            <td>
-                            {bid.productDetails.payed ? ("Pagado") : <Button variant="outline-success" href={`/pay/${bid.product}`}>Pagar</Button>}
-                            </td>
+                            <td>{bid.productDetails.lastBid}</td>
                         </tr>
                     ))}
                     </tbody>
                 </Table>
             ) : (
-                <p>No has ganado ninguna subasta.</p>
+                <p>No has perdido ninguna subasta.</p>
             )}
         </div>
     );
 };
 
-export default WonBids;
+export default LostBids;

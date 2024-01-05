@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from 'react-router-dom';
 import { Button, Tabs, Tab} from 'react-bootstrap';
 import WonBids from "../components/WonBids";
+import LostBids from "../components/LostBids";
 const Bid = (props) => {
     const {days,hours, minutes, seconds} = calculateRemainingTime(new Date(props.bid.productDetails.endingDate));
     const [myHighestBid, setMyHighestBid] = useState(null);
@@ -152,6 +153,9 @@ const MyBids = () => {
                 </Tab>
                 <Tab eventKey="winnerBids" title="Subastas ganadas">
                     <WonBids/>
+                </Tab>
+                <Tab eventKey="lostBids" title="Subastas perdidas">
+                    <LostBids/>
                 </Tab>
             </Tabs>
 
