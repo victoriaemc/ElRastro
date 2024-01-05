@@ -3,6 +3,7 @@ import './App.css';
 import axios from "axios";
 
 
+
 // Imports cloudinary
 import CloudinaryUploadWidget from "./components/CloudinaryUploadWidget";
 import { Cloudinary } from "@cloudinary/url-gen";
