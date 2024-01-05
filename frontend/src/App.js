@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import './App.css';
-import axios from "axios";
+
 
 
 
@@ -24,6 +24,7 @@ import MyBids from "./pages/MyBids";
 import ChatPage from "./pages/ChatPage";
 import SearchPage from "./pages/SearchPage";
 import PaymentPage from "./pages/PaymentPage";
+import useApi from "./components/useApi";
 function App() {
 
   const [user, setUser] = useState(null);
@@ -80,6 +81,43 @@ function App() {
     }
   });
   const myImage = cld.image(publicId);
+  const {data, isPending, error} = useApi(process.env.REACT_APP_GATEWAY)
+ async function updateFinished(){
+   try{
+     /*const response = await fetch(process.env.REACT_APP_GATEWAY+'/finished?value=true');
+     if (!response.ok) {
+       throw new Error(`HTTP error! Status: ${response.status}`);
+     }
+     const products = await response.json();
+     */
+     const products = {data};
+     for(p in products){
+       console.log(p.name);
+       /*if(p.lastBid == 0.0){
+
+         let difference;
+         difference = p.endingDate.getTime()-p.publicationDate.getTime();
+         p.endingDate = new Date(difference + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+         p.startingPrice = p.startingPrice-p.startingPrice*0.1;
+         const handleSubmit = (e) => {
+           e.preventDefault();
+           axios.put(process.env.REACT_APP_GATEWAY+`/${p.id}`, p)
+             .then(() => {
+               console.log("Product updated: " + JSON.stringify(p));
+             })
+             .catch(error => {
+               console.error('Error updating product:', error.message);
+             });
+         }
+       }*/
+   }
+   } catch (error){
+    console.error('Error fetching products');
+   }
+   let p;
+     }
+
+
 
   return (
     <div className="App">

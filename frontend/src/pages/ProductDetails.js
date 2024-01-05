@@ -43,7 +43,7 @@ export default function ProductDetails({user}){
         }
         async function getWinner(productId){
             try{
-                const  bid = await fetch(process.env.REACT_APP_GATEWAY+`bids/highestBid?product=${productId}`);
+                const  bid = await fetch(process.env.REACT_APP_GATEWAY+`/bids/highestBid?product=${productId}`);
                 winner = bid.user;
             } catch (error) {
                 console.error('Error fetching winner:', error);
