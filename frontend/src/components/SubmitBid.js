@@ -4,11 +4,13 @@ import axios from 'axios';
 import { useLocation } from "react-router-dom";
 import InputGroup from "react-bootstrap/InputGroup";
 
-const SubmitBid = ({ product, endingDate }) => {
+const SubmitBid = ({ product, endingDate}) => {
     const [amount, setAmount] = useState("");
     const [error, setError] = useState(null);
+    const user = localStorage.getItem("user");
+    const thisUser = JSON.parse(user);
 
-    const provisionalUserId = "65720e41e0700cc1b8534119";
+    const userId = thisUser._id;
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
     const productId = searchParams.get("ProductId");
@@ -26,8 +28,6 @@ const SubmitBid = ({ product, endingDate }) => {
         } else if (currentTimestamp >= endingDate) {
             setError("Esta subasta ya ha finalizado.");
         } else {
-            // Lógica para manejar la presentación de la puja
-            // ...
 
             axios.put(process.env.REACT_APP_GATEWAY+`/${productId}`, {
                 name: product.name,
@@ -52,7 +52,7 @@ const SubmitBid = ({ product, endingDate }) => {
 
             axios.post(`http://localhost:8000/bids`, {
                 product: productId,
-                user: provisionalUserId,
+                user: userId,
                 price: Number(amount),
                 date: currentTimestamp
             })

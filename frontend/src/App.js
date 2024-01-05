@@ -92,13 +92,13 @@ function App() {
           <Route path="/login" element={<LoginPage/>}/>
           <Route path="/etc" element={<h1>Etc page</h1>}/>
           <Route path="/productDetails" element={<ProductDetails user={user}/>}/>
-          <Route path="/bidUp" element={<BiddingUpPage/>}/>
+          <Route path="/bidUp" element={<BiddingUpPage user={user}/>}/>
           <Route path="/biddingUp" element={<BiddingUpPage/>}/>
           <Route path="/createProduct" element={<CreateProduct user={user}/>}/>
           <Route path="/editProduct/:id" element={<EditProduct user={user}/>}/>
           <Route path="/userProfile/:id" element={<UserProfile user={user}/>}/>
           <Route path="/userProfile/:id/edit" element={<EditUser user={user}/>}/>
-          <Route path="/myBids/:id" element={<MyBids/>}/>
+          <Route path="/myBids/:id" element={<MyBids user={user}/>}/>
           <Route path="/chat/:productId/:buyerId" element={<ChatPage/>}/>
           <Route path="/search/:filter" element={<SearchPage/>}/>
           <Route path="/pay/:productId" element={<PaymentPage/>}/>

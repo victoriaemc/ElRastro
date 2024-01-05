@@ -5,13 +5,13 @@ import { Col, Row, Button, Card } from 'react-bootstrap';
 
 // TODO: PONER EL ENLACE DE PUJA A DETALLES DEL PRODUCTO PARA PUJAR
 const Bid = (props) => {
-    const {hours, minutes, seconds} = calculateRemainingTime(new Date(props.bid.productDetails.endingDate));
+    const {days,hours, minutes, seconds} = calculateRemainingTime(new Date(props.bid.productDetails.endingDate));
 
     return (
         <tr>
             <td>{props.bid.productDetails.name}</td>
             <td>{props.bid.price}</td>
-            <td>{`${hours}h ${minutes}m ${seconds}s faltan`}</td>
+            <td>{`Faltan ${days} días ${hours}h ${minutes}m ${seconds}s`}</td>
             {(props.bid.productDetails.lastBid === props.bid.price) && (props.bid.productDetails.finished === true) ? (
                 <td><Button variant="outline-success" href={`/pay/${props.bid.product}`}>Pagar</Button></td>
             ) : (
@@ -25,18 +25,25 @@ const calculateRemainingTime = (endDate) => {
     const now = new Date();
     const difference = Math.floor((endDate - now) / 1000);
 
-    const hours = Math.floor(difference / 3600);
+    if (difference <= 0) {
+        return 0;
+    }
+
+    const days = Math.floor(difference / (3600*24));
+    const hours = Math.floor((difference % (3600*24))/ 3600 ) ;
     const minutes = Math.floor((difference % 3600) / 60);
     const seconds = difference % 60;
 
-    return {hours, minutes, seconds};
+    return {days, hours, minutes, seconds};
 };
 const MyBids = () => {
+    const user = localStorage.getItem("user")
+    const thisUser = JSON.parse(user);
     const [bids, setBids] = useState([]);
     useEffect(() => {
         // Extraer bids del usuario
         async function getBid(){
-            const response = await fetch(process.env.REACT_APP_GATEWAY+'/bids?user=65720e41e0700cc1b8534119');
+            const response = await fetch(process.env.REACT_APP_GATEWAY+`/bids?user=${thisUser._id}`);
             if (!response.ok){
                 const message = `An error occurred: ${response.statusText}`;
                 window.alert(message);

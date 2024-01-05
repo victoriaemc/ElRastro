@@ -8,7 +8,7 @@ import Countdown from "./Countdown";
 import SubmitBid from "./SubmitBid";
 import CloudinaryImage from "./CloudinaryImage";
 
-const BidUpCard = () => {
+const BidUpCard = ({user}) => {
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
     const productId = searchParams.get("ProductId");
@@ -65,7 +65,7 @@ const BidUpCard = () => {
                             </Col>
                         </Row>
                         <Row>
-                            <SubmitBid product={product} endingDate={product.endingDate}/>
+                            <SubmitBid product={product} endingDate={product.endingDate} user={user}/>
                         </Row>
                     </Card.Body>
                 </Card>

@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 //const User = require('../models/User');
 const Bid = require('../models/Bid');
-//const Product = require('../models/Product');
+const Product = require('../models/Product');
 //var bodyParser = require('body-parser');
 
 // Get a bid and output the amount bid in another currency (using external API)
@@ -89,6 +89,30 @@ router.get("/highestBid", async (req, res) => {
             .exec();
 
         res.json(highestBid);
+
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
+router.get("/active", async (req, res) => {
+    try {
+        const userId = req.query.userId;
+
+        if (!userId) {
+            return res.status(400).json({ message: "Missing 'userId' parameter. Please provide a valid user ID." });
+        }
+
+        const activeBids = await Bid.find({ user: userId });
+
+        const activeBidsFiltered = await Promise.all(activeBids.map(async (bid) => {
+            const product = await Product.findById(bid.product);
+            return product.finished ? null : bid;
+        }));
+
+        const filteredResults = activeBidsFiltered.filter((bid) => bid !== null);
+
+        res.json(filteredResults);
 
     } catch (err) {
         res.status(500).json({ message: err.message });
