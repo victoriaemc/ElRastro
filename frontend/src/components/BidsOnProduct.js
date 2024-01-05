@@ -6,8 +6,6 @@ const BidsOnProduct = ({user}) => {
     const [bids, setBids] = useState([]);
     const { productId } = useParams();
     const thisUser = JSON.parse(user);
-    console.log(user);
-    console.log(thisUser._id);
 
     useEffect(() => {
         async function fetchBids() {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from 'react-router-dom';
-import { Col, Row, Button, Tabs, Tab} from 'react-bootstrap';
+import { Button, Tabs, Tab} from 'react-bootstrap';
 
 const Bid = (props) => {
     const {days,hours, minutes, seconds} = calculateRemainingTime(new Date(props.bid.productDetails.endingDate));
@@ -17,13 +17,12 @@ const Bid = (props) => {
                 const user = localStorage.getItem("user")
                 const thisUser = JSON.parse(user);
                 const response = await fetch(process.env.REACT_APP_GATEWAY + `/bids/highestBid/?product=${props.bid.product}&userId=${thisUser._id}`);
-                console.log(process.env.REACT_APP_GATEWAY + `/bids/highestBid/?product=${props.bid.product}&userId=${thisUser._id}`)
+                //console.log(process.env.REACT_APP_GATEWAY + `/bids/highestBid/?product=${props.bid.product}&userId=${thisUser._id}`)
                 if (!response.ok) {
                     throw new Error(`Error fetching bid history: ${response.statusText}`);
                 }
                 const data = await response.json();
                 setMyHighestBid(data.price);
-                console.log(data.price);
             } catch (error) {
                 console.error('Error fetching bid history:', error);
             }

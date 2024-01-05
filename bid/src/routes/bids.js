@@ -91,20 +91,15 @@ router.get("/highestBid", async (req, res) => {
             return res.status(400).json({ message: "Missing 'product' parameter. Please provide a valid product ID." });
         }
 
-        console.log(productId);
-        console.log(userId);
-
         if(userId){
             const highestBid = await Bid.findOne({ product: productIdObject, user: userIdObject })
                 .sort({ price: -1 })
                 .exec();
-            console.log(highestBid);
             res.json(highestBid);
         } else {
             const highestBid = await Bid.findOne({ product: productId })
                 .sort({ price: -1 })
                 .exec();
-            console.log(highestBid);
             res.json(highestBid);
         }
 

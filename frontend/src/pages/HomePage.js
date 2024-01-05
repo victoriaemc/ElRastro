@@ -1,8 +1,6 @@
 import React from "react";
 import ProductGrid from "../components/ProductGrid";
 import useApi from "../components/useApi"
-
-
 function HomePage(){
 
   const {data, isPending, error} = useApi(process.env.REACT_APP_GATEWAY)

@@ -2,7 +2,6 @@ import React from "react";
 import ProductToBuy from "../components/ProductToBuy";
 import Paypal from "../components/Paypal"
 import { Row, Col } from 'react-bootstrap';
-
 export default function PaymentPage(){
     return (
         <div>

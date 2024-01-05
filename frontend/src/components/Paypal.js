@@ -50,7 +50,6 @@ const Paypal = () => {
                             <h3>{product.lastBid}</h3>
                         </Row>
                         <Row>
-                            {console.log("Yo pagué " + setPayed)}
                             <PaypalButton amount={parseFloat(amount)} payed={payed} productId={productId}/>
                         </Row>
                     </Card.Body>

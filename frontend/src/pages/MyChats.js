@@ -1,6 +1,5 @@
 import React from "react";
 import MyChatsContainer from "../components/MyChatsContainer";
-
 export default function MyChats({user}){
     return (
         <div>

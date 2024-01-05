@@ -1,8 +1,6 @@
-// BidDetails.js
-import React, { useState, useEffect } from "react";
-import { Col, Row, Button, Card } from 'react-bootstrap';
+import { Row, Button} from 'react-bootstrap';
 
-const BidDetails = ({ lastBid, endingDate, productId }) => {
+const BidDetails = ({ lastBid, productId }) => {
 
     return (
             <Row>

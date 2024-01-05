@@ -7,10 +7,7 @@ import { Link } from 'react-router-dom';
 
 export default function MyChatsContainer({user}) {
     const thisUser = JSON.parse(user);
-    console.log(thisUser._id);
-    console.log(`${process.env.REACT_APP_GATEWAY}/chat/myChats/?userId=${thisUser._id}`);
     const {data, isLoading, isError} = useApi(`${process.env.REACT_APP_GATEWAY}/chat/myChats/?userId=${thisUser._id}`);
-    console.log(data);
     if (isLoading) {
         return <div>Loading...</div>;
     }
