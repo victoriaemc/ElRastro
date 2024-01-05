@@ -1,18 +1,49 @@
 import React, { useState, useEffect } from "react";
+import { Link } from 'react-router-dom';
 import { Col, Row, Button, Tabs, Tab} from 'react-bootstrap';
 
-// TODO: PONER EL ENLACE DE PUJA A DETALLES DEL PRODUCTO PARA PUJAR
 const Bid = (props) => {
     const {days,hours, minutes, seconds} = calculateRemainingTime(new Date(props.bid.productDetails.endingDate));
     const [showOptions, setShowOptions] = useState(false);
+    const [myHighestBid, setMyHighestBid] = useState(null);
 
     const isWinning = props.bid.productDetails.lastBid === props.bid.price;
     const rowClass = isWinning ? 'table-success' : 'table-warning' ;
 
+    useEffect(() => {
+        // Realiza la llamada a la API para obtener el historial de pujas
+        const fetchHighestBid = async () => {
+            try {
+                const user = localStorage.getItem("user")
+                const thisUser = JSON.parse(user);
+                const response = await fetch(process.env.REACT_APP_GATEWAY + `/bids/highestBid/?product=${props.bid.product}&userId=${thisUser._id}`);
+                console.log(process.env.REACT_APP_GATEWAY + `/bids/highestBid/?product=${props.bid.product}&userId=${thisUser._id}`)
+                if (!response.ok) {
+                    throw new Error(`Error fetching bid history: ${response.statusText}`);
+                }
+                const data = await response.json();
+                setMyHighestBid(data.price);
+                console.log(data.price);
+            } catch (error) {
+                console.error('Error fetching bid history:', error);
+            }
+        };
+
+        // Llama a la función para obtener el historial de pujas
+        fetchHighestBid();
+    }, [props.bid.product]);
+
     return (
         <tr className={rowClass}>
-            <td>{props.bid.productDetails.name}</td>
+            <td>
+                <Link to={`/productDetails?ProductId=${props.bid.product}`}>
+                    {props.bid.productDetails.name}
+                </Link>
+            </td>
             <td>{props.bid.productDetails.lastBid}</td>
+            <td>
+                {myHighestBid}
+            </td>
             <td>{`Faltan ${days} días ${hours}h ${minutes}m ${seconds}s`}</td>
             {(props.bid.productDetails.lastBid === props.bid.price) && (props.bid.productDetails.finished === true) ? (
                 <td><Button variant="outline-success" href={`/pay/${props.bid.product}`}>Pagar</Button></td>
@@ -81,7 +112,18 @@ const MyBids = () => {
         return () => clearInterval(interval);
     }, [bids.length]);
     function bidList(){
-        return bids.map((bid) => {
+        const uniqueProducts = new Set();
+        return bids
+            .filter((bid) => {
+            // Verificar si el producto ya está en el conjunto
+            if (uniqueProducts.has(bid.product)) {
+                return false; // Si ya está, omitir este bid
+            } else {
+                uniqueProducts.add(bid.product); // Agregar el producto al conjunto
+                return true; // Incluir este bid en la lista
+            }
+        })
+            .map((bid) => {
             return (
                 <Bid
                     bid = {bid}
@@ -101,9 +143,10 @@ const MyBids = () => {
                     <table className="table table-striped" style={{ marginTop: 20 }}>
                         <thead>
                         <tr>
-                            <th>Product</th>
-                            <th>Max. Bid</th>
-                            <th>Remaining time</th>
+                            <th>Producto</th>
+                            <th>Puja más alta</th>
+                            <th>Mi puja más alta</th>
+                            <th>Tiempo restante</th>
                             <th>Action</th>
                             <th></th>
                         </tr>

@@ -4,6 +4,7 @@ var router = express.Router();
 const Bid = require('../models/Bid');
 const Product = require('../models/Product');
 //var bodyParser = require('body-parser');
+const { ObjectId } = require('mongodb');
 
 // Get a bid and output the amount bid in another currency (using external API)
 async function convertCurrency(baseAmount, currencyCode) {
@@ -82,17 +83,30 @@ router.get("/", async (req, res) => {
 router.get("/highestBid", async (req, res) => {
     try {
         const productId = req.query.product;
+        const productIdObject = new ObjectId(productId);
+        const userId = req.query.userId;
+        const userIdObject = new ObjectId(userId);
 
         if (!productId) {
             return res.status(400).json({ message: "Missing 'product' parameter. Please provide a valid product ID." });
         }
 
-        // Buscar la oferta más alta para un producto específico
-        const highestBid = await Bid.findOne({ product: productId })
-            .sort({ price: -1 }) // Ordenar en orden descendente según el precio
-            .exec();
+        console.log(productId);
+        console.log(userId);
 
-        res.json(highestBid);
+        if(userId){
+            const highestBid = await Bid.findOne({ product: productIdObject, user: userIdObject })
+                .sort({ price: -1 })
+                .exec();
+            console.log(highestBid);
+            res.json(highestBid);
+        } else {
+            const highestBid = await Bid.findOne({ product: productId })
+                .sort({ price: -1 })
+                .exec();
+            console.log(highestBid);
+            res.json(highestBid);
+        }
 
     } catch (err) {
         res.status(500).json({ message: err.message });
