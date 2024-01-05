@@ -121,12 +121,52 @@ router.get("/active", async (req, res) => {
 
         const activeBidsFiltered = await Promise.all(activeBids.map(async (bid) => {
             const product = await Product.findById(bid.product);
-            return product.finished ? null : bid;
+
+            // Compara la fecha de finalización del producto con la fecha actual
+            const now = new Date();
+            const productEndDate = new Date(product.endingDate);
+
+            return productEndDate > now ? bid : null;
         }));
 
         const filteredResults = activeBidsFiltered.filter((bid) => bid !== null);
 
         res.json(filteredResults);
+
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
+
+// Devuelve las subastas ganadas por un usuario
+router.get("/wonBids", async (req, res) => {
+    try {
+        const userId = req.query.userId;
+
+        if (!userId) {
+            return res.status(400).json({ message: "Missing 'userId' parameter. Please provide a valid user ID." });
+        }
+
+        // Obtén todas las pujas del usuario
+        const userBids = await Bid.find({ user: userId });
+
+        // Filtra las pujas ganadas
+        const wonBids = await Promise.all(userBids.map(async (bid) => {
+            // Obtén los detalles del producto asociado a la puja
+            const product = await Product.findById(bid.product);
+            const now = new Date();
+            if (bid.price === product.lastBid && new Date(product.endingDate) < now) {
+                return bid;
+            } else {
+                return null;
+            }
+        }));
+
+        // Filtra las pujas no nulas (pujas ganadas)
+        const filteredWonBids = wonBids.filter((bid) => bid !== null);
+
+        res.json(filteredWonBids);
 
     } catch (err) {
         res.status(500).json({ message: err.message });

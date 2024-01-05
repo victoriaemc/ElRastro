@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Link } from 'react-router-dom';
 import { Button, Tabs, Tab} from 'react-bootstrap';
-
+import WonBids from "../components/WonBids";
 const Bid = (props) => {
     const {days,hours, minutes, seconds} = calculateRemainingTime(new Date(props.bid.productDetails.endingDate));
-    const [showOptions, setShowOptions] = useState(false);
     const [myHighestBid, setMyHighestBid] = useState(null);
 
     const isWinning = props.bid.productDetails.lastBid === props.bid.price;
@@ -44,9 +43,7 @@ const Bid = (props) => {
                 {myHighestBid}
             </td>
             <td>{`Faltan ${days} días ${hours}h ${minutes}m ${seconds}s`}</td>
-            {(props.bid.productDetails.lastBid === props.bid.price) && (props.bid.productDetails.finished === true) ? (
-                <td><Button variant="outline-success" href={`/pay/${props.bid.product}`}>Pagar</Button></td>
-            ) : (
+            {(props.bid.productDetails.lastBid === props.bid.price) && (props.bid.productDetails.finished === true) ? null : (
                 <td><Button variant="outline-success" href={`/${props.bid.product}`}>Pujar PENDIENTE</Button></td>
             )}
             <td>
@@ -154,7 +151,7 @@ const MyBids = () => {
                     </table>
                 </Tab>
                 <Tab eventKey="winnerBids" title="Subastas ganadas">
-
+                    <WonBids/>
                 </Tab>
             </Tabs>
 
