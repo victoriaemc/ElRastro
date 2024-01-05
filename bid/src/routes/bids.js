@@ -175,7 +175,6 @@ router.get("/wonBids", async (req, res) => {
 });
 
 // Devuelve las subastas perdidas por un usuario
-// Devuelve las subastas perdidas por un usuario
 router.get("/lostBids", async (req, res) => {
     try {
         const userId = req.query.userId;
@@ -184,8 +183,19 @@ router.get("/lostBids", async (req, res) => {
             return res.status(400).json({ message: "Missing 'userId' parameter. Please provide a valid user ID." });
         }
 
-        // Obtén todas las pujas del usuario
-        const userBids = await Bid.find({ user: userId });
+        // Obtén todas las pujas del usuario que están finalizadas
+        const bids = await Bid.find({ user: userId });
+
+        // Filtra las pujas finalizadas
+        const finalizedBids = await Promise.all(bids.map(async (bid) => {
+            // Obtén los detalles del producto asociado a la puja
+            const product = await Product.findById(bid.product);
+            const now = new Date();
+            return new Date(product.endingDate) < now ? bid : null;
+        }));
+
+        // Filtra las pujas no nulas (pujas finalizadas)
+        const userBids = finalizedBids.filter((bid) => bid !== null);
 
         // Obtén las subastas ganadas por el usuario excluyendo las pujas que tienen un precio mayor
         const wonBids = await Promise.all(userBids.map(async (bid) => {
@@ -202,8 +212,6 @@ router.get("/lostBids", async (req, res) => {
         // Filtra las pujas ganadas excluyendo los elementos null
         const filteredWonBids = wonBids.filter((bid) => bid !== null);
 
-        console.log(filteredWonBids);
-
         // Filtra las pujas perdidas excluyendo las que tienen una versión más alta en las ganadoras
         const lostBids = userBids.filter((bid) => {
             // Verifica si existe una puja ganadora con un precio mayor y es sobre el mismo producto
@@ -217,7 +225,6 @@ router.get("/lostBids", async (req, res) => {
         res.status(500).json({ message: err.message });
     }
 });
-
 
 // Devuelve una puja por su id -> localhost:8000/bids/654a09ac75aa4e12761f4add
 // Si se especifica el parámetro ?currency=XXX, devuelve el precio en la moneda especificada

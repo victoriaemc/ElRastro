@@ -45,7 +45,7 @@ const WonBids = () => {
         <div>
             <h3>Subastas ganadas</h3>
             {wonBids.length > 0 ? (
-                <Table striped bordered hover>
+                <Table>
                     <thead>
                     <tr>
                         <th>Producto</th>
