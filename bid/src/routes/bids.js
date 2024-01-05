@@ -28,6 +28,7 @@ async function convertCurrency(baseAmount, currencyCode) {
 // GET all bids listing. -> localhost:8000/bids
 // Si se especifica el parámetro ?user=userid, devuelve las pujas de ese usuario -> localhost:8000/bids?user=654926ac75aa4e12761f4ab4
 // Si se especifica el parámetro ?product=productid, devuelve las pujas de ese producto -> localhost:8000/bids?product=6549293875aa4e12761f4ac4
+// Si se especifican los parametros ?product=productid y ?user=userid, devuelve las pujas de ese usuario en ese producto -> localhost:8000/bids?product=6549293875aa4e12761f4ac4&user=654926ac75aa4e12761f4ab4
 // Si se especifica el parámetro ?before=n, devuelve las pujas realizadas en las últimas n horas -> localhost:8000/bids?before=2
 // Si se especifica el parámetro ?amount=n, devuelve las pujas con un precio mayor que n -> localhost:8000/bids?amount=20
 router.get("/", async (req, res) => {
@@ -37,7 +38,10 @@ router.get("/", async (req, res) => {
         let before = parseFloat(req.query.before);
         let amount = parseFloat(req.query.amount);
 
-        if (userId) {
+        if(userId && productId){
+            const bids = await Bid.find({ user: userId, product: productId }).exec();
+            res.json(bids);
+        } else if (userId) {
             // localhost:8000/bids?user=654a09ac75aa4e12761f4add
             const bids = await Bid.find({ user: userId }).exec();
             res.json(bids);
@@ -95,6 +99,7 @@ router.get("/highestBid", async (req, res) => {
     }
 });
 
+// Devuelve solo pujas activas de un usuario
 router.get("/active", async (req, res) => {
     try {
         const userId = req.query.userId;

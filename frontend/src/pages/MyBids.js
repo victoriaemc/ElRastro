@@ -1,22 +1,27 @@
-// MyBids
-
 import React, { useState, useEffect } from "react";
-import { Col, Row, Button, Card } from 'react-bootstrap';
+import { Col, Row, Button, Tabs, Tab} from 'react-bootstrap';
 
 // TODO: PONER EL ENLACE DE PUJA A DETALLES DEL PRODUCTO PARA PUJAR
 const Bid = (props) => {
     const {days,hours, minutes, seconds} = calculateRemainingTime(new Date(props.bid.productDetails.endingDate));
+    const [showOptions, setShowOptions] = useState(false);
+
+    const isWinning = props.bid.productDetails.lastBid === props.bid.price;
+    const rowClass = isWinning ? 'table-success' : 'table-warning' ;
 
     return (
-        <tr>
+        <tr className={rowClass}>
             <td>{props.bid.productDetails.name}</td>
-            <td>{props.bid.price}</td>
+            <td>{props.bid.productDetails.lastBid}</td>
             <td>{`Faltan ${days} días ${hours}h ${minutes}m ${seconds}s`}</td>
             {(props.bid.productDetails.lastBid === props.bid.price) && (props.bid.productDetails.finished === true) ? (
                 <td><Button variant="outline-success" href={`/pay/${props.bid.product}`}>Pagar</Button></td>
             ) : (
                 <td><Button variant="outline-success" href={`/${props.bid.product}`}>Pujar PENDIENTE</Button></td>
             )}
+            <td>
+                <Button variant="outline-dark" href={`/allBids/${props.bid.product}`}>Historial de pujas</Button>
+            </td>
         </tr>
     );
 }
@@ -42,8 +47,8 @@ const MyBids = () => {
     const [bids, setBids] = useState([]);
     useEffect(() => {
         // Extraer bids del usuario
-        async function getBid(){
-            const response = await fetch(process.env.REACT_APP_GATEWAY+`/bids?user=${thisUser._id}`);
+        async function getActiveBids(){
+            const response = await fetch(process.env.REACT_APP_GATEWAY+`/bids/active?userId=${thisUser._id}`);
             if (!response.ok){
                 const message = `An error occurred: ${response.statusText}`;
                 window.alert(message);
@@ -72,7 +77,7 @@ const MyBids = () => {
         const interval = setInterval(() => {
             setBids((prevBids) => prevBids.map((bid) => ({...bid})));
         }, 1000);
-        getBid();
+        getActiveBids();
         return () => clearInterval(interval);
     }, [bids.length]);
     function bidList(){
@@ -87,18 +92,30 @@ const MyBids = () => {
     }
     return (
         <div>
-            <h3>Bid List</h3>
-            <table className="table table-striped" style={{ marginTop: 20 }}>
-                <thead>
-                <tr>
-                    <th>Product</th>
-                    <th>Max. Bid</th>
-                    <th>Remaining time</th>
-                    <th>Action</th>
-                </tr>
-                </thead>
-                <tbody>{bidList()}</tbody>
-            </table>
+            <Tabs
+                defaultActiveKey="activeBids"
+                className="mb-3"
+            >
+                <Tab eventKey="activeBids" title="Subastas activas">
+                    <h3>Subastas activas</h3>
+                    <table className="table table-striped" style={{ marginTop: 20 }}>
+                        <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Max. Bid</th>
+                            <th>Remaining time</th>
+                            <th>Action</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>{bidList()}</tbody>
+                    </table>
+                </Tab>
+                <Tab eventKey="winnerBids" title="Subastas ganadas">
+
+                </Tab>
+            </Tabs>
+
         </div>
     );
 };
