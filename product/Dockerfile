@@ -1,5 +1,7 @@
 FROM node
 
+RUN npm install -g nodemon
+
 WORKDIR /index
 
 COPY  package.json .
