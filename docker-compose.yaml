@@ -13,6 +13,7 @@ services:
       - bid
       - product
       - user
+    stdin_open: true
   bid:
     build:
       context: ./bid
@@ -22,6 +23,7 @@ services:
     volumes:
         - ./bid:/index
         - ./index/node_modules
+    stdin_open: true
   product:
     build:
       context: ./product
@@ -31,6 +33,7 @@ services:
     volumes:
         - ./product:/index
         - ./index/node_modules
+    stdin_open: true
   user:
     build:
       context: ./user
@@ -40,6 +43,7 @@ services:
     volumes:
         - ./user:/index
         - ./index/node_modules
+    stdin_open: true
   frontend:
     build:
       context: ./frontend
@@ -51,3 +55,4 @@ services:
         - ./index/node_modules
     depends_on:
       - gateway
+    stdin_open: true
