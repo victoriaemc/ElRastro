@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import {useParams, useNavigate} from "react-router-dom";
+import {useParams, Link} from "react-router-dom";
 import Row from 'react-bootstrap/Row';
 import Col from "react-bootstrap/Col";
 import Button from 'react-bootstrap/Button';
+import Modal from "react-bootstrap/Modal";
 import axios from "axios";
 import CloudinaryImage from "./CloudinaryImage";
 
@@ -10,7 +11,9 @@ const UserDetails = ({userId}) => {
     const {id} = useParams();
     const [user, setUser] = useState(null);
     const [ratings, setRatings] = useState(null);
-    const navigate = useNavigate();
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [modalContent, setModalContent] = useState('confirm');
+    const [deletionStatus, setDeletionStatus] = useState(null);
 
 
 
@@ -35,25 +38,35 @@ const UserDetails = ({userId}) => {
 
     }, [userId]);
 
+
     const handleDelete = async () => {
         try {
-            const response = await axios.delete(process.env.REACT_APP_GATEWAY + `/users/${userId}`);
+            const response = await axios.delete(
+                process.env.REACT_APP_GATEWAY + `/users/${userId}`
+            );
             console.log('Respuesta borrado:', response.data);
             if (response.status === 200) {
-                console.log("User deleted successfully");
-                // Logout
-                await axios.get(process.env.REACT_APP_GATEWAY + '/users/logout')
-                // Limpiar el localStorage
-                setUser(null);
-                localStorage.removeItem('user');
-                navigate('/');
+                console.log('User deleted successfully');
+                setModalContent('success');
             } else {
                 console.error('Failed to delete user');
+                setDeletionStatus('failure'); // Update deletion status
             }
         } catch (error) {
             console.error('Error deleting user:', error);
+            setDeletionStatus('failure'); // Update deletion status
         }
     };
+
+    const handleLogout = () => {
+        // Limpiar el estado local
+        setUser(null);
+        // Limpiar el localStorage
+        localStorage.clear();
+    };
+
+    const openDeleteModal = () => setShowDeleteModal(true);
+    const closeDeleteModal = () => setShowDeleteModal(false);
 
     return(<div>
             {user ? (
@@ -65,7 +78,7 @@ const UserDetails = ({userId}) => {
                                 <Button variant="primary" href={`/userProfile/${userId}/edit`}>Editar perfil</Button>
                             </Col>
                             <Col key="delete">
-                                <Button variant="danger" onClick={handleDelete}>Eliminar cuenta</Button>
+                                <Button variant="danger" onClick={openDeleteModal}>Eliminar cuenta</Button>
                             </Col>
 
                         </Row>
@@ -90,6 +103,42 @@ const UserDetails = ({userId}) => {
                         </Col>
 
                     </Row>
+
+
+                    {/* Delete Account Modal */}
+                    <Modal
+                        show={showDeleteModal}
+                        onHide={closeDeleteModal}
+                    >
+                        <Modal.Header closeButton>
+                            <Modal.Title>
+                                {modalContent === 'success'
+                                    ? 'Cuenta eliminada exitosamente'
+                                    : 'Confirmar eliminación de cuenta'}
+                            </Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                            {modalContent === 'success'
+                                ? 'Por favor, cierre sesión manualmente.'
+                                : '¿Seguro que desea eliminar su cuenta?'}
+                        </Modal.Body>
+                        <Modal.Footer>
+                            {modalContent === 'success' ? (
+                                <Link to={process.env.REACT_APP_GATEWAY+`/users/logout`} onClick={handleLogout}>
+                                    <Button variant="outline-danger">Cerrar sesión</Button>
+                                </Link>
+                            ) : (
+                                <>
+                                    <Button variant="secondary" onClick={closeDeleteModal}>
+                                        Cancelar
+                                    </Button>
+                                    <Button variant="danger" onClick={handleDelete}>
+                                        Eliminar cuenta
+                                    </Button>
+                                </>
+                            )}
+                        </Modal.Footer>
+                    </Modal>
                 </div>
             ) : (
                 <p>Cargando datos de usuario...</p>

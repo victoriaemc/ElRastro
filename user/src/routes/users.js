@@ -220,7 +220,9 @@ router.put("/:id", bodyParser.json(), async (req, res) => {
 router.delete("/:id",bodyParser.json(), (req, res)=>{
     let id = req.params.id;
     User.findByIdAndDelete(id)
-        .then(() => res.json({ message: "User deleted" }))
+        .then(() =>{
+                res.json({ message: "User deleted" });
+        })
         .catch(err => res.json({ message: err.message }));
     });
 
