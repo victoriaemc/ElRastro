@@ -8,7 +8,7 @@ services:
       - "8000:8000"
     volumes:
         - ./gateway:/index
-        - ./index/node_modules
+        - ${PWD}/index/node_modules
     depends_on:
       - bid
       - product
@@ -22,7 +22,7 @@ services:
       - "8001:8001"
     volumes:
         - ./bid:/index
-        - ./index/node_modules
+        - ${PWD}/index/node_modules
     stdin_open: true
   product:
     build:
@@ -32,7 +32,7 @@ services:
       - "8002:8002"
     volumes:
         - ./product:/index
-        - ./index/node_modules
+        - ${PWD}/index/node_modules
     stdin_open: true
   user:
     build:
@@ -42,7 +42,7 @@ services:
       - "8003:8003"
     volumes:
         - ./user:/index
-        - ./index/node_modules
+        - ${PWD}/index/node_modules
     stdin_open: true
   frontend:
     build:
@@ -52,7 +52,7 @@ services:
       - "3000:3000"
     volumes:
         - ./frontend:/index
-        - ./index/node_modules
+        - ${PWD}/index/node_modules
     depends_on:
       - gateway
     stdin_open: true
