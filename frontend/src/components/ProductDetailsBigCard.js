@@ -1,9 +1,8 @@
-// ProductDetailsBigCard.js
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import {Card, Row, Col, Button} from 'react-bootstrap';
 import Modal from 'react-bootstrap/Modal';
-import ProductImage from "./ProductImage";
+//import ProductImage from "./ProductImage";
 import BidDetails from "./BidDetails";
 import ProductDetails from "./ProductDetails";
 import Countdown from "./Countdown";

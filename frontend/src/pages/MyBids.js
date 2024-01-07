@@ -1,22 +1,55 @@
-// MyBids
-
 import React, { useState, useEffect } from "react";
-import { Col, Row, Button, Card } from 'react-bootstrap';
-
-// TODO: PONER EL ENLACE DE PUJA A DETALLES DEL PRODUCTO PARA PUJAR
+import { Link } from 'react-router-dom';
+import { Button, Tabs, Tab} from 'react-bootstrap';
+import WonBids from "../components/WonBids";
+import LostBids from "../components/LostBids";
 const Bid = (props) => {
     const {days,hours, minutes, seconds} = calculateRemainingTime(new Date(props.bid.productDetails.endingDate));
+    const [myHighestBid, setMyHighestBid] = useState(null);
+
+    const isWinning = props.bid.productDetails.lastBid === props.bid.price;
+    const rowClass = isWinning ? 'table-success' : 'table-warning' ;
+
+    useEffect(() => {
+        // Realiza la llamada a la API para obtener el historial de pujas
+        const fetchHighestBid = async () => {
+            try {
+                const user = localStorage.getItem("user")
+                const thisUser = JSON.parse(user);
+                const response = await fetch(process.env.REACT_APP_GATEWAY + `/bids/highestBid/?product=${props.bid.product}&userId=${thisUser._id}`);
+                //console.log(process.env.REACT_APP_GATEWAY + `/bids/highestBid/?product=${props.bid.product}&userId=${thisUser._id}`)
+                if (!response.ok) {
+                    throw new Error(`Error fetching bid history: ${response.statusText}`);
+                }
+                const data = await response.json();
+                setMyHighestBid(data.price);
+            } catch (error) {
+                console.error('Error fetching bid history:', error);
+            }
+        };
+
+        // Llama a la función para obtener el historial de pujas
+        fetchHighestBid();
+    }, [props.bid.product]);
 
     return (
-        <tr>
-            <td>{props.bid.productDetails.name}</td>
-            <td>{props.bid.price}</td>
+        <tr className={rowClass}>
+            <td>
+                <Link to={`/productDetails?ProductId=${props.bid.product}`}>
+                    {props.bid.productDetails.name}
+                </Link>
+            </td>
+            <td>{props.bid.productDetails.lastBid}</td>
+            <td>
+                {myHighestBid}
+            </td>
             <td>{`Faltan ${days} días ${hours}h ${minutes}m ${seconds}s`}</td>
-            {(props.bid.productDetails.lastBid === props.bid.price) && (props.bid.productDetails.finished === true) ? (
-                <td><Button variant="outline-success" href={`/pay/${props.bid.product}`}>Pagar</Button></td>
-            ) : (
+            {(props.bid.productDetails.lastBid === props.bid.price) && (props.bid.productDetails.finished === true) ? null : (
                 <td><Button variant="outline-success" href={`/${props.bid.product}`}>Pujar PENDIENTE</Button></td>
             )}
+            <td>
+                <Button variant="outline-dark" href={`/allBids/${props.bid.product}`}>Historial de pujas</Button>
+            </td>
         </tr>
     );
 }
@@ -42,8 +75,8 @@ const MyBids = () => {
     const [bids, setBids] = useState([]);
     useEffect(() => {
         // Extraer bids del usuario
-        async function getBid(){
-            const response = await fetch(process.env.REACT_APP_GATEWAY+`/bids?user=${thisUser._id}`);
+        async function getActiveBids(){
+            const response = await fetch(process.env.REACT_APP_GATEWAY+`/bids/active?userId=${thisUser._id}`);
             if (!response.ok){
                 const message = `An error occurred: ${response.statusText}`;
                 window.alert(message);
@@ -72,11 +105,22 @@ const MyBids = () => {
         const interval = setInterval(() => {
             setBids((prevBids) => prevBids.map((bid) => ({...bid})));
         }, 1000);
-        getBid();
+        getActiveBids();
         return () => clearInterval(interval);
     }, [bids.length]);
     function bidList(){
-        return bids.map((bid) => {
+        const uniqueProducts = new Set();
+        return bids
+            .filter((bid) => {
+            // Verificar si el producto ya está en el conjunto
+            if (uniqueProducts.has(bid.product)) {
+                return false; // Si ya está, omitir este bid
+            } else {
+                uniqueProducts.add(bid.product); // Agregar el producto al conjunto
+                return true; // Incluir este bid en la lista
+            }
+        })
+            .map((bid) => {
             return (
                 <Bid
                     bid = {bid}
@@ -87,18 +131,34 @@ const MyBids = () => {
     }
     return (
         <div>
-            <h3>Bid List</h3>
-            <table className="table table-striped" style={{ marginTop: 20 }}>
-                <thead>
-                <tr>
-                    <th>Product</th>
-                    <th>Max. Bid</th>
-                    <th>Remaining time</th>
-                    <th>Action</th>
-                </tr>
-                </thead>
-                <tbody>{bidList()}</tbody>
-            </table>
+            <Tabs
+                defaultActiveKey="activeBids"
+                className="mb-3"
+            >
+                <Tab eventKey="activeBids" title="Subastas activas">
+                    <h3>Subastas activas</h3>
+                    <table className="table table-striped" style={{ marginTop: 20 }}>
+                        <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Puja más alta</th>
+                            <th>Mi puja más alta</th>
+                            <th>Tiempo restante</th>
+                            <th>Action</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>{bidList()}</tbody>
+                    </table>
+                </Tab>
+                <Tab eventKey="winnerBids" title="Subastas ganadas">
+                    <WonBids/>
+                </Tab>
+                <Tab eventKey="lostBids" title="Subastas perdidas">
+                    <LostBids/>
+                </Tab>
+            </Tabs>
+
         </div>
     );
 };

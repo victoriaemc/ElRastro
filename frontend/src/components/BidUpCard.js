@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Card, Row, Col } from 'react-bootstrap';
-import ProductImage from "./ProductImage";
+//import ProductImage from "./ProductImage";
 import BidDetailsWithoutButton from "./BidDetailsWithoutButton";
-import ProductDetails from "./ProductDetails";
+//import ProductDetails from "./ProductDetails";
 import Countdown from "./Countdown";
 import SubmitBid from "./SubmitBid";
 import CloudinaryImage from "./CloudinaryImage";

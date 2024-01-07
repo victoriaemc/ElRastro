@@ -23,6 +23,7 @@ import ChatPage from "./pages/ChatPage";
 import SearchPage from "./pages/SearchPage";
 import PaymentPage from "./pages/PaymentPage";
 import MyChats from "./pages/MyChats";
+import BidsHistory from "./pages/BidsHistory";
 function App() {
 
   const [user, setUser] = useState(() => {
@@ -103,6 +104,7 @@ function App() {
           <Route path="/search/:filter" element={<SearchPage/>}/>
           <Route path="/pay/:productId" element={<PaymentPage/>}/>
           <Route path="/myChats" element={<MyChats user={user}/>}/>
+          <Route path="/allBids/:productId" element={<BidsHistory/>}/>
         </Routes>
       </BrowserRouter>
     </div>

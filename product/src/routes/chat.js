@@ -89,7 +89,6 @@ router.get("/myChats", async (req, res) => {
             const product = await Product.findById(productId);
 
             const productOwner = product.user;
-            console.log("Este es el product  " + product);
 
             const key = `${otherUsers.join(',')}_${productId}`;
 

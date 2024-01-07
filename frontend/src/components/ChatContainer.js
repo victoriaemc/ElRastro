@@ -24,14 +24,10 @@ const ChatContainer = ({user}) => {
                 const nombreProductData = await nombreProductResponse.json();
                 setNombreProduct(nombreProductData.name);
                 if(nombreProductData.user == userId) {
-                    console.log("Soy ese");
                     setThisUsers([userId, buyerId]);
                 } else {
                     setThisUsers([userId, nombreProductData.user]);
-                    console.log("No soy ese");
                 }
-
-                console.log(thisUsers);
             } catch (error) {
                 console.error('Error fetching messages:', error);
             }
@@ -63,8 +59,6 @@ const ChatContainer = ({user}) => {
             console.error('Error sending message:', error);
         }
     };
-
-    console.log(messages);
 
     return (
         <div>
