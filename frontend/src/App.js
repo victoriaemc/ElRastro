@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import './App.css';
 
+import './App.css';
 
 // Imports cloudinary
 import CloudinaryUploadWidget from "./components/CloudinaryUploadWidget";
@@ -9,11 +9,11 @@ import { AdvancedImage, responsive, placeholder } from "@cloudinary/react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 // Imports Pages and Components
-import LoginPage from './pages/LoginPage'; 
-import HomePage from './pages/HomePage'
-import ElRastroNavbar from './components/ElRastroNavbar';
-import ProductDetails from './pages/ProductDetails';
-import BiddingUpPage from './pages/BiddingUpPage';
+import LoginPage from "./pages/LoginPage";
+import HomePage from "./pages/HomePage";
+import ElRastroNavbar from "./components/ElRastroNavbar";
+import ProductDetails from "./pages/ProductDetails";
+import BiddingUpPage from "./pages/BiddingUpPage";
 import CreateProduct from "./pages/CreateProduct";
 import EditProduct from "./pages/EditProduct";
 import UserProfile from "./pages/UserProfile";
@@ -24,6 +24,7 @@ import SearchPage from "./pages/SearchPage";
 import PaymentPage from "./pages/PaymentPage";
 import MyChats from "./pages/MyChats";
 import BidsHistory from "./pages/BidsHistory";
+import useApi from "./components/useApi";
 function App() {
 
   const [user, setUser] = useState(() => {
@@ -37,10 +38,10 @@ function App() {
       try {
         const url = process.env.REACT_APP_GATEWAY + "/users/login/success";
         const response = await fetch(url, {
-          method: 'GET',
-          credentials: 'include',
+          method: "GET",
+          credentials: "include",
           headers: {
-            Accept: 'application/json',
+            Accept: "application/json",
           },
         });
 
@@ -63,10 +64,8 @@ function App() {
       }
     };
 
-
     fetchUser();
   }, []);
-
 
   // Cloudinary vars----------------------------------------------
   const [publicId, setPublicId] = useState("");
@@ -74,12 +73,12 @@ function App() {
   const [uploadPreset] = useState("x1njk2mp");
   const [uwConfig] = useState({
     cloudName,
-    uploadPreset
+    uploadPreset,
   });
   const cld = new Cloudinary({
     cloud: {
-      cloudName
-    }
+      cloudName,
+    },
   });
   const myImage = cld.image(publicId);
 
