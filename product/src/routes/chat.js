@@ -10,12 +10,9 @@ router.get("/hola", (req, res) => {
 
 router.get("/", async (req, res) => {
     try {
-        console.log('Inside try block');
         const from = req.query.from;
         const productId = req.query.productId;
-        console.log(productId);
         const product = await Product.findById(productId).exec();
-        console.log(product);
         const to = product.user._id;
 
         const messages = await Messages.find({

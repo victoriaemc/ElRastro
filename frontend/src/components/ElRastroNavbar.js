@@ -8,7 +8,7 @@ import Container from 'react-bootstrap/Container';
 
 import { Link, useNavigate } from 'react-router-dom';
 
-export default function ElRastroNavbar() {
+export default function ElRastroNavbar({user}) {
     const [searchTerm, setSearchTerm] = useState('');
     const history = useNavigate();
 
@@ -41,30 +41,49 @@ export default function ElRastroNavbar() {
                                 Submit
                             </Button>
                         </Col>
+                        <Col xs="auto">
+
+                            {user ? (
+                                <Navbar.Text className="d-inline-block text-truncate">¡Hola, {user.name}!</Navbar.Text>
+                            ):(
+                                <Navbar.Text className="d-inline-block text-truncate">Not logged in</Navbar.Text>
+                            )}
+                        </Col>
                     </Row>
                 </Form>
                 <Row className="mr-sm-2">
-                    <Col xs="auto">
-                        {/* Link the "Nuevo Producto" button to the CreateProduct page */}
-                        <Link to="/createProduct">
-                            <Button variant="primary">Nuevo Producto</Button>
-                        </Link>
-                    </Col>
-                    <Col xs="auto">
-                        <Link to="/myBids/65720e41e0700cc1b8534119">
-                            <Button variant="primary">Mis pujas</Button>
-                        </Link>
-                    </Col>
-                    <Col xs="auto">
-                        <Link to="/userProfile/6550a4a5fadb65a38330bff9">
-                            <Button variant="outline-primary">Perfil</Button>
-                        </Link>
-                    </Col>
+                    {user != null ? (
+                        <>
+                            <Col xs="auto">
+                                {/* Link the "Nuevo Producto" button to the CreateProduct page */}
+                                <Link to="/createProduct">
+                                    <Button variant="primary">Nuevo Producto</Button>
+                                </Link>
+                            </Col>
+                            <Col xs="auto">
+                                <Link to={`/myBids/${user._id}`}>
+                                    <Button variant="primary">Mis pujas</Button>
+                                </Link>
+                            </Col>
+                            <Col xs="auto">
+                                <Link to={`/userProfile/${user._id}`}>
+                                    <Button variant="outline-primary">Perfil</Button>
+                                </Link>
+                            </Col>
+                            <Col xs="auto">
+                                <Link to={process.env.REACT_APP_GATEWAY+`/users/logout`}>
+                                    <Button variant="outline-danger">Cerrar sesión</Button>
+                                </Link>
+                            </Col>
+                        </>
+                    ) : (
+
                     <Col xs="auto">
                         <Link to="/login">
                             <Button variant="outline-primary">Iniciar Sesion</Button>
                         </Link>
                     </Col>
+                    ) }
                 </Row>
             </Navbar>
         </Container>

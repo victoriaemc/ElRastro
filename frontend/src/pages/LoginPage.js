@@ -1,22 +1,33 @@
-// EN LA CARPETA PAGES IRAN LAS PAGINAS DE NUESTRA APP
-
+import React from "react";
+import {GoogleLogin, GoogleOAuthProvider} from "@react-oauth/google";
+import axios from "axios";
+import {jwtDecode} from "jwt-decode";
+import LoginButton from "../components/LoginButton";
+import {Container} from "react-bootstrap";
 function LoginPage(){
-  return(
-  <div class="container login-container mt-4">
-    <h2 class="text-center mb-5">Iniciar sesión</h2>
-    <form>
-      <div class="form-floating mb-3">
-        <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com" required/>
-        <label for="floatingInput">Email address</label>
-      </div>
-      <div class="form-floating mb-5">
-        <input type="password" class="form-control" id="floatingPassword" placeholder="Password" required/>
-        <label for="floatingPassword">Password</label>
-      </div>
-      <button type="submit" class="btn btn-primary">Iniciar sesión</button>
-    </form>
-</div>
-  )
+    const handleLogin = async (credentialResponse) => {
+        try {
+            const decodedToken = jwtDecode(credentialResponse.credential);
+            console.log("Decoded Token:", decodedToken);
+
+            // Make a request to your backend server with the token
+            const response = await axios.post("http://localhost:8000/login", {
+                token: credentialResponse.credential,
+            });
+
+            console.log("Server Response:", response.data);
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    };
+
+    return (
+
+        <Container>
+            <LoginButton/>
+        </Container>
+
+    );
 }
 
 export default LoginPage

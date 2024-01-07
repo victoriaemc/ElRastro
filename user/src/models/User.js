@@ -6,19 +6,23 @@ const userSchema = new mongoose.Schema({
     },
     username:{
         type: String,
-        required: true,
+        required: false,
     },
     password:{
         type: String,
-        required: true,
+        required: false,
     },
     email:{
         type: String,
-        required: false,
+        required: true,
     },
     propicId:{
         type: String,
         required: false,
     },
+    googleId:{
+        type: String,
+        required: true,
+    }
 }, {collection: 'User', versionKey: false});
 module.exports = mongoose.model("User", userSchema);

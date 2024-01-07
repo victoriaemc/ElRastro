@@ -6,6 +6,7 @@ const Product = require('../models/Product');
 //const Rating = require('../models/Rating');
 var bodyParser = require('body-parser');
 const axios = require('axios');
+const jwt = require('jsonwebtoken');
 
 router.get("/userLocation", async (req, res) => {
     try {
@@ -79,6 +80,23 @@ router.get("/sellers", async (req, res) => {
         console.error(err);
         res.status(500).json({ message: 'Internal Server Error' });
     }
+});
+
+// Login google
+const googleClientId = process.env.REACT_APP_GOOGLE_CLIENT_ID_VICKY;
+router.post ('/login', async (req, res) => {
+    const {token} = req.body;
+    try{
+        const decodedToken = jwt.verify(token, googleClientId);
+        console.log("Decoded Token:", decodedToken);
+        // TODO guardar usuario en DB
+        // Respond with a success message
+        res.json({ success: true, message: "Login successful" });
+    }catch (e) {
+        console.error("Verification error", e)
+        res.status(401).json({ success: false, message: "Token verification failed" });
+    }
+
 });
 
 

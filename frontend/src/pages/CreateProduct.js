@@ -7,9 +7,9 @@ import { Container, Row, Col } from 'react-bootstrap';
 import { Form, Button } from 'react-bootstrap';
 import CreateProductFormulary from "../components/CreateProductFormulary";
 
-export default function CreateProduct(){
+export default function CreateProduct({user}){
     return(<div>
         <h2 className="text-center mb-5">Crear producto</h2>
-        <CreateProductFormulary/>
+        <CreateProductFormulary user={user}/>
         </div>)
 }

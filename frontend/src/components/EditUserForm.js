@@ -66,7 +66,7 @@ const EditUserForm = ({userId}) => {
         axios.put(process.env.REACT_APP_GATEWAY+`/users/${id}`, updatedUser)
             .then(() => {
                 console.log("User updated: " + JSON.stringify(updatedUser));
-                navigate(-1);
+                navigate(`/userProfile/${id}`);
             })
             .catch(error => {
                 console.error('Error updating user:', error.message);
