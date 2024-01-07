@@ -5,7 +5,7 @@ import useApi from "../components/useApi";
 function HomePage() {
   const { data, isPending, error } = useApi(process.env.REACT_APP_GATEWAY);
   const [products, setProducts] = useState([]);
-  console.log(data);
+  //console.log(data);
   useEffect(() => {
     const activeProductsOnly = async () => {
       if (data && data.length) {
