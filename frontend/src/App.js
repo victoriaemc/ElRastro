@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import "./App.css";
+
+import './App.css';
 
 // Imports cloudinary
 import CloudinaryUploadWidget from "./components/CloudinaryUploadWidget";
@@ -21,10 +22,16 @@ import MyBids from "./pages/MyBids";
 import ChatPage from "./pages/ChatPage";
 import SearchPage from "./pages/SearchPage";
 import PaymentPage from "./pages/PaymentPage";
+import MyChats from "./pages/MyChats";
+import BidsHistory from "./pages/BidsHistory";
 import useApi from "./components/useApi";
 function App() {
-  const [user, setUser] = useState(null);
-  const [products, setProducts] = useState([]);
+
+  const [user, setUser] = useState(() => {
+    // Try to get user data from localStorage on component mount
+    const storedUser = localStorage.getItem('user');
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -43,8 +50,6 @@ function App() {
         }
 
         const data = await response.json();
-        //console.log("Data from /users/login/success:", data);
-        //console.log("User from /users/login/success:", data.user);
 
         setUser(data.user);
 
@@ -52,8 +57,8 @@ function App() {
           console.error("User data structure is incorrect:", data);
         }
 
-        // Use the updated user immediately after setting it
-        //console.log("User: ", data.user);
+        localStorage.setItem('user', JSON.stringify(data.user));
+
       } catch (e) {
         console.error(e);
       }
@@ -81,38 +86,24 @@ function App() {
     <div className="App">
       {/* RUTAS DE LAS PAGINAS  */}
       <BrowserRouter>
-        <ElRastroNavbar user={user} />
+        <ElRastroNavbar user={user} setUser={setUser}/>
         <Routes>
-          <Route
-            path="/"
-            element={
-              <h1>
-                <HomePage />
-              </h1>
-            }
-          />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/etc" element={<h1>Etc page</h1>} />
-          <Route
-            path="/productDetails"
-            element={<ProductDetails user={user} />}
-          />
-          <Route path="/bidUp" element={<BiddingUpPage />} />
-          <Route path="/biddingUp" element={<BiddingUpPage />} />
-          <Route
-            path="/createProduct"
-            element={<CreateProduct user={user} />}
-          />
-          <Route path="/editProduct/:id" element={<EditProduct />} />
-          <Route
-            path="/userProfile/:id"
-            element={<UserProfile user={user} />}
-          />
-          <Route path="/userProfile/:id/edit" element={<EditUser />} />
-          <Route path="/myBids/:id" element={<MyBids />} />
-          <Route path="/chat/:productId" element={<ChatPage />} />
-          <Route path="/search/:filter" element={<SearchPage />} />
-          <Route path="/pay/:productId" element={<PaymentPage />} />
+          <Route path="/" element={<h1><HomePage/></h1>}/>
+          <Route path="/login" element={<LoginPage/>}/>
+          <Route path="/etc" element={<h1>Etc page</h1>}/>
+          <Route path="/productDetails" element={<ProductDetails user={user}/>}/>
+          <Route path="/bidUp" element={<BiddingUpPage user={user}/>}/>
+          <Route path="/biddingUp" element={<BiddingUpPage/>}/>
+          <Route path="/createProduct" element={<CreateProduct user={user}/>}/>
+          <Route path="/editProduct/:id" element={<EditProduct user={user}/>}/>
+          <Route path="/userProfile/:id" element={<UserProfile user={user}/>}/>
+          <Route path="/userProfile/:id/edit" element={<EditUser user={user}/>}/>
+          <Route path="/myBids/:id" element={<MyBids user={user}/>}/>
+          <Route path="/chat/:productId/:buyerId" element={<ChatPage/>}/>
+          <Route path="/search/:filter" element={<SearchPage/>}/>
+          <Route path="/pay/:productId" element={<PaymentPage/>}/>
+          <Route path="/myChats" element={<MyChats user={user}/>}/>
+          <Route path="/allBids/:productId" element={<BidsHistory/>}/>
         </Routes>
       </BrowserRouter>
     </div>

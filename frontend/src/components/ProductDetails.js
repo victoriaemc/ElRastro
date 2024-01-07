@@ -1,4 +1,3 @@
-// ProductDetails.js
 import React from "react";
 import { Col, Row, Card } from 'react-bootstrap';
 

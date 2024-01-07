@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Col, Row, Button, Card } from 'react-bootstrap';
+import { Row } from 'react-bootstrap';
 
-const Countdown = ({ lastBid, endingDate }) => {
+const Countdown = ({ endingDate }) => {
     const [timeRemaining, setTimeRemaining] = useState(calculateTimeRemaining());
 
     useEffect(() => {

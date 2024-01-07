@@ -3,10 +3,10 @@ const cors = require('cors');
 const proxy = require('express-http-proxy');
 const mongoose = require('mongoose');
 const http = require('http');
-
+require('dotenv').config();
 const app = express();
 
-mongoose.connect("mongodb+srv://xmariafdz:d6sNRoSlX55dLrCQ@ingweb.zuuicah.mongodb.net/elrastro4", {useNewUrlParser: true});
+mongoose.connect(process.env.MONGO_URI, {useNewUrlParser: true});
 const db = mongoose.connection;
 db.on('error', (error) => console.log(error));
 db.once("open", () => console.log("Connected to the database!"));

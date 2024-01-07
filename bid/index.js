@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const app = express();
+require('dotenv').config();
 app.use(express.json());
 
 const bidRoutes = require('./src/routes/bids')
@@ -11,7 +12,7 @@ app.use('/', (req, res, next) => {
 })
 
 
-mongoose.connect("mongodb+srv://xmariafdz:d6sNRoSlX55dLrCQ@ingweb.zuuicah.mongodb.net/elrastro4", {useNewUrlParser: true});
+mongoose.connect(process.env.MONGO_URI, {useNewUrlParser: true});
 const db = mongoose.connection;
 db.on('error', (error) => console.log(error));
 db.once("open", () => console.log("Conected to the database!"));
