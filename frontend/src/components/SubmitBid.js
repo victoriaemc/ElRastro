@@ -1,13 +1,16 @@
 import React, { useState } from "react";
-import { Col, Row, Card, Form, Button, Alert } from 'react-bootstrap';
+import { Col, Row, Form, Button, Alert } from 'react-bootstrap';
 import axios from 'axios';
 import { useLocation } from "react-router-dom";
 import InputGroup from "react-bootstrap/InputGroup";
 
-const SubmitBid = ({ product, endingDate }) => {
+const SubmitBid = ({ product, endingDate}) => {
     const [amount, setAmount] = useState("");
     const [error, setError] = useState(null);
+    const user = localStorage.getItem("user");
+    const thisUser = JSON.parse(user);
 
+    const userId = thisUser._id;
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
     const productId = searchParams.get("ProductId");
@@ -25,11 +28,8 @@ const SubmitBid = ({ product, endingDate }) => {
         } else if (currentTimestamp >= endingDate) {
             setError("Esta subasta ya ha finalizado.");
         } else {
-            // Lógica para manejar la presentación de la puja
-            // ...
 
-            console.log(productId);
-            axios.put(`http://localhost:8000/${productId}`, {
+            axios.put(process.env.REACT_APP_GATEWAY+`/${productId}`, {
                 name: product.name,
                 description: product.description,
                 user: product.user,
@@ -43,7 +43,20 @@ const SubmitBid = ({ product, endingDate }) => {
                 imageId: product.imageId
             })
                 .then(response => {
-                    console.log('Actualización exitosa:', response.data);
+                    window.location.reload();
+                })
+                .catch(error => {
+                    console.error('Error al actualizar el producto:', error);
+                    setError("Error al realizar la puja. Inténtalo de nuevo.");
+                });
+
+            axios.post(`http://localhost:8000/bids`, {
+                product: productId,
+                user: userId,
+                price: Number(amount),
+                date: currentTimestamp
+            })
+                .then(response => {
                     window.location.reload();
                 })
                 .catch(error => {

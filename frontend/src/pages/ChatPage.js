@@ -4,7 +4,7 @@ import ChatContainer from '../components/ChatContainer';
 const ChatPage = () => {
     return (
         <div>
-            <ChatContainer />
+            <ChatContainer user={localStorage.getItem("user")}/>
         </div>
     );
 };

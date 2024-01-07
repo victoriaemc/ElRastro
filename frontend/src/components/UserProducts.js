@@ -15,9 +15,8 @@ const UserProducts = ({ userId }) => {
     useEffect(() => {
         const fetchUserProducts = async () => {
             try {
-                const response = await axios.get(`http://localhost:8000/myProducts?user=${id}`);
-                const userData = await axios.get(`http://localhost:8000/users/${id}`);
-                console.log(response);
+                const response = await axios.get(process.env.REACT_APP_GATEWAY+`/myProducts?user=${id}`);
+                const userData = await axios.get(process.env.REACT_APP_GATEWAY+`/users/${id}`);
                 if (response.status === 200) {
                     const userProducts = response.data;
                     setProducts(userProducts);
@@ -35,7 +34,7 @@ const UserProducts = ({ userId }) => {
 
     // This method will delete a record
     async function deleteProduct(id) {
-        await fetch(`http://localhost:8000/${id}`, {
+        await fetch(process.env.REACT_APP_GATEWAY+`/${id}`, {
             method: "DELETE"
         });
         const newProduct = products.filter((el) => el._id !== id);

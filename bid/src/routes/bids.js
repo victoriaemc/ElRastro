@@ -2,8 +2,9 @@ var express = require('express');
 var router = express.Router();
 //const User = require('../models/User');
 const Bid = require('../models/Bid');
-//const Product = require('../models/Product');
+const Product = require('../models/Product');
 //var bodyParser = require('body-parser');
+const { ObjectId } = require('mongodb');
 
 // Get a bid and output the amount bid in another currency (using external API)
 async function convertCurrency(baseAmount, currencyCode) {
@@ -25,10 +26,10 @@ async function convertCurrency(baseAmount, currencyCode) {
     }
 }
 
-
 // GET all bids listing. -> localhost:8000/bids
 // Si se especifica el parámetro ?user=userid, devuelve las pujas de ese usuario -> localhost:8000/bids?user=654926ac75aa4e12761f4ab4
 // Si se especifica el parámetro ?product=productid, devuelve las pujas de ese producto -> localhost:8000/bids?product=6549293875aa4e12761f4ac4
+// Si se especifican los parametros ?product=productid y ?user=userid, devuelve las pujas de ese usuario en ese producto -> localhost:8000/bids?product=6549293875aa4e12761f4ac4&user=654926ac75aa4e12761f4ab4
 // Si se especifica el parámetro ?before=n, devuelve las pujas realizadas en las últimas n horas -> localhost:8000/bids?before=2
 // Si se especifica el parámetro ?amount=n, devuelve las pujas con un precio mayor que n -> localhost:8000/bids?amount=20
 router.get("/", async (req, res) => {
@@ -38,7 +39,10 @@ router.get("/", async (req, res) => {
         let before = parseFloat(req.query.before);
         let amount = parseFloat(req.query.amount);
 
-        if (userId) {
+        if(userId && productId){
+            const bids = await Bid.find({ user: userId, product: productId }).exec();
+            res.json(bids);
+        } else if (userId) {
             // localhost:8000/bids?user=654a09ac75aa4e12761f4add
             const bids = await Bid.find({ user: userId }).exec();
             res.json(bids);
@@ -68,6 +72,154 @@ router.get("/", async (req, res) => {
             const bids = await Bid.find().exec();
             res.json(bids);
         }
+
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
+// Devuelve la puja más alta sobre un producto, por ejemplo:
+// http://localhost:8000/bids/highestBid?product=6576eb0f255ebb18bc49cacd
+router.get("/highestBid", async (req, res) => {
+    try {
+        const productId = req.query.product;
+        const productIdObject = new ObjectId(productId);
+        const userId = req.query.userId;
+        const userIdObject = new ObjectId(userId);
+
+        if (!productId) {
+            return res.status(400).json({ message: "Missing 'product' parameter. Please provide a valid product ID." });
+        }
+
+        if(userId){
+            const highestBid = await Bid.findOne({ product: productIdObject, user: userIdObject })
+                .sort({ price: -1 })
+                .exec();
+            res.json(highestBid);
+        } else {
+            const highestBid = await Bid.findOne({ product: productId })
+                .sort({ price: -1 })
+                .exec();
+            res.json(highestBid);
+        }
+
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
+// Devuelve solo pujas activas de un usuario
+router.get("/active", async (req, res) => {
+    try {
+        const userId = req.query.userId;
+
+        if (!userId) {
+            return res.status(400).json({ message: "Missing 'userId' parameter. Please provide a valid user ID." });
+        }
+
+        const activeBids = await Bid.find({ user: userId });
+
+        const activeBidsFiltered = await Promise.all(activeBids.map(async (bid) => {
+            const product = await Product.findById(bid.product);
+
+            // Compara la fecha de finalización del producto con la fecha actual
+            const now = new Date();
+            const productEndDate = new Date(product.endingDate);
+
+            return productEndDate > now ? bid : null;
+        }));
+
+        const filteredResults = activeBidsFiltered.filter((bid) => bid !== null);
+
+        res.json(filteredResults);
+
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
+//TODO: agrupar wonBids y losBids en un solo método
+
+// Devuelve las subastas ganadas por un usuario
+router.get("/wonBids", async (req, res) => {
+    try {
+        const userId = req.query.userId;
+
+        if (!userId) {
+            return res.status(400).json({ message: "Missing 'userId' parameter. Please provide a valid user ID." });
+        }
+
+        // Obtén todas las pujas del usuario
+        const userBids = await Bid.find({ user: userId });
+
+        // Filtra las pujas ganadas
+        const wonBids = await Promise.all(userBids.map(async (bid) => {
+            // Obtén los detalles del producto asociado a la puja
+            const product = await Product.findById(bid.product);
+            const now = new Date();
+            if (bid.price === product.lastBid && new Date(product.endingDate) < now) {
+                return bid;
+            } else {
+                return null;
+            }
+        }));
+
+        // Filtra las pujas no nulas (pujas ganadas)
+        const filteredWonBids = wonBids.filter((bid) => bid !== null);
+
+        res.json(filteredWonBids);
+
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
+// Devuelve las subastas perdidas por un usuario
+router.get("/lostBids", async (req, res) => {
+    try {
+        const userId = req.query.userId;
+
+        if (!userId) {
+            return res.status(400).json({ message: "Missing 'userId' parameter. Please provide a valid user ID." });
+        }
+
+        // Obtén todas las pujas del usuario que están finalizadas
+        const bids = await Bid.find({ user: userId });
+
+        // Filtra las pujas finalizadas
+        const finalizedBids = await Promise.all(bids.map(async (bid) => {
+            // Obtén los detalles del producto asociado a la puja
+            const product = await Product.findById(bid.product);
+            const now = new Date();
+            return new Date(product.endingDate) < now ? bid : null;
+        }));
+
+        // Filtra las pujas no nulas (pujas finalizadas)
+        const userBids = finalizedBids.filter((bid) => bid !== null);
+
+        // Obtén las subastas ganadas por el usuario excluyendo las pujas que tienen un precio mayor
+        const wonBids = await Promise.all(userBids.map(async (bid) => {
+            // Obtén los detalles del producto asociado a la puja
+            const product = await Product.findById(bid.product);
+            const now = new Date();
+            if (bid.price === product.lastBid && new Date(product.endingDate) < now) {
+                return bid;
+            } else {
+                return null;
+            }
+        }));
+
+        // Filtra las pujas ganadas excluyendo los elementos null
+        const filteredWonBids = wonBids.filter((bid) => bid !== null);
+
+        // Filtra las pujas perdidas excluyendo las que tienen una versión más alta en las ganadoras
+        const lostBids = userBids.filter((bid) => {
+            // Verifica si existe una puja ganadora con un precio mayor y es sobre el mismo producto
+            const isHigherBid = filteredWonBids.some((wonBid) => wonBid.price >= bid.price && wonBid.product.toString() == bid.product.toString());
+            return !isHigherBid;
+        });
+
+        res.json(lostBids);
 
     } catch (err) {
         res.status(500).json({ message: err.message });

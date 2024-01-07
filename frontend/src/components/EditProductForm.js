@@ -29,9 +29,8 @@ const EditProductForm = ({productId}) => {
         // Fetch existing product details using id from useParams and set the form state
         const fetchProductDetails = async () => {
             try {
-                const response = await axios.get(`http://localhost:8000/${id}`);
+                const response = await axios.get(process.env.REACT_APP_GATEWAY+`/${id}`);
                 const existingProduct = response.data;
-                console.log(existingProduct.endingDate);
                 setFormData({
                     name: existingProduct.name,
                     description: existingProduct.description,
@@ -62,7 +61,7 @@ const EditProductForm = ({productId}) => {
 
         try {
             // Make a PUT request to update the existing product
-            await axios.put(`http://localhost:8000/${id}`, formData);
+            await axios.put(process.env.REACT_APP_GATEWAY+`/${id}`, formData);
             navigate(-1);
         } catch (error) {
             console.error('Error updating product:', error);

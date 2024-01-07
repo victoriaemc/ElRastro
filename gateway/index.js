@@ -3,15 +3,19 @@ const cors = require('cors');
 const proxy = require('express-http-proxy');
 const mongoose = require('mongoose');
 const http = require('http');
-
+require('dotenv').config();
 const app = express();
 
-mongoose.connect("mongodb+srv://xmariafdz:d6sNRoSlX55dLrCQ@ingweb.zuuicah.mongodb.net/elrastro", {useNewUrlParser: true});
+mongoose.connect(process.env.MONGO_URI, {useNewUrlParser: true});
 const db = mongoose.connection;
 db.on('error', (error) => console.log(error));
 db.once("open", () => console.log("Connected to the database!"));
 
-app.use(cors());
+app.use(cors({
+    origin: ['http://localhost:3000'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true
+}));
 app.use(express.json());
 
 

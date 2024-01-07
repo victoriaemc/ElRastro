@@ -3,25 +3,31 @@ import { useParams } from 'react-router-dom';
 import { Card, Row, Col } from 'react-bootstrap';
 import ChatInput from '../components/ChatInput';
 
-const ChatContainer = () => {
+const ChatContainer = ({user}) => {
+    const thisUser = JSON.parse(user);
     const [messages, setMessages] = useState([]);
     const [nombreProduct, setNombreProduct] = useState('');
-    const { productId } = useParams();
-    const userId = '654fc829545069d773dc1fdd';
+    const { productId,buyerId } = useParams();
+    const userId = thisUser._id;
+    const [thisUsers, setThisUsers] = useState([]);
 
     useEffect(() => {
         const fetchMessages = async () => {
             try {
                 const response = await fetch(
-                    `http://localhost:8000/chat?from=${userId}&productId=${productId}`
+                    process.env.REACT_APP_GATEWAY+`/chat?from=${buyerId}&productId=${productId}`
                 );
                 const data = await response.json();
                 setMessages(data);
 
-                const nombreProductResponse = await fetch(`http://localhost:8000/${productId}`);
+                const nombreProductResponse = await fetch(process.env.REACT_APP_GATEWAY+`/${productId}`);
                 const nombreProductData = await nombreProductResponse.json();
-                console.log(nombreProductData)
-                setNombreProduct(nombreProductData.name);  // Ajusta esto según la estructura de tu respuesta
+                setNombreProduct(nombreProductData.name);
+                if(nombreProductData.user == userId) {
+                    setThisUsers([userId, buyerId]);
+                } else {
+                    setThisUsers([userId, nombreProductData.user]);
+                }
             } catch (error) {
                 console.error('Error fetching messages:', error);
             }
@@ -32,7 +38,7 @@ const ChatContainer = () => {
 
     const handleSendMessage = async (message) => {
         try {
-            await fetch('http://localhost:8000/chat', {
+            await fetch(process.env.REACT_APP_GATEWAY+'/chat', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -41,6 +47,7 @@ const ChatContainer = () => {
                     from: userId,
                     message: message,
                     productId: productId,
+                    users: thisUsers
                 }),
             });
 

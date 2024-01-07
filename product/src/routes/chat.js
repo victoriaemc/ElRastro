@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 const Messages = require('../models/Message');
 const Product = require('../models/Product');
+const { ObjectId } = require('mongodb');
 
 router.get("/hola", (req, res) => {
     res.sendFile(__dirname + '/index.html');
@@ -10,18 +11,13 @@ router.get("/hola", (req, res) => {
 
 router.get("/", async (req, res) => {
     try {
-        console.log('Inside try block');
         const from = req.query.from;
         const productId = req.query.productId;
-        console.log(productId);
         const product = await Product.findById(productId).exec();
-        console.log(product);
         const to = product.user._id;
 
         const messages = await Messages.find({
-            users: {
-                $all: [from, to],
-            },
+            users: { $in : [from] },
             product: productId
         }).sort({ date: 1 });
 
@@ -43,10 +39,11 @@ try {
     const from = req.body.from;
     const message = req.body.message;
     const productId = req.body.productId;
+    const usersArray = req.body.users;
 
     // Agregar al remitente y al usuario del producto al array users
     const product = await Product.findById(productId);
-    const usersArray = [from, product.user];
+    //const usersArray = [from, product.user];
 
     const data = await Messages.create({
         text: message,
@@ -64,6 +61,57 @@ try {
     console.error(ex);
     res.status(500).json({ message: ex.message });
 }
+});
+
+router.get("/myChats", async (req, res) => {
+    try {
+        const userId = req.query.userId;
+        const userIdObject = new ObjectId(userId);
+
+        // Obtener todos los mensajes donde el usuario es parte
+        const userMessages = await Messages.find({
+            users: { $in : [userIdObject, userId] }
+        }).sort({ date: 1 });
+        //console.log(userId);
+        //console.log(userMessages);
+
+        const conversations = {};
+
+        // Crear un mapa para almacenar los chats basados en combinaciones únicas de usuarios
+        const chatMap = new Map();
+
+        // Agrupar mensajes por combinaciones únicas de usuarios
+        for (const message of userMessages) {
+            const otherUsers = message.users.filter(user => user != userId).sort();
+            const productId = message.product;
+
+            // Utiliza await para esperar la resolución de la promesa
+            const product = await Product.findById(productId);
+
+            const productOwner = product.user;
+
+            const key = `${otherUsers.join(',')}_${productId}`;
+
+            if (!conversations[key]) {
+                conversations[key] = {
+                    users: otherUsers,
+                    product: productId,
+                    productOwner: productOwner,
+                    messages: []
+                };
+            }
+
+            conversations[key].messages.push(message);
+        };
+
+        // Convertir el mapa a un array de chats
+        const chats = Object.values(conversations);
+
+        res.json(chats);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: err.message });
+    }
 });
 
 module.exports = router;

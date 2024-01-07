@@ -134,3 +134,5 @@ dist
 .idea/workspace.xml
 .idea/jpa-buddy.xml
 .idea/vcs.xml
+.idea/modules.xml
+.idea/ElRastro.iml

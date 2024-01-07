@@ -30,7 +30,6 @@ function CloudinaryUploadWidget({ uwConfig, setPublicId }) {
           uwConfig,
           (error, result) => {
             if (!error && result && result.event === "success") {
-              console.log("Done! Here is the image info: ", result.info);
               setPublicId(result.info.public_id);
             }
           }

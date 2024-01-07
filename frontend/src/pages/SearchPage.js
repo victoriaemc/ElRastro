@@ -3,11 +3,10 @@ import ProductGrid from "../components/ProductGrid";
 import useApi from "../components/useApi"
 import {useParams} from "react-router-dom";
 
-// http://localhost:8000/?search=iphone
 function HomePage(){
 
     const {filter} = useParams();
-    const {data, isPending, error} = useApi(`http://localhost:8000/?search=${filter}`);
+    const {data, isPending, error} = useApi(process.env.REACT_APP_GATEWAY+`/?search=${filter}`);
 
     return (
         <div className="home">

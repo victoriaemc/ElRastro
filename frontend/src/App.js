@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
+
 import './App.css';
-import axios from "axios";
 
 // Imports cloudinary
 import CloudinaryUploadWidget from "./components/CloudinaryUploadWidget";
@@ -9,11 +9,11 @@ import { AdvancedImage, responsive, placeholder } from "@cloudinary/react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 // Imports Pages and Components
-import LoginPage from './pages/LoginPage'; 
-import HomePage from './pages/HomePage'
-import ElRastroNavbar from './components/ElRastroNavbar';
-import ProductDetails from './pages/ProductDetails';
-import BiddingUpPage from './pages/BiddingUpPage';
+import LoginPage from "./pages/LoginPage";
+import HomePage from "./pages/HomePage";
+import ElRastroNavbar from "./components/ElRastroNavbar";
+import ProductDetails from "./pages/ProductDetails";
+import BiddingUpPage from "./pages/BiddingUpPage";
 import CreateProduct from "./pages/CreateProduct";
 import EditProduct from "./pages/EditProduct";
 import UserProfile from "./pages/UserProfile";
@@ -21,8 +21,51 @@ import EditUser from "./pages/EditUser";
 import MyBids from "./pages/MyBids";
 import ChatPage from "./pages/ChatPage";
 import SearchPage from "./pages/SearchPage";
-
+import PaymentPage from "./pages/PaymentPage";
+import MyChats from "./pages/MyChats";
+import BidsHistory from "./pages/BidsHistory";
+import useApi from "./components/useApi";
 function App() {
+
+  const [user, setUser] = useState(() => {
+    // Try to get user data from localStorage on component mount
+    const storedUser = localStorage.getItem('user');
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const url = process.env.REACT_APP_GATEWAY + "/users/login/success";
+        const response = await fetch(url, {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            Accept: "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        setUser(data.user);
+
+        if (!data.user) {
+          console.error("User data structure is incorrect:", data);
+        }
+
+        localStorage.setItem('user', JSON.stringify(data.user));
+
+      } catch (e) {
+        console.error(e);
+      }
+    };
+
+    fetchUser();
+  }, []);
 
   // Cloudinary vars----------------------------------------------
   const [publicId, setPublicId] = useState("");
@@ -30,69 +73,39 @@ function App() {
   const [uploadPreset] = useState("x1njk2mp");
   const [uwConfig] = useState({
     cloudName,
-    uploadPreset
-    // cropping: true, //add a cropping step
-    // showAdvancedOptions: true,  //add advanced options (public_id and tag)
-    // sources: [ "local", "url"], // restrict the upload sources to URL and local files
-    // multiple: false,  //restrict upload to a single file
-    // folder: "user_images", //upload files to the specified folder
-    // tags: ["users", "profile"], //add the given tags to the uploaded files
-    // context: {alt: "user_uploaded"}, //add the given context data to the uploaded files
-    // clientAllowedFormats: ["images"], //restrict uploading to image files only
-    // maxImageFileSize: 2000000,  //restrict file size to less than 2MB
-    // maxImageWidth: 2000, //Scales the image down to a width of 2000 pixels before uploading
-    // theme: "purple", //change to a purple theme
+    uploadPreset,
   });
   const cld = new Cloudinary({
     cloud: {
-      cloudName
-    }
+      cloudName,
+    },
   });
   const myImage = cld.image(publicId);
-  // -------------------------------------------------------------
-  /*
-  const [message, setMessage] = useState("");
-  useEffect(() => {
-    fetch("http://localhost:8000/users/200")
-        .then((res) => res.json())
-        .then((data) => setMessage(data.message));
-  }, []);
-  */
+
   return (
     <div className="App">
       {/* RUTAS DE LAS PAGINAS  */}
       <BrowserRouter>
-        <ElRastroNavbar/>
+        <ElRastroNavbar user={user} setUser={setUser}/>
         <Routes>
           <Route path="/" element={<h1><HomePage/></h1>}/>
           <Route path="/login" element={<LoginPage/>}/>
           <Route path="/etc" element={<h1>Etc page</h1>}/>
-          <Route path="/productDetails" element={<ProductDetails/>}/>
-          <Route path="/bidUp" element={<BiddingUpPage/>}/>
+          <Route path="/productDetails" element={<ProductDetails user={user}/>}/>
+          <Route path="/bidUp" element={<BiddingUpPage user={user}/>}/>
           <Route path="/biddingUp" element={<BiddingUpPage/>}/>
-          <Route path="/createProduct" element={<CreateProduct/>}/>
-          <Route path="/editProduct/:id" element={<EditProduct/>}/>
-          <Route path="/userProfile/:id" element={<UserProfile/>}/>
-          <Route path="/userProfile/:id/edit" element={<EditUser/>}/>
-          <Route path="/myBids/:id" element={<MyBids/>}/>
-          <Route path="/chat/:productId" element={<ChatPage/>}/>
+          <Route path="/createProduct" element={<CreateProduct user={user}/>}/>
+          <Route path="/editProduct/:id" element={<EditProduct user={user}/>}/>
+          <Route path="/userProfile/:id" element={<UserProfile user={user}/>}/>
+          <Route path="/userProfile/:id/edit" element={<EditUser user={user}/>}/>
+          <Route path="/myBids/:id" element={<MyBids user={user}/>}/>
+          <Route path="/chat/:productId/:buyerId" element={<ChatPage/>}/>
           <Route path="/search/:filter" element={<SearchPage/>}/>
+          <Route path="/pay/:productId" element={<PaymentPage/>}/>
+          <Route path="/myChats" element={<MyChats user={user}/>}/>
+          <Route path="/allBids/:productId" element={<BidsHistory/>}/>
         </Routes>
       </BrowserRouter>
-      {/* Div para el widget 
-      <div>
-        <h3>Cloudinary Upload Widget Example</h3>
-        <CloudinaryUploadWidget uwConfig={uwConfig} setPublicId={setPublicId} />
-      </div>
-      {/* Div para mostrar la imagen 
-      <div style={{ width: "800px" }}>
-        <AdvancedImage
-          style={{ maxWidth: "100%" }}
-          cldImg={myImage}
-          plugins={[responsive(), placeholder()]}
-        />
-      </div>
-      */}
     </div>
   );
 }

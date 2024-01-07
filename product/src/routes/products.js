@@ -12,15 +12,19 @@ const Product = require('../models/Product');
 // localhost:8000/finished?value=true
 router.get("/finished", async (req, res) => {
     try {
-        const finishedValue = Boolean(req.query.value === 'true');
+        // Fetch all products
+        const allProducts = await Product.find();
 
-        const products = await Product.find({ finished: finishedValue }).exec();
+        // Filter products based on the finished virtual field
+        const products = allProducts.filter(product => product.finished === Boolean(req.query.value === 'true'));
+
         res.json(products);
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: err.message });
     }
 });
+
 
 
 // Devuelve los productos cuya ultima puja sea mayor a una cantidad
@@ -188,7 +192,8 @@ router.get("/:productId", async (req, res) => {
                 publicationDate: product.publicationDate,
                 endingDate: product.endingDate,
                 finished: product.finished,
-                imageId: product.imageId
+                imageId: product.imageId,
+                payed: product.payed
             });
         } else {
             res.json({ message: 'Product not found', type: 'danger' });
@@ -223,7 +228,9 @@ router.post("/", async (req, res) => {
             publicationDate: req.body.publicationDate,
             endingDate: req.body.endingDate,
             imageId: req.body.imageId,
-            finished: req.body.finished
+            finished: req.body.finished,
+            payed: req.body.payed
+
         });
 
         await product.save();
@@ -238,7 +245,6 @@ router.post("/", async (req, res) => {
 router.put("/:productId", async (req, res) => {
     try {
         const productId = req.params.productId;
-
         const updatedProduct = {
             name: req.body.name,
             description: req.body.description,
@@ -250,7 +256,8 @@ router.put("/:productId", async (req, res) => {
             publicationDate: req.body.publicationDate,
             endingDate: req.body.endingDate,
             imageId: req.body.imageId,
-            finished: req.body.finished
+            finished: req.body.finished,
+            payed: req.body.payed
         };
 
         const product = await Product.findByIdAndUpdate(productId, updatedProduct, { new: true });
@@ -281,5 +288,7 @@ router.delete("/:productId", (req, res) => {
             res.json({ message: err.message, type: 'danger' });
         });
 });
+
+
 
 module.exports = router;

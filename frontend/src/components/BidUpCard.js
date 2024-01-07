@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Card, Row, Col } from 'react-bootstrap';
-import ProductImage from "./ProductImage";
+//import ProductImage from "./ProductImage";
 import BidDetailsWithoutButton from "./BidDetailsWithoutButton";
-import ProductDetails from "./ProductDetails";
+//import ProductDetails from "./ProductDetails";
 import Countdown from "./Countdown";
 import SubmitBid from "./SubmitBid";
 import CloudinaryImage from "./CloudinaryImage";
 
-const BidUpCard = () => {
+const BidUpCard = ({user}) => {
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
     const productId = searchParams.get("ProductId");
@@ -18,7 +18,7 @@ const BidUpCard = () => {
     useEffect(() => {
         async function getProduct() {
             try {
-                const response = await fetch(`http://localhost:8000/${productId}`);
+                const response = await fetch(process.env.REACT_APP_GATEWAY+`/${productId}`);
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }
@@ -65,7 +65,7 @@ const BidUpCard = () => {
                             </Col>
                         </Row>
                         <Row>
-                            <SubmitBid product={product} endingDate={product.endingDate}/>
+                            <SubmitBid product={product} endingDate={product.endingDate} user={user}/>
                         </Row>
                     </Card.Body>
                 </Card>
