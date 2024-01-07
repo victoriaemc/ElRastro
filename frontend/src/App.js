@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from "react";
-import './App.css';
-
-
-
+import "./App.css";
 
 // Imports cloudinary
 import CloudinaryUploadWidget from "./components/CloudinaryUploadWidget";
@@ -11,11 +8,11 @@ import { AdvancedImage, responsive, placeholder } from "@cloudinary/react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 // Imports Pages and Components
-import LoginPage from './pages/LoginPage'; 
-import HomePage from './pages/HomePage'
-import ElRastroNavbar from './components/ElRastroNavbar';
-import ProductDetails from './pages/ProductDetails';
-import BiddingUpPage from './pages/BiddingUpPage';
+import LoginPage from "./pages/LoginPage";
+import HomePage from "./pages/HomePage";
+import ElRastroNavbar from "./components/ElRastroNavbar";
+import ProductDetails from "./pages/ProductDetails";
+import BiddingUpPage from "./pages/BiddingUpPage";
 import CreateProduct from "./pages/CreateProduct";
 import EditProduct from "./pages/EditProduct";
 import UserProfile from "./pages/UserProfile";
@@ -26,18 +23,18 @@ import SearchPage from "./pages/SearchPage";
 import PaymentPage from "./pages/PaymentPage";
 import useApi from "./components/useApi";
 function App() {
-
   const [user, setUser] = useState(null);
+  const [products, setProducts] = useState([]);
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const url = process.env.REACT_APP_GATEWAY + "/users/login/success";
         const response = await fetch(url, {
-          method: 'GET',
-          credentials: 'include',
+          method: "GET",
+          credentials: "include",
           headers: {
-            Accept: 'application/json',
+            Accept: "application/json",
           },
         });
 
@@ -62,10 +59,8 @@ function App() {
       }
     };
 
-
     fetchUser();
   }, []);
-
 
   // Cloudinary vars----------------------------------------------
   const [publicId, setPublicId] = useState("");
@@ -73,72 +68,51 @@ function App() {
   const [uploadPreset] = useState("x1njk2mp");
   const [uwConfig] = useState({
     cloudName,
-    uploadPreset
+    uploadPreset,
   });
   const cld = new Cloudinary({
     cloud: {
-      cloudName
-    }
+      cloudName,
+    },
   });
   const myImage = cld.image(publicId);
-  const {data, isPending, error} = useApi(process.env.REACT_APP_GATEWAY)
- async function updateFinished(){
-   try{
-     /*const response = await fetch(process.env.REACT_APP_GATEWAY+'/finished?value=true');
-     if (!response.ok) {
-       throw new Error(`HTTP error! Status: ${response.status}`);
-     }
-     const products = await response.json();
-     */
-     const products = {data};
-     for(p in products){
-       console.log(p.name);
-       /*if(p.lastBid == 0.0){
-
-         let difference;
-         difference = p.endingDate.getTime()-p.publicationDate.getTime();
-         p.endingDate = new Date(difference + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
-         p.startingPrice = p.startingPrice-p.startingPrice*0.1;
-         const handleSubmit = (e) => {
-           e.preventDefault();
-           axios.put(process.env.REACT_APP_GATEWAY+`/${p.id}`, p)
-             .then(() => {
-               console.log("Product updated: " + JSON.stringify(p));
-             })
-             .catch(error => {
-               console.error('Error updating product:', error.message);
-             });
-         }
-       }*/
-   }
-   } catch (error){
-    console.error('Error fetching products');
-   }
-   let p;
-     }
-
-
 
   return (
     <div className="App">
       {/* RUTAS DE LAS PAGINAS  */}
       <BrowserRouter>
-        <ElRastroNavbar user={user}/>
+        <ElRastroNavbar user={user} />
         <Routes>
-          <Route path="/" element={<h1><HomePage/></h1>}/>
-          <Route path="/login" element={<LoginPage/>}/>
-          <Route path="/etc" element={<h1>Etc page</h1>}/>
-          <Route path="/productDetails" element={<ProductDetails user={user}/>}/>
-          <Route path="/bidUp" element={<BiddingUpPage/>}/>
-          <Route path="/biddingUp" element={<BiddingUpPage/>}/>
-          <Route path="/createProduct" element={<CreateProduct user={user}/>}/>
-          <Route path="/editProduct/:id" element={<EditProduct/>}/>
-          <Route path="/userProfile/:id" element={<UserProfile user={user}/>}/>
-          <Route path="/userProfile/:id/edit" element={<EditUser/>}/>
-          <Route path="/myBids/:id" element={<MyBids/>}/>
-          <Route path="/chat/:productId" element={<ChatPage/>}/>
-          <Route path="/search/:filter" element={<SearchPage/>}/>
-          <Route path="/pay/:productId" element={<PaymentPage/>}/>
+          <Route
+            path="/"
+            element={
+              <h1>
+                <HomePage />
+              </h1>
+            }
+          />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/etc" element={<h1>Etc page</h1>} />
+          <Route
+            path="/productDetails"
+            element={<ProductDetails user={user} />}
+          />
+          <Route path="/bidUp" element={<BiddingUpPage />} />
+          <Route path="/biddingUp" element={<BiddingUpPage />} />
+          <Route
+            path="/createProduct"
+            element={<CreateProduct user={user} />}
+          />
+          <Route path="/editProduct/:id" element={<EditProduct />} />
+          <Route
+            path="/userProfile/:id"
+            element={<UserProfile user={user} />}
+          />
+          <Route path="/userProfile/:id/edit" element={<EditUser />} />
+          <Route path="/myBids/:id" element={<MyBids />} />
+          <Route path="/chat/:productId" element={<ChatPage />} />
+          <Route path="/search/:filter" element={<SearchPage />} />
+          <Route path="/pay/:productId" element={<PaymentPage />} />
         </Routes>
       </BrowserRouter>
     </div>
