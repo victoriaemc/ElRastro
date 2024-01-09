@@ -15,7 +15,7 @@ const Paypal = () => {
         async function fetchData() {
             try {
                 // Fetch product details
-                const productResponse = await fetch(`http://localhost:8000/${productId}`);
+                const productResponse = await fetch(process.env.REACT_APP_GATEWAY+`/${productId}`);
                 if (!productResponse.ok) {
                     throw new Error(`HTTP error! Status: ${productResponse.status}`);
                 }

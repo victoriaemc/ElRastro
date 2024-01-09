@@ -39,7 +39,7 @@ const PaypalButton = ({ amount, payed, productId }) => {
                 }}
                 onApprove={async (data, actions) => {
                     try {
-                        const response = await fetch(`http://localhost:8000/${productId}`, {
+                        const response = await fetch(process.env.REACT_APP_GATEWAY+`/${productId}`, {
                             method: 'PUT',
                             headers: {
                                 'Content-Type': 'application/json',

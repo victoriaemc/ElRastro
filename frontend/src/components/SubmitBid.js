@@ -50,7 +50,7 @@ const SubmitBid = ({ product, endingDate}) => {
                     setError("Error al realizar la puja. Inténtalo de nuevo.");
                 });
 
-            axios.post(`http://localhost:8000/bids`, {
+            axios.post(process.env.REACT_APP_GATEWAY+`/bids`, {
                 product: productId,
                 user: userId,
                 price: Number(amount),

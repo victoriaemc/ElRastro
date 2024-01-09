@@ -14,7 +14,7 @@ const ProductToBuy = () => {
     useEffect(() => {
         async function getProduct() {
             try {
-                const response = await fetch(`http://localhost:8000/${productId}`);
+                const response = await fetch(process.env.REACT_APP_GATEWAY+`/${productId}`);
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }
@@ -31,7 +31,7 @@ const ProductToBuy = () => {
 
     async function getSellerUsername(userId) {
         try {
-            const response = await fetch(`http://localhost:8000/users/${userId}`);
+            const response = await fetch(process.env.REACT_APP_GATEWAY+`/users/${userId}`);
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
