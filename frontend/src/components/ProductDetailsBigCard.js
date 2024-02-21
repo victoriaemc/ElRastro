@@ -30,7 +30,7 @@ const ProductDetailsBigCard = ({user}) => {
                 const product = await response.json();
                 setProduct(product);
                 // Call getSellerUsername with the user ID after setting the product
-                await getSellerUsername(product.user);
+                getSellerUsername(product.user);
             } catch (error) {
                 console.error('Error fetching product:', error);
             }
@@ -53,10 +53,6 @@ const ProductDetailsBigCard = ({user}) => {
             console.error('Error fetching seller:', error);
         }
     }
-
-    useEffect(() => {
-        console.log(sellerUser);  // Puedes observar el estado aquí
-    }, [sellerUser]);
 
 
     if (!product || Object.keys(product).length === 0) {
@@ -83,20 +79,19 @@ const ProductDetailsBigCard = ({user}) => {
                         <ProductDetails productName={product.name} productDescription={product.description} />
                         <Row>
                             <Col>
-                                <p><b>Vendido por:</b>  {sellerUser ?  <a href={`/userProfile/${sellerUser._id}`}>{sellerUser.name}</a> : "Cargando..."}</p>
+                                <p><b>Vendido por:</b>  {sellerUser ?  <a href={`/userProfile/${sellerUser._id}`}>{sellerUser.username}</a> : "Cargando..."}</p>
 
                             </Col>
-                            {(user && sellerUser && sellerUser._id != user._id) ? (
+                            {(user == null || sellerUser._id != user._id) ? (
                                 <>
                                     <Col>
                                         <Button variant="secondary" href={`/chat/${productId}/${user._id}`}>Chat con el vendedor</Button>
                                     </Col>
                                 </>
-                            ) : ( user ? (
+                            ) : (
                                 <Col>
                                     <Button variant="secondary" href={`/editProduct/${productId}`}>Editar este producto</Button>
                                 </Col>
-                                ) : "Inicia sesión para chatear con el vendedor"
                             )}
 
                         </Row>
