@@ -12,7 +12,7 @@ db.on('error', (error) => console.log(error));
 db.once("open", () => console.log("Connected to the database!"));
 
 app.use(cors({
-    origin: [process.env.CLIENT],
+    origin: ['http://localhost:3000'],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true
 }));
